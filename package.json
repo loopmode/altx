@@ -1,0 +1,25 @@
+{
+  "name": "altx",
+  "version": "0.0.1",
+  "description": "Flux flavor based on alt.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loopmode/altx.git"
+  },
+  "keywords": [
+    "flux"
+  ],
+  "author": {
+    "name": "Jovica Aleksic",
+    "email": "jovica.aleksic@loopmode.de"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loopmode/altx/issues"
+  },
+  "homepage": "https://github.com/loopmode/altx#readme"
+}
