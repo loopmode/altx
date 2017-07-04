@@ -1,6 +1,6 @@
 import {
     bind as bindAlt
-} from 'alt/utils/decorators';
+} from 'alt-utils/lib/decorators';
 
 
 // DEPRECATED

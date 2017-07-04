@@ -1,4 +1,8 @@
 import connectToStores from 'alt-utils/lib/connectToStores';
+import React, { createElement } from 'react';
+
+// TODO: deprecate connectAlternative asap!
+
 
 /* eslint-disable */
 /**
@@ -14,7 +18,7 @@ import connectToStores from 'alt-utils/lib/connectToStores';
  * ### String notation
  *
  * @example
- * @connectToStores([{store: MyStore, props: ['myValue', 'anotherValue']}])
+ * @connect([{store: MyStore, props: ['myValue', 'anotherValue']}])
  * export default class MyComponent extends React.Component {
  *      render() {
  *          const {myValue, anotherValue} = this.props;
@@ -25,7 +29,7 @@ import connectToStores from 'alt-utils/lib/connectToStores';
  * You can rename props using the ` as ` alias syntax
  *
  * @example
- * @connectToStores([{
+ * @connect([{
  *      store: PeopleStore,
  *      props: ['items as people']
  * }, {
@@ -44,7 +48,7 @@ import connectToStores from 'alt-utils/lib/connectToStores';
  * The function receives the store state and the component props.
  *
  * @example
- * @connectToStores([{
+ * @connect([{
  *      store: MyStore,
  *      props: (state, props) => {
  *          return {
@@ -61,7 +65,7 @@ import connectToStores from 'alt-utils/lib/connectToStores';
  * Technically, you could also mix all access methods, but this defeats the purpose of simple access:
  *
  * @example
- * @connectToStores([{
+ * @connect([{
  *      store: MyStore,
  *      props: ['someProp', 'anotherProp', (state, props) => {
  *          return {
@@ -73,13 +77,24 @@ import connectToStores from 'alt-utils/lib/connectToStores';
  *      ...
  * }
  *
+ * There are however valid usecase for mixing access methods. For example, you might have keys that themselves contain dots.
+ * For example, that is the case when using `validate.js` with nested constraints and keeping validation results in the store.
+ * There might be an `errors` map in your storewith keys like `user.address.street`. In such a case you wouldn't be able to access those values because the dots do not
+ * represent the actual keyPath in the tree:
+ *
+ * @example
+ * @connect([{
+ *   store,
+ *   props: ['user.address.street', (state) => ({errors: state.getIn(['errors', 'user.address.street'])})]
+ * }])
+ *
  * @see https://github.com/goatslacker/alt/blob/master/docs/utils/immutable.md
  * @see https://github.com/goatslacker/alt/blob/master/src/utils/connectToStores.js
  *
  * @param {Array<{store: AltStore, props: Array<string>}>} definitions - A list of objects that each define a store connection
  */
 /* eslint-enable */
-function connectToImmutableStores(definitions) {
+export default function connect(definitions) {
     return function(targetClass) {
         targetClass.getStores = function() {
             return definitions.map((def) => def.store);
@@ -159,4 +174,49 @@ function parseAccessor(accessor) {
     return {keyPath, propName};
 }
 
-export default connectToImmutableStores;
+
+function connectAlternative(store, mapStateToProps, WrappedComponent) {
+    return class Connect extends React.Component {
+
+        constructor(props, context) {
+            super(props, context);
+            const storeState = store.getState();
+            this.state = { storeState: mapStateToProps(storeState, props) };
+        }
+
+        componentDidMount() {
+            this._isMounted = true;
+            this.storeSubscription = store.listen(this.handleStoreUpdate);
+        }
+
+        componentWillUnmount() {
+            this._isMounted = false;
+            if (this.storeSubscription) {
+                store.unlisten(this.storeSubscription);
+            }
+        }
+
+        // if we use props in mapStateToProps,
+        // we need to run it again when props have changed
+        componentWillReceiveProps(nextProps) {
+            //untested! should work though
+            if(mapStateToProps.length > 1) {
+                this.setState({storeState: mapStateToProps(store.getState(), nextProps)});
+            }
+        }
+
+        handleStoreUpdate = state => {
+            if(this._isMounted) {
+                this.setState({ storeState: mapStateToProps(state, this.props) });
+            }
+        }
+
+        render() {
+            const mergedProps = { ...this.props, ...this.state.storeState };
+            return createElement(WrappedComponent, mergedProps);
+        }
+
+    };
+}
+
+export {connectAlternative};

@@ -5,7 +5,7 @@ import {getLevel as getLogLevel, logLevel} from '../utils/logging';
 /**
  * Decorates a store with any number of viewAction definitions.
  */
-export default function bindViewActions(...args) {
+export default function bindActions(...args) {
     return function decorate(storeClass) {
         const calls = flatten(args);
         calls.forEach(call => bindViewActionHandler(storeClass, call));

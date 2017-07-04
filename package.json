@@ -1,8 +1,8 @@
 {
   "name": "altx",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "description": "Flux flavor based on alt.js",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,8 @@
     "url": "git+https://github.com/loopmode/altx.git"
   },
   "keywords": [
-    "flux"
+    "alt",
+    "flux",
   ],
   "author": {
     "name": "Jovica Aleksic",
@@ -22,13 +23,11 @@
     "url": "https://github.com/loopmode/altx/issues"
   },
   "homepage": "https://github.com/loopmode/altx#readme",
-  "dependencies": {
-    "alt": "^0.18.6",
-    "alt-utils": "^1.0.0",
-    "bluebird": "^3.4.7",
-    "immutable": "^3.8.1"
-  },
-  "devDependencies": {
-    "jest": "^18.1.0"
+  "peerDependencies": {
+    "alt": "0.18.6",
+    "alt-utils": "1.0.0",
+    "immutable": "3.8.1",
+    "promise": "7.0.3",
+    "react": "15.3.1"
   }
 }

@@ -55,7 +55,7 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
             if (payload.response && payload.response.body && payload.response.body.message) {
                 logger.error(reducerName, payload.response.body.message);
             }
-            logger.debug(payload);
+            // logger.debug(payload);
         }
         else if (logging || getLogLevel() === logLevel.FORCE) {
             logger[isError ? 'error' : 'log'](reducerName, payload && payload.toJS ? payload.toJS() : payload);

@@ -22,6 +22,5 @@ export function createLogger(name) {
         warn: (...args) => level > NONE && console.warn(`[${name}]`, ...args),
         error: (...args) => level > NONE && console.error(`[${name}]`, ...args),
         trace: (...args) => level > NONE && console.trace(`[${name}]`, ...args),
-        debug: (...args) => level > NONE && (console.debug ? console.debug : console.log)(`[${name}]`, ...args),
     };
 }
