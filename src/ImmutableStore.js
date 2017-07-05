@@ -36,7 +36,7 @@ export default class ImmutableStore {
         this.change(this.initialData);
     };
 
-    getItemById = (id: number, listName) => {
+    getItemById = (id, listName) => {
         const list = this.state.get(listName || this.listName);
         if (list) {
             return list.find((item) => item.get('id') === id);
