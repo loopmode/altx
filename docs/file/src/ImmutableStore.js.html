@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/ImmutableStore.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/loopmode/altx" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ImmutableStore.js~ImmutableStore.html">ImmutableStore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-BindHandlers">BindHandlers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resetStores">resetStores</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getAltInstance">getAltInstance</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createActions">createActions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCall">createCall</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createViewAction">createViewAction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connectAlternative">connectAlternative</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDefensiveObject">createDefensiveObject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createLogger">createLogger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLevel">getLevel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setLevel">setLevel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-logLevel">logLevel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils/validate</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-creatorConstraints">creatorConstraints</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validateCreator">validateCreator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-definitionConstraints">definitionConstraints</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validateDefinition">validateDefinition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-handlerConstraints">handlerConstraints</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validateHandler">validateHandler</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-loggerConstraints">loggerConstraints</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/ImmutableStore.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Immutable from &apos;immutable&apos;;
+import transmitter from &apos;transmitter&apos;;
+
+const reset = transmitter();
+export function resetStores() {
+    reset.publish();
+}
+
+
+export default class ImmutableStore {
+    constructor(initialData) {
+        this.listName = &apos;items&apos;;
+        this.exportPublicMethods({
+            getItemById: this.getItemById,
+            getIndexById: this.getIndexById,
+            find: this.find,
+            reset: this.reset
+        });
+        if (initialData) {
+            this.init(initialData);
+        }
+        reset.subscribe(() =&gt; {
+            const data = this.initialData || {};
+            const nextState = data.toJS ? data : Immutable.fromJS(data);
+            this.setState(nextState);
+        });
+    }
+
+    init(data) {
+        this.initialData = data;
+        this.state = data.toJS ? data : Immutable.fromJS(data);
+        return this.state;
+    }
+
+    reset = () =&gt; {
+        this.change(this.initialData);
+    };
+
+    getItemById = (id, listName) =&gt; {
+        const list = this.state.get(listName || this.listName);
+        if (list) {
+            return list.find((item) =&gt; item.get(&apos;id&apos;) === id);
+        }
+        else {
+            console.warn(this, &apos;Failed in getItemById(): list not found&apos;);
+            //debugger; //eslint-disable-line
+        }
+        return null;
+    };
+
+    getIndexById = (id, listName) =&gt; {
+        listName = listName || this.listName;
+        const list = this.state.get(listName);
+        if (list) {
+            return list.indexOf(this.getItemById(id, listName));
+        }
+        console.warn(this, &apos;Failed in getIndexById(): list not found&apos;);
+        return -1;
+    };
+
+    /**
+     * Changes a property to a new value.
+     * There are three modes of calling this function:
+     *
+     * __change(&apos;key&apos;, value)__
+     * changes one property of the state object.
+     * @see https://facebook.github.io/immutable-js/docs/#/Map/set
+     *
+     * __change({key: value, ...})__
+     * changes any number of state properties at once
+     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep
+     *
+     * __change({id:5}, {key: value})__
+     * changes any number of properties on any matching item within a list
+     * @see {@link #changeItem()}
+     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep
+     */
+    change(prop, value) {
+        if (arguments.length === 2 &amp;&amp; typeof prop !== &apos;string&apos;) {
+            this.changeItem(prop, value);
+        } else
+        if (arguments.length === 2) {
+            this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));
+        } else {
+            this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));
+        }
+    }
+
+    setItemProp(id, key, value, listName) {
+        return this.state.merge({
+            [listName || this.listName]: this.state.get(listName || this.listName).map((item) =&gt; {
+                if (item.get(&apos;id&apos;) === id) {
+                    return item.set(key, value);
+                }
+                return item;
+            })
+        });
+    }
+
+    /**
+     * Changes a specific item in a list within the state object.
+     * @throws Error if when no item could be found
+     * @param {object} filter
+     * @param {object} filter.item - An object that specifies key/value pairs that must be matched by list items, e.g. {id: 13}
+     * @param {string} [filter.list] - The name of the list to search in. Defaults to &apos;items&apos;
+     * @param {object} data - An object containing key/value pairs for data to be set at matched items
+     */
+    changeItem(filter, data) {
+        //console.log(&apos;changeItem&apos;, filter, data);
+        const listName = filter.list || this.listName;
+        const list = this.state.get(listName);
+        //console.log(&apos;list found&apos;, list.toJS());
+        const matchingItem = this.find(listName, filter.item);
+        if(matchingItem) {
+            //console.log(&apos;item found&apos;, matchingItem);
+            const matchingIndex = list.indexOf(matchingItem);
+            const newItem = matchingItem.merge(data);
+            const newList = list.set(matchingIndex, newItem);
+            //console.log(&apos;new list&apos;, newList.toJS());
+            this.change({
+                [listName]: newList
+            });
+        } else {
+            throw new Error(&apos;changeItem: no item found for filter: &apos; + JSON.stringify(filter) + &apos;, list:&apos;, JSON.stringify(list.toJS()));
+        }
+    }
+
+    /**
+     * Returns a list of items that match a filter.
+     *
+     * @param {string} listName - The name of the list within the state object.
+     * @param {object} filter - An object with key/value pairs to test items against
+     * @returns {List} A new immutable list that only contains items that matched all key/value pairs of `filter`
+     */
+    find = (listName, filter) =&gt; {
+        const list = this.state.get(listName);
+        const result = list.find((item) =&gt; {
+            let match = true;
+            Object.keys(filter).map((prop) =&gt; {
+                const itemValue = item.get(prop);
+                const filterValue = filter[prop];
+                if (itemValue !== filterValue) {
+                    match = false;
+                }
+            });
+            return match;
+        });
+        return result;
+    };
+
+    useApi() {
+        return this.getInstance();
+    }
+}
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

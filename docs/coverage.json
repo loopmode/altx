@@ -1,0 +1,142 @@
+{
+  "coverage": "29.26%",
+  "expectCount": 41,
+  "actualCount": 12,
+  "files": {
+    "src/BindHandlers.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/ImmutableStore.js": {
+      "expectCount": 15,
+      "actualCount": 3,
+      "undocumentLines": [
+        10,
+        11,
+        51,
+        39,
+        29,
+        30,
+        12,
+        35,
+        5,
+        89,
+        31,
+        151
+      ]
+    },
+    "src/decorators/bindActions.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/decorators/bindCalls.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/decorators/bindHandlers.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/callSeries.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/decorators/connect.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        178
+      ]
+    },
+    "src/createActions.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/createCall.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        7
+      ]
+    },
+    "src/utils/defensive.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/utils/logging.js": {
+      "expectCount": 4,
+      "actualCount": 0,
+      "undocumentLines": [
+        18,
+        14,
+        7,
+        11
+      ]
+    },
+    "src/createViewAction.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        4
+      ]
+    },
+    "src/utils/validate/validateCreator.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        5,
+        14
+      ]
+    },
+    "src/utils/validate/validateDefinition.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        14
+      ]
+    },
+    "src/utils/flatten.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/altInstance.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        6,
+        3
+      ]
+    },
+    "src/getSources.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/utils/validate/validateHandler.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        14
+      ]
+    },
+    "src/utils/validate/loggerConstraints.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    }
+  }
+}
