@@ -42,11 +42,15 @@ function bindViewActionHandler(storeClass, definition) {
             this.setState(nextState);
         }
 
-        try {
-            sideEffect && sideEffect({state: nextState, prevState: currentState, payload});
-        }
-        catch (error) {
-            console.error(`${handlerName}: error executing sideEffect`, error);
+        if (sideEffect) {
+            setTimeout(() => {
+                try {
+                    sideEffect({state: nextState, prevState: currentState, payload});
+                }
+                catch (error) {
+                    console.error(`${handlerName}: error executing sideEffect`, error);
+                }
+            });
         }
     };
 
