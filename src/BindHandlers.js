@@ -21,7 +21,6 @@ import {
  * See manual/usage/action-handlers.md for more on this topic.
  */
 export default function BindHandlers(...args) {
-    // CONFIG.debug && console.log('BindHandlers decorator', args);
     const definitions = args.reduce((result, def) => {
         if (Array.isArray(def)) {
             def.forEach(d => result.push(d));
@@ -39,12 +38,10 @@ export default function BindHandlers(...args) {
             // we need unique prefixes for the potentionally same method names
             // using handler.prototype.constructor.name alone is useless after mangling/uglifying!
             const name = `$${i}_${handler.prototype.constructor.name}`;
-            // CONFIG.debug && console.log('BindHandlers bindActions', handler, bindings);
             // collect the names of the methods defined in the handler decorator
             const methodNames = Object.keys(bindings);
             // now for each decorator method that has an action by the same name...
             methodNames.forEach(function bindAction(methodName) {
-                // CONFIG.debug && console.log('BindHandlers bindAction', methodName);
                 if (typeof bindings[methodName] !== 'function') {
                     throw new Error(`bindings.${methodName} is not a function (handler: ${name})`);
                 }
@@ -56,7 +53,6 @@ export default function BindHandlers(...args) {
                 StoreClass.prototype[storeMethodName] = handler.prototype[methodName];
                 // and bind the action to it, using Alt's 'bind' util
                 const applyBinding = bindAlt(bindings[methodName]);
-                // CONFIG.debug && console.info('>> binding', storeMethodName, Object.getOwnPropertyDescriptor(StoreClass.prototype, storeMethodName));
                 applyBinding(
                     StoreClass,
                     storeMethodName,
