@@ -74,7 +74,7 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
             }
         }
 
-        if (CONFIG.debug && reducer && !nextState) console.warn(`reducer "${reducerName}" in call "${callDefinition.name}" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`);
+        if (reducer && !nextState) console.warn(`reducer "${reducerName}" in call "${callDefinition.name}" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`);
 
         if (nextState) {
             this.setState(nextState);
