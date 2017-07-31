@@ -37,11 +37,11 @@ function setup(alt) {
                 refreshAction.defer();
             }
         };
-        root.addEventListener && root.addEventListener('message', instance.handleMessage);
+        root && root.addEventListener && root.addEventListener('message', instance.handleMessage);
     }
 }
 function teardown(alt) {
     if (process.env.NODE_ENV !== 'production') {
-        root.removeEventListener && root.removeEventListener('message', instance.handleMessage);
+        root && root.removeEventListener && root.removeEventListener('message', instance.handleMessage);
     }
 }
