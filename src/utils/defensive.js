@@ -10,7 +10,7 @@
  * @see https://www.nczonline.net/blog/2014/04/22/creating-defensive-objects-with-es6-proxies/
  */
 export default function createDefensiveObject(target) {
-    const {Proxy} = window;
+    const {Proxy} = (global || window);
     if (!Proxy) {
         return target;
     }
