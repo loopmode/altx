@@ -4,7 +4,7 @@
   "description": "Flux flavor based on alt.js",
   "main": "lib/index.js",
   "scripts": {
-    "test": "tape -r babel-register test/**/*.test.js | colortape",
+    "test": "babel-tape-runner test/**/*.test.js | faucet",
     "docs": "esdoc",
     "build": "babel src --out-dir lib",
     "prepublish": "npm run build"
@@ -47,9 +47,9 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
-    "blue-tape": "^1.0.0",
-    "colortape": "^0.1.2",
+    "babel-tape-runner": "^2.0.1",
     "esdoc": "^0.5.2",
+    "faucet": "^0.0.1",
     "tape": "^4.7.0"
   }
 }
