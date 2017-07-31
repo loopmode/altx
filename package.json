@@ -1,6 +1,6 @@
 {
   "name": "@xailabs/altx",
-  "version": "0.9.6",
+  "version": "1.0.0-rc1",
   "description": "Flux flavor based on alt.js",
   "main": "lib/index.js",
   "scripts": {
