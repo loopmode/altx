@@ -58,7 +58,7 @@ function attachBoundHandler(storeClass, action, handler) {
         if (nextState) {
             this.setState(nextState);
         }
-        else if (CONFIG.debug && reducer) {
+        else if (reducer) {
             console.warn(`reducer "${handler.name}" in call "${handler.name}" did not return a new state.
                 Either you forgot to return it, or if no state change is required, maybe you should use a sideEffect instead of a reducer.
             `);
