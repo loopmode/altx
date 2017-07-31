@@ -12,7 +12,5 @@ export const creatorConstraints = (/*call*/) => ({
     ...loggerConstraints
 });
 export default function validateCreator(call, logger=window.console) {
-    const errors = validate(call, creatorConstraints(call));
-    if (errors) logger.warn('errors in call creation', errors);
-    return errors;
+    return validate(call, creatorConstraints(call));
 };

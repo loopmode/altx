@@ -1,18 +1,16 @@
-import defensive from './utils/defensive';
-
 import {validateCreator, validateDefinition} from './utils/validate';
 import {createLogger} from './utils/logging';
 import createActions from './createActions';
 
 export default function createCall(name, {
     namespace='global',
-    defaultActions=['started', 'error', 'success'],
+    defaultActions=['loading', 'error', 'success'],
     actions=createActions(`${namespace}:${name}`, defaultActions),
     logger=createLogger(`${namespace}:${name}`),
 }={}) {
-
-    if (validateCreator({name, actions, logger}, logger)) {
-        throw new Error('Invalid call');
+    const error = validateCreator({name, actions, logger}, logger);
+    if (error) {
+        throw error;
     }
 
     return {
@@ -31,10 +29,10 @@ export default function createCall(name, {
                 throw new Error('Invalid call');
             }
             call.dataSource = {
-                ...actions,
+                ...call.actions,
                 ...(call.dataSource || {})
             };
-            return defensive(call);
+            return call;
         },
         createActions: (actionNames) => createActions(`${namespace}:${name}`, actionNames)
     };

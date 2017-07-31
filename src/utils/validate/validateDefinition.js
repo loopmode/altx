@@ -12,7 +12,5 @@ export const definitionConstraints = (/*definition}*/) => ({
     },
 });
 export default function validateDefinition(definition, logger=window.console) {
-    const errors = validate(definition, definitionConstraints(definition));
-    if (errors) logger.warn('errors in call definition', errors);
-    return errors;
+    return validate(definition, definitionConstraints(definition));
 };

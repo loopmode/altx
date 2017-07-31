@@ -12,7 +12,5 @@ export const handlerConstraints = (/*handler}*/) => ({
     },
 });
 export default function validateHandler(handler, logger=window.console) {
-    const errors = validate(handler, handlerConstraints(handler));
-    if (errors) logger.warn('errors in handler definition', errors);
-    return errors;
+    return validate(handler, handlerConstraints(handler));
 };
