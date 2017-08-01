@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/loopmode/altx" class="repo-url-github">Repository</a>
+  
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -35,20 +35,20 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ImmutableStore.js~ImmutableStore.html">ImmutableStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-BindHandlers">BindHandlers</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resetStores">resetStores</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-actionFactory">actionFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getAltInstance">getAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createActions">createActions</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCall">createCall</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createViewAction">createViewAction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createStore">createStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connectAlternative">connectAlternative</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDefensiveObject">createDefensiveObject</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createLogger">createLogger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLevel">getLevel</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setLevel">setLevel</a></span></span></li>
@@ -65,18 +65,53 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/altInstance.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">let instance;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * This is the alt instance that holds the state of the entire application.
+ * All stores and actions are created on this instance.
+ */
+
+import Alt from &apos;alt&apos;;
+
+let instance;
+
+setAltInstance(new Alt());
 
 export function setAltInstance(alt) {
-    instance = alt;
+    if (instance) teardown(instance);
+    setup(alt);
 }
 export function getAltInstance() {
-    if (!instance) {
-        throw new Error(&apos;No alt instance specified - did you forget to call setAlt(instance) initially?&apos;);
-    }
     return instance;
 }
-</code></pre>
+
+
+
+const root = (global || window);
+
+function setup(alt) {
+    instance = alt;
+    if (process.env.NODE_ENV !== &apos;production&apos;) {
+
+        // Debugging with chrome devtools
+        // @see https://github.com/goatslacker/alt-devtool
+        require(&apos;alt-utils/lib/chromeDebug&apos;)(instance);
+
+        // sometimes, chromeDebug just doesn&apos;t update until an action is dispatched.
+        // we use a dummy action to do just that
+        const refreshAction = instance.generateActions(&apos;__refresh__&apos;).__refresh__;
+        instance.handleMessage = (e) =&gt; {
+            if (e.data &amp;&amp; e.data.type === &apos;ALT&apos; &amp;&amp; e.data.source === &apos;alt-devtools&apos;) {
+                refreshAction.defer();
+            }
+        };
+        root &amp;&amp; root.addEventListener &amp;&amp; root.addEventListener(&apos;message&apos;, instance.handleMessage);
+    }
+}
+function teardown(alt) {
+    if (process.env.NODE_ENV !== &apos;production&apos;) {
+        root &amp;&amp; root.removeEventListener &amp;&amp; root.removeEventListener(&apos;message&apos;, instance.handleMessage);
+    }
+}</code></pre>
 
 </div>
 

@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@xailabs/altx/src/actionfactory.js~actionfactory",
+    "function/index.html#static-function-actionFactory",
+    "<span>actionFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/src/actionFactory.js</span>",
+    "function"
+  ],
+  [
     "@xailabs/altx/src/decorators/bindactions.js~bindactions",
     "function/index.html#static-function-bindActions",
     "<span>bindActions</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/bindActions.js</span>",
@@ -27,6 +33,12 @@ window.esdocSearchIndex = [
     "@xailabs/altx/src/decorators/bindhandlers.js~bindhandlers",
     "function/index.html#static-function-bindHandlers",
     "<span>bindHandlers</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/bindHandlers.js</span>",
+    "function"
+  ],
+  [
+    "@xailabs/altx/src/callfactory.js~callfactory",
+    "function/index.html#static-function-callFactory",
+    "<span>callFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/src/callFactory.js</span>",
     "function"
   ],
   [
@@ -54,27 +66,15 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@xailabs/altx/src/createcall.js~createcall",
-    "function/index.html#static-function-createCall",
-    "<span>createCall</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createCall.js</span>",
-    "function"
-  ],
-  [
-    "@xailabs/altx/src/utils/defensive.js~createdefensiveobject",
-    "function/index.html#static-function-createDefensiveObject",
-    "<span>createDefensiveObject</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/defensive.js</span>",
-    "function"
-  ],
-  [
     "@xailabs/altx/src/utils/logging.js~createlogger",
     "function/index.html#static-function-createLogger",
     "<span>createLogger</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/logging.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/createviewaction.js~createviewaction",
-    "function/index.html#static-function-createViewAction",
-    "<span>createViewAction</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createViewAction.js</span>",
+    "@xailabs/altx/src/createstore.js~createstore",
+    "function/index.html#static-function-createStore",
+    "<span>createStore</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createStore.js</span>",
     "function"
   ],
   [
@@ -588,9 +588,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/actionfactory.js",
+    "file/src/actionFactory.js.html",
+    "src/actionFactory.js",
+    "file"
+  ],
+  [
     "src/altinstance.js",
     "file/src/altInstance.js.html",
     "src/altInstance.js",
+    "file"
+  ],
+  [
+    "src/callfactory.js",
+    "file/src/callFactory.js.html",
+    "src/callFactory.js",
     "file"
   ],
   [
@@ -606,15 +618,9 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/createcall.js",
-    "file/src/createCall.js.html",
-    "src/createCall.js",
-    "file"
-  ],
-  [
-    "src/createviewaction.js",
-    "file/src/createViewAction.js.html",
-    "src/createViewAction.js",
+    "src/createstore.js",
+    "file/src/createStore.js.html",
+    "src/createStore.js",
     "file"
   ],
   [
@@ -651,12 +657,6 @@ window.esdocSearchIndex = [
     "src/index.js",
     "file/src/index.js.html",
     "src/index.js",
-    "file"
-  ],
-  [
-    "src/utils/defensive.js",
-    "file/src/utils/defensive.js.html",
-    "src/utils/defensive.js",
     "file"
   ],
   [
