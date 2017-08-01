@@ -14,6 +14,6 @@ export callSeries from './callSeries';
 export createStore from './createStore';
 export callFactory from './callFactory';
 export createActions from './createActions';
-export createViewAction from './createViewAction';
+export actionFactory from './actionFactory';
 export getSources from './getSources';
 
