@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 713,
+  "end": 715,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 713,
+    "end": 715,
     "loc": {
       "start": {
         "line": 1,
@@ -1000,7 +1000,7 @@
       {
         "type": "ExportNamedDeclaration",
         "start": 625,
-        "end": 669,
+        "end": 671,
         "loc": {
           "start": {
             "line": 17,
@@ -1008,14 +1008,14 @@
           },
           "end": {
             "line": 17,
-            "column": 44
+            "column": 46
           }
         },
         "specifiers": [
           {
             "type": "ExportDefaultSpecifier",
             "start": 632,
-            "end": 645,
+            "end": 646,
             "loc": {
               "start": {
                 "line": 17,
@@ -1023,13 +1023,13 @@
               },
               "end": {
                 "line": 17,
-                "column": 20
+                "column": 21
               }
             },
             "exported": {
               "type": "Identifier",
               "start": 632,
-              "end": 645,
+              "end": 646,
               "loc": {
                 "start": {
                   "line": 17,
@@ -1037,39 +1037,39 @@
                 },
                 "end": {
                   "line": 17,
-                  "column": 20
+                  "column": 21
                 },
-                "identifierName": "actionFactory"
+                "identifierName": "handlerFactory"
               },
-              "name": "actionFactory"
+              "name": "handlerFactory"
             }
           }
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 651,
-          "end": 668,
+          "start": 652,
+          "end": 670,
           "loc": {
             "start": {
               "line": 17,
-              "column": 26
+              "column": 27
             },
             "end": {
               "line": 17,
-              "column": 43
+              "column": 45
             }
           },
           "extra": {
-            "rawValue": "./actionFactory",
-            "raw": "'./actionFactory'"
+            "rawValue": "./handlerFactory",
+            "raw": "'./handlerFactory'"
           },
-          "value": "./actionFactory"
+          "value": "./handlerFactory"
         }
       },
       {
         "type": "ExportNamedDeclaration",
-        "start": 671,
-        "end": 709,
+        "start": 673,
+        "end": 711,
         "loc": {
           "start": {
             "line": 18,
@@ -1083,8 +1083,8 @@
         "specifiers": [
           {
             "type": "ExportDefaultSpecifier",
-            "start": 678,
-            "end": 688,
+            "start": 680,
+            "end": 690,
             "loc": {
               "start": {
                 "line": 18,
@@ -1097,8 +1097,8 @@
             },
             "exported": {
               "type": "Identifier",
-              "start": 678,
-              "end": 688,
+              "start": 680,
+              "end": 690,
               "loc": {
                 "start": {
                   "line": 18,
@@ -1116,8 +1116,8 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 694,
-          "end": 708,
+          "start": 696,
+          "end": 710,
           "loc": {
             "start": {
               "line": 18,
@@ -3109,9 +3109,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "actionFactory",
+      "value": "handlerFactory",
       "start": 632,
-      "end": 645,
+      "end": 646,
       "loc": {
         "start": {
           "line": 17,
@@ -3119,7 +3119,7 @@
         },
         "end": {
           "line": 17,
-          "column": 20
+          "column": 21
         }
       }
     },
@@ -3136,16 +3136,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 646,
-      "end": 650,
+      "start": 647,
+      "end": 651,
       "loc": {
         "start": {
           "line": 17,
-          "column": 21
+          "column": 22
         },
         "end": {
           "line": 17,
-          "column": 25
+          "column": 26
         }
       }
     },
@@ -3162,17 +3162,17 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "./actionFactory",
-      "start": 651,
-      "end": 668,
+      "value": "./handlerFactory",
+      "start": 652,
+      "end": 670,
       "loc": {
         "start": {
           "line": 17,
-          "column": 26
+          "column": 27
         },
         "end": {
           "line": 17,
-          "column": 43
+          "column": 45
         }
       }
     },
@@ -3189,16 +3189,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 668,
-      "end": 669,
+      "start": 670,
+      "end": 671,
       "loc": {
         "start": {
           "line": 17,
-          "column": 43
+          "column": 45
         },
         "end": {
           "line": 17,
-          "column": 44
+          "column": 46
         }
       }
     },
@@ -3217,8 +3217,8 @@
         "updateContext": null
       },
       "value": "export",
-      "start": 671,
-      "end": 677,
+      "start": 673,
+      "end": 679,
       "loc": {
         "start": {
           "line": 18,
@@ -3243,8 +3243,8 @@
         "binop": null
       },
       "value": "getSources",
-      "start": 678,
-      "end": 688,
+      "start": 680,
+      "end": 690,
       "loc": {
         "start": {
           "line": 18,
@@ -3269,8 +3269,8 @@
         "binop": null
       },
       "value": "from",
-      "start": 689,
-      "end": 693,
+      "start": 691,
+      "end": 695,
       "loc": {
         "start": {
           "line": 18,
@@ -3296,8 +3296,8 @@
         "updateContext": null
       },
       "value": "./getSources",
-      "start": 694,
-      "end": 708,
+      "start": 696,
+      "end": 710,
       "loc": {
         "start": {
           "line": 18,
@@ -3322,8 +3322,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 708,
-      "end": 709,
+      "start": 710,
+      "end": 711,
       "loc": {
         "start": {
           "line": 18,
@@ -3348,8 +3348,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 713,
-      "end": 713,
+      "start": 715,
+      "end": 715,
       "loc": {
         "start": {
           "line": 20,

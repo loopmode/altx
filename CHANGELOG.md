@@ -4,9 +4,9 @@
     - Rename `createCall` and `define` to ``callFactory` and `create`
         - Before: `createCall('myCall').define({...})`
         - After: `callFactory('myCall').create({...})`
-    - Rename `createViewAction` and `define` to `actionFactory` and `create`
+    - Rename `createViewAction` and `define` to `handlerFactory` and `create`
         - Before: `createViewAction('myAction').define({...})`
-        - After: `actionFactory('myAction').create({...})`
+        - After: `handlerFactory('myAction').create({...})`
 
 - Add tests
 

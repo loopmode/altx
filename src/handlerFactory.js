@@ -1,7 +1,7 @@
 import createActions from './createActions';
 import {createLogger} from './utils/logging';
 
-export default function actionFactory(action, {
+export default function handlerFactory(action, {
     namespace='global',
     logger=createLogger(action.id || action)
 }={}) {

@@ -26,13 +26,6 @@
         151
       ]
     },
-    "src/actionFactory.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        4
-      ]
-    },
     "src/decorators/bindActions.js": {
       "expectCount": 1,
       "actualCount": 1,
@@ -131,6 +124,13 @@
       "undocumentLines": [
         3,
         14
+      ]
+    },
+    "src/handlerFactory.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        4
       ]
     },
     "src/utils/validate/loggerConstraints.js": {

@@ -12,12 +12,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@xailabs/altx/src/actionfactory.js~actionfactory",
-    "function/index.html#static-function-actionFactory",
-    "<span>actionFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/src/actionFactory.js</span>",
-    "function"
-  ],
-  [
     "@xailabs/altx/src/decorators/bindactions.js~bindactions",
     "function/index.html#static-function-bindActions",
     "<span>bindActions</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/bindActions.js</span>",
@@ -117,6 +111,12 @@ window.esdocSearchIndex = [
     "@xailabs/altx/src/utils/validate/validatehandler.js~handlerconstraints",
     "function/index.html#static-function-handlerConstraints",
     "<span>handlerConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateHandler.js</span>",
+    "function"
+  ],
+  [
+    "@xailabs/altx/src/handlerfactory.js~handlerfactory",
+    "function/index.html#static-function-handlerFactory",
+    "<span>handlerFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/src/handlerFactory.js</span>",
     "function"
   ],
   [
@@ -588,12 +588,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/actionfactory.js",
-    "file/src/actionFactory.js.html",
-    "src/actionFactory.js",
-    "file"
-  ],
-  [
     "src/altinstance.js",
     "file/src/altInstance.js.html",
     "src/altInstance.js",
@@ -651,6 +645,12 @@ window.esdocSearchIndex = [
     "src/getsources.js",
     "file/src/getSources.js.html",
     "src/getSources.js",
+    "file"
+  ],
+  [
+    "src/handlerfactory.js",
+    "file/src/handlerFactory.js.html",
+    "src/handlerFactory.js",
     "file"
   ],
   [
