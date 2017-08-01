@@ -3,7 +3,7 @@
     "__docId__": 0,
     "kind": "file",
     "name": "src/actionFactory.js",
-    "content": "import createActions from './createActions';\r\nimport {createLogger} from './utils/logging';\r\n\r\nexport default function actionFactory(action, {\r\n    namespace='global',\r\n    logger=createLogger(action.id || action)\r\n}={}) {\r\n    const name = action.id || action;\r\n    action = typeof action === 'string' ? createActions(namespace, action)[action] : action;\r\n    return {\r\n        createAction: (createDefinition) => {\r\n            const definition = {\r\n                name,\r\n                action,\r\n                namespace,\r\n                logger\r\n            };\r\n            if (typeof createDefinition === 'function') {\r\n                return Object.assign(definition, createDefinition({namespace, logger}));\r\n            }\r\n            else {\r\n                return Object.assign(definition, createDefinition);\r\n            }\r\n        }\r\n    };\r\n}\r\n",
+    "content": "import createActions from './createActions';\r\nimport {createLogger} from './utils/logging';\r\n\r\nexport default function actionFactory(action, {\r\n    namespace='global',\r\n    logger=createLogger(action.id || action)\r\n}={}) {\r\n    const name = action.id || action;\r\n    action = typeof action === 'string' ? createActions(namespace, action)[action] : action;\r\n    return {\r\n        create: (createDefinition) => {\r\n            const definition = {\r\n                name,\r\n                action,\r\n                namespace,\r\n                logger\r\n            };\r\n            if (typeof createDefinition === 'function') {\r\n                return Object.assign(definition, createDefinition({namespace, logger}));\r\n            }\r\n            else {\r\n                return Object.assign(definition, createDefinition);\r\n            }\r\n        }\r\n    };\r\n}\r\n",
     "static": true,
     "longname": "src/actionFactory.js",
     "access": null,
@@ -51,7 +51,7 @@
     ],
     "return": {
       "types": [
-        "{\"createAction\": *}"
+        "{\"create\": *}"
       ]
     }
   },
@@ -259,7 +259,7 @@
     "__docId__": 10,
     "kind": "file",
     "name": "src/callFactory.js",
-    "content": "import {validateCreator, validateDefinition} from './utils/validate';\r\nimport {createLogger} from './utils/logging';\r\nimport createActions from './createActions';\r\n\r\nexport default function callFactory(name, {\r\n    namespace='global',\r\n    defaultActions=['loading', 'error', 'success'],\r\n    actions=createActions(`${namespace}:${name}`, defaultActions),\r\n    logger=createLogger(`${namespace}:${name}`),\r\n}={}) {\r\n    const errors = validateCreator({name, actions, logger}, logger);\r\n    if (errors && errors.length) {\r\n        throw new Error(errors[0]);\r\n    }\r\n\r\n    return {\r\n\r\n        name,\r\n        actions,\r\n\r\n        createCall: (definition) => {\r\n            const createDefinition = typeof definition === 'function' ? definition : () => definition;\r\n            const call = Object.assign(createDefinition({name, actions, logger}), {\r\n                name,\r\n                actions,\r\n                logger\r\n            });\r\n            if (validateDefinition(call, logger)) {\r\n                throw new Error('Invalid call');\r\n            }\r\n            call.dataSource = {\r\n                // set the default actions\r\n                ...(call.actions || {}),\r\n                // set dataSource from the definition passed om - potentially overriding the actions\r\n                ...(call.dataSource || {})\r\n            };\r\n            return call;\r\n        },\r\n        createActions: (actionNames) => createActions(`${namespace}:${name}`, actionNames)\r\n    };\r\n}\r\n",
+    "content": "import {validateCreator, validateDefinition} from './utils/validate';\r\nimport {createLogger} from './utils/logging';\r\nimport createActions from './createActions';\r\n\r\nexport default function callFactory(name, {\r\n    namespace='global',\r\n    defaultActions=['loading', 'error', 'success'],\r\n    actions=createActions(`${namespace}:${name}`, defaultActions),\r\n    logger=createLogger(`${namespace}:${name}`),\r\n}={}) {\r\n    const errors = validateCreator({name, actions, logger}, logger);\r\n    const errorKeys = errors && Object.keys(errors);\r\n    if (errorKeys && errorKeys.length) {\r\n        throw new Error(errors[errorKeys[0]]);\r\n    }\r\n\r\n    return {\r\n\r\n        name,\r\n        actions,\r\n\r\n        create: (definition) => {\r\n            const createDefinition = typeof definition === 'function' ? definition : () => definition;\r\n            const call = Object.assign(createDefinition({name, actions, logger}), {\r\n                name,\r\n                actions,\r\n                logger\r\n            });\r\n            if (validateDefinition(call, logger)) {\r\n                throw new Error('Invalid call');\r\n            }\r\n            call.dataSource = {\r\n                // set the default actions\r\n                ...(call.actions || {}),\r\n                // set dataSource from the definition passed om - potentially overriding the actions\r\n                ...(call.dataSource || {})\r\n            };\r\n            return call;\r\n        },\r\n        createActions: (actionNames) => createActions(`${namespace}:${name}`, actionNames)\r\n    };\r\n}\r\n",
     "static": true,
     "longname": "src/callFactory.js",
     "access": null,
@@ -307,7 +307,7 @@
     ],
     "return": {
       "types": [
-        "{\"name\": *, \"actions\": *, \"createCall\": *, \"createActions\": *}"
+        "{\"name\": *, \"actions\": *, \"create\": *, \"createActions\": *}"
       ]
     }
   },

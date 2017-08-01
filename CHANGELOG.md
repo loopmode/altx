@@ -1,9 +1,12 @@
 ### 1.0.0
 
-- Breaking change: Rename `createCall` and `define` to ``callFactory
- and `create`
-    - Before: `createCall('myCall').define({...})`
-    - After: `callFactory('myCall').create({...})`
+- Breaking changes: 
+    - Rename `createCall` and `define` to ``callFactory` and `create`
+        - Before: `createCall('myCall').define({...})`
+        - After: `callFactory('myCall').create({...})`
+    - Rename `createViewAction` and `define` to `actionFactory` and `create`
+        - Before: `createViewAction('myAction').define({...})`
+        - After: `actionFactory('myAction').create({...})`
 
 - Add tests
 

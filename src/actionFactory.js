@@ -8,7 +8,7 @@ export default function actionFactory(action, {
     const name = action.id || action;
     action = typeof action === 'string' ? createActions(namespace, action)[action] : action;
     return {
-        createAction: (createDefinition) => {
+        create: (createDefinition) => {
             const definition = {
                 name,
                 action,

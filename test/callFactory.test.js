@@ -23,25 +23,25 @@ test('callFactory does not throw with a given name', (t) => {
     t.end();
 });
 
-test('callFactory: createCall() throws without a given object', (t) => {
+test('callFactory: create() throws without a given object', (t) => {
     resetAlt();
     const call = callFactory('myCall');
-    t.throws(() => call.createCall());
+    t.throws(() => call.create());
     t.end();
 });
 
-test('callFactory: createCall() throws without a proper dataSource', (t) => {
+test('callFactory: create() throws without a proper dataSource', (t) => {
     resetAlt();
     const call = callFactory('myCall');
-    t.throws(() => call.createCall({}));
-    t.throws(() => call.createCall({dataSource: {}}));
+    t.throws(() => call.create({}));
+    t.throws(() => call.create({dataSource: {}}));
     t.end();
 });
 
-test('callFactory: createCall() does not throw when given a proper dataSource ', (t) => {
+test('callFactory: create() does not throw when given a proper dataSource ', (t) => {
     resetAlt();
     const call = callFactory('myCall');
-    t.doesNotThrow(() => call.createCall({
+    t.doesNotThrow(() => call.create({
         dataSource: {
             remote: () => Promise.resolve()
         }
@@ -54,7 +54,7 @@ test('callFactory: uses custom named actions', async (t) => {
 
     let remote = () => Promise.resolve();
 
-    const call = callFactory('myCall', {defaultActions: ['foo', 'bar', 'baz']}).createCall(({actions}) => {
+    const call = callFactory('myCall', {defaultActions: ['foo', 'bar', 'baz']}).create(({actions}) => {
         return {
             dataSource: {
                 loading: actions.foo,

@@ -47,7 +47,7 @@ test('createStore: uses specified displayName', (t) => {
 
 test('createStore: bound calls are exposed as store methods', (t) => {
     resetAlt();
-    const call = callFactory('myCall').createCall({
+    const call = callFactory('myCall').create({
         dataSource: {
             remote: () => Promise.resolve()
         }
@@ -63,12 +63,12 @@ test('createStore: bound calls are exposed as store methods', (t) => {
 test('createStore: bound calls dispatch lifecycle actions', async (t) => {
 
     const alt = resetAlt();
-    const goodCall = callFactory('goodCall').createCall({
+    const goodCall = callFactory('goodCall').create({
         dataSource: {
             remote: () => Promise.resolve('ok')
         }
     });
-    const badCall = callFactory('badCall').createCall({
+    const badCall = callFactory('badCall').create({
         dataSource: {
             remote: () => Promise.reject(new Error('nok'))
         }
