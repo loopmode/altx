@@ -7,11 +7,11 @@ export default function callFactory(name, {
     defaultActions=['loading', 'error', 'success'],
     actions=createActions(`${namespace}:${name}`, defaultActions),
     logger=createLogger(`${namespace}:${name}`),
-    ...initialDefinition
 }={}) {
-    const error = validateCreator({name, actions, logger}, logger);
-    if (error) {
-        throw error;
+    const errors = validateCreator({name, actions, logger}, logger);
+    const errorKeys = errors && Object.keys(errors);
+    if (errorKeys && errorKeys.length) {
+        throw new Error(errors[errorKeys[0]]);
     }
 
     return {
