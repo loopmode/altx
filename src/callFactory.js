@@ -19,7 +19,7 @@ export default function callFactory(name, {
         name,
         actions,
 
-        create: (definition) => {
+        createCall: (definition) => {
             const createDefinition = typeof definition === 'function' ? definition : () => definition;
             const call = Object.assign(createDefinition({name, actions, logger}), {
                 name,
