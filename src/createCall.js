@@ -29,7 +29,7 @@ export default function createCall(name, {
                 throw new Error('Invalid call');
             }
             call.dataSource = {
-                ...call.actions,
+                ...(call.actions || {}),
                 ...(call.dataSource || {})
             };
             return call;
