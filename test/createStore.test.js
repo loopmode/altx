@@ -2,7 +2,7 @@ import test from 'tape'
 import Alt from 'alt';
 import ActionListeners from 'alt-utils/lib/ActionListeners';
 
-import {createStore, createCall, getSources, setAltInstance} from '../src';
+import {createStore, callFactory, getSources, setAltInstance} from '../src';
 
 
 function resetAlt() {
@@ -47,7 +47,7 @@ test('createStore: uses specified displayName', (t) => {
 
 test('createStore: bound calls are exposed as store methods', (t) => {
     resetAlt();
-    const call = createCall('myCall').define({
+    const call = callFactory('myCall').create({
         dataSource: {
             remote: () => Promise.resolve()
         }
@@ -63,12 +63,12 @@ test('createStore: bound calls are exposed as store methods', (t) => {
 test('createStore: bound calls dispatch lifecycle actions', async (t) => {
 
     const alt = resetAlt();
-    const goodCall = createCall('goodCall').define({
+    const goodCall = callFactory('goodCall').create({
         dataSource: {
             remote: () => Promise.resolve('ok')
         }
     });
-    const badCall = createCall('badCall').define({
+    const badCall = callFactory('badCall').create({
         dataSource: {
             remote: () => Promise.reject(new Error('nok'))
         }

@@ -12,7 +12,7 @@ export {resetStores} from './ImmutableStore';
 export {connectAlternative} from './decorators/connect';
 export callSeries from './callSeries';
 export createStore from './createStore';
-export createCall from './createCall';
+export callFactory from './callFactory';
 export createActions from './createActions';
 export createViewAction from './createViewAction';
 export getSources from './getSources';

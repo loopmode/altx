@@ -2,7 +2,7 @@ import test from 'tape';
 import Alt from 'alt';
 import ActionListeners from 'alt-utils/lib/ActionListeners';
 
-import {createCall, createStore} from '../src';
+import {callFactory, createStore} from '../src';
 import {setAltInstance} from '../src/altInstance';
 
 function resetAlt() {
@@ -12,36 +12,36 @@ function resetAlt() {
 }
 
 
-test('createCall throws without a given name', (t) => {
+test('callFactory throws without a given name', (t) => {
     resetAlt();
-    t.throws(() => createCall());
+    t.throws(() => callFactory());
     t.end();
 });
-test('createCall does not throw with a given name', (t) => {
+test('callFactory does not throw with a given name', (t) => {
     resetAlt();
-    t.doesNotThrow(() => createCall('myCall'));
-    t.end();
-});
-
-test('createCall: define() throws without a given object', (t) => {
-    resetAlt();
-    const call = createCall('myCall');
-    t.throws(() => call.define());
+    t.doesNotThrow(() => callFactory('myCall'));
     t.end();
 });
 
-test('createCall: define() throws without a proper dataSource', (t) => {
+test('callFactory: create() throws without a given object', (t) => {
     resetAlt();
-    const call = createCall('myCall');
-    t.throws(() => call.define({}));
-    t.throws(() => call.define({dataSource: {}}));
+    const call = callFactory('myCall');
+    t.throws(() => call.create());
     t.end();
 });
 
-test('createCall: define() does not throw when given a proper dataSource ', (t) => {
+test('callFactory: create() throws without a proper dataSource', (t) => {
     resetAlt();
-    const call = createCall('myCall');
-    t.doesNotThrow(() => call.define({
+    const call = callFactory('myCall');
+    t.throws(() => call.create({}));
+    t.throws(() => call.create({dataSource: {}}));
+    t.end();
+});
+
+test('callFactory: create() does not throw when given a proper dataSource ', (t) => {
+    resetAlt();
+    const call = callFactory('myCall');
+    t.doesNotThrow(() => call.create({
         dataSource: {
             remote: () => Promise.resolve()
         }
@@ -49,12 +49,12 @@ test('createCall: define() does not throw when given a proper dataSource ', (t) 
     t.end();
 });
 
-test('createCall: uses custom named actions', async (t) => {
+test('callFactory: uses custom named actions', async (t) => {
     const alt = resetAlt();
 
     let remote = () => Promise.resolve();
 
-    const call = createCall('myCall', {defaultActions: ['foo', 'bar', 'baz']}).define(({actions}) => {
+    const call = callFactory('myCall', {defaultActions: ['foo', 'bar', 'baz']}).create(({actions}) => {
         return {
             dataSource: {
                 loading: actions.foo,

@@ -1,6 +1,6 @@
 {
   "name": "@xailabs/altx",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "description": "Flux flavor based on alt.js",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "tape": "nodemon -w src -w test -q -x \"npm test\"",
     "docs": "esdoc",
     "build": "babel src --out-dir lib",
-    "prepublish": "npm run build"
+    "prepublish": "npm run test && npm run build"
   },
   "publishConfig": {
     "access": "public"
@@ -34,7 +34,6 @@
     "alt": "^0.18.6",
     "alt-utils": "^1.0.0",
     "immutable": "^3.8.1",
-    "nodemon": "^1.11.0",
     "promise": "^7.0.3",
     "react": "^15.3.1",
     "validate.js": "^0.9.0"
@@ -51,6 +50,7 @@
     "babel-tape-runner": "^2.0.1",
     "esdoc": "^0.5.2",
     "faucet": "^0.0.1",
+    "nodemon": "^1.11.0",
     "tape": "^4.7.0"
   }
 }

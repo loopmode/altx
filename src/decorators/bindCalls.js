@@ -33,7 +33,7 @@ function decorateStoreWithCall(storeClass, callDefinition) {
 /**
  * Attaches a single reducer handling to the store.
  * A new handler method will be created on the store for each action associated
- * with a reducer (default: started, error, success). Each handler will pass
+ * with a reducer (defaults to the action names: loading, error, success). Each handler will pass
  * the current state and the action payload to the reducer with the same name
  * and mutate the store with the new state returned by the reducer.
  * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.

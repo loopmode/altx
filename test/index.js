@@ -2,5 +2,5 @@ console.warn('[test/index.js]', new Date().toISOString(), '\n-------------------
 
 require('babel-register');
 
-require('./createCall.test');
+require('./callFactory.test');
 require('./createStore.test');
