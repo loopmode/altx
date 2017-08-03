@@ -1,6 +1,9 @@
 import {bind} from 'alt-utils/lib/decorators';
 import flattenArrays from '../utils/flatten';
 
+// TODO clean up and refactor terminoloy, potentially deprecate the old "handlers" system
+// (viewActions are now called handlers, e.g. handlerFactory)
+
 /**
  * Decorates a store with any number of action handlers.
  */

@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/loopmode/altx" class="repo-url-github">Repository</a>
+  
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -37,18 +37,18 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resetStores">resetStores</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getAltInstance">getAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createActions">createActions</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createCall">createCall</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createViewAction">createViewAction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createStore">createStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-handlerFactory">handlerFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connectAlternative">connectAlternative</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createDefensiveObject">createDefensiveObject</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createLogger">createLogger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLevel">getLevel</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setLevel">setLevel</a></span></span></li>
@@ -64,7 +64,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">12/41</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">11/41</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -83,9 +83,9 @@
       <td data-ice="filePath"><span><a href="file/src/BindHandlers.js.html">src/BindHandlers.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-BindHandlers">BindHandlers</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
-      <td style="display: none;" data-ice="size">3227 byte</td>
-      <td style="display: none;" data-ice="lines">70</td>
-      <td style="display: none;" data-ice="updated">2017-06-03 16:39:56 (UTC)</td>
+      <td style="display: none;" data-ice="size">2825 byte</td>
+      <td style="display: none;" data-ice="lines">66</td>
+      <td style="display: none;" data-ice="updated">2017-07-02 11:30:24 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/ImmutableStore.js.html#errorLines=10,11,12,151,29,30,31,35,39,5,51,89">src/ImmutableStore.js</a></span></td>
@@ -94,16 +94,24 @@
       <td class="coverage"><span data-ice="coverage">20 %</span><span data-ice="coverageCount" class="coverage-count">3/15</span></td>
       <td style="display: none;" data-ice="size">5486 byte</td>
       <td style="display: none;" data-ice="lines">155</td>
-      <td style="display: none;" data-ice="updated">2017-07-04 06:48:10 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/altInstance.js.html#errorLines=3,6">src/altInstance.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/altInstance.js.html#errorLines=12,16">src/altInstance.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-getAltInstance">getAltInstance</a></span>
 <span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
-      <td style="display: none;" data-ice="size">278 byte</td>
-      <td style="display: none;" data-ice="lines">11</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:01:06 (UTC)</td>
+      <td style="display: none;" data-ice="size">1396 byte</td>
+      <td style="display: none;" data-ice="lines">46</td>
+      <td style="display: none;" data-ice="updated">2017-07-02 11:35:46 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/callFactory.js.html#errorLines=5">src/callFactory.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">1544 byte</td>
+      <td style="display: none;" data-ice="lines">42</td>
+      <td style="display: none;" data-ice="updated">2017-08-03 12:07:59 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/callSeries.js.html">src/callSeries.js</a></span></td>
@@ -111,7 +119,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
       <td style="display: none;" data-ice="size">1391 byte</td>
       <td style="display: none;" data-ice="lines">33</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:21:40 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/createActions.js.html">src/createActions.js</a></span></td>
@@ -119,47 +127,39 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
       <td style="display: none;" data-ice="size">731 byte</td>
       <td style="display: none;" data-ice="lines">19</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 13:49:21 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/createCall.js.html#errorLines=7">src/createCall.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-createCall">createCall</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/createStore.js.html#errorLines=12">src/createStore.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-createStore">createStore</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
-      <td style="display: none;" data-ice="size">1332 byte</td>
-      <td style="display: none;" data-ice="lines">41</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:03:14 (UTC)</td>
-    </tr>
-<tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/createViewAction.js.html#errorLines=4">src/createViewAction.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-createViewAction">createViewAction</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
-      <td style="display: none;" data-ice="size">855 byte</td>
-      <td style="display: none;" data-ice="lines">26</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="size">1134 byte</td>
+      <td style="display: none;" data-ice="lines">44</td>
+      <td style="display: none;" data-ice="updated">2017-07-02 14:59:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/decorators/bindActions.js.html">src/decorators/bindActions.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
-      <td style="display: none;" data-ice="size">1881 byte</td>
-      <td style="display: none;" data-ice="lines">61</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:38:18 (UTC)</td>
+      <td style="display: none;" data-ice="size">2002 byte</td>
+      <td style="display: none;" data-ice="lines">65</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:39:44 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/decorators/bindCalls.js.html">src/decorators/bindCalls.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
-      <td style="display: none;" data-ice="size">4275 byte</td>
-      <td style="display: none;" data-ice="lines">102</td>
-      <td style="display: none;" data-ice="updated">2017-06-03 16:40:30 (UTC)</td>
+      <td style="display: none;" data-ice="size">4354 byte</td>
+      <td style="display: none;" data-ice="lines">104</td>
+      <td style="display: none;" data-ice="updated">2017-08-03 09:21:09 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/decorators/bindHandlers.js.html">src/decorators/bindHandlers.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
-      <td style="display: none;" data-ice="size">3224 byte</td>
+      <td style="display: none;" data-ice="size">3208 byte</td>
       <td style="display: none;" data-ice="lines">87</td>
-      <td style="display: none;" data-ice="updated">2017-06-03 16:40:30 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-02 11:30:24 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/decorators/connect.js.html#errorLines=178">src/decorators/connect.js</a></span></td>
@@ -168,7 +168,7 @@
       <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
       <td style="display: none;" data-ice="size">8078 byte</td>
       <td style="display: none;" data-ice="lines">222</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:17:02 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/getSources.js.html#errorLines=1">src/getSources.js</a></span></td>
@@ -176,23 +176,23 @@
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
       <td style="display: none;" data-ice="size">215 byte</td>
       <td style="display: none;" data-ice="lines">7</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/handlerFactory.js.html#errorLines=4">src/handlerFactory.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-handlerFactory">handlerFactory</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">853 byte</td>
+      <td style="display: none;" data-ice="lines">26</td>
+      <td style="display: none;" data-ice="updated">2017-08-03 12:23:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/index.js.html">src/index.js</a></span></td>
       <td data-ice="identifier" class="identifiers">-</td>
       <td class="coverage"><span data-ice="coverage">-</span></td>
-      <td style="display: none;" data-ice="size">675 byte</td>
-      <td style="display: none;" data-ice="lines">18</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:38:28 (UTC)</td>
-    </tr>
-<tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/utils/defensive.js.html">src/utils/defensive.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-createDefensiveObject">createDefensiveObject</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
-      <td style="display: none;" data-ice="size">965 byte</td>
-      <td style="display: none;" data-ice="lines">26</td>
-      <td style="display: none;" data-ice="updated">2017-07-03 14:02:56 (UTC)</td>
+      <td style="display: none;" data-ice="size">715 byte</td>
+      <td style="display: none;" data-ice="lines">19</td>
+      <td style="display: none;" data-ice="updated">2017-08-03 12:23:52 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/flatten.js.html">src/utils/flatten.js</a></span></td>
@@ -200,7 +200,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
       <td style="display: none;" data-ice="size">528 byte</td>
       <td style="display: none;" data-ice="lines">21</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/logging.js.html#errorLines=11,14,18,7">src/utils/logging.js</a></span></td>
@@ -211,7 +211,7 @@
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/4</span></td>
       <td style="display: none;" data-ice="size">825 byte</td>
       <td style="display: none;" data-ice="lines">26</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/validate.js.html">src/utils/validate.js</a></span></td>
@@ -219,7 +219,7 @@
       <td class="coverage"><span data-ice="coverage">-</span></td>
       <td style="display: none;" data-ice="size">381 byte</td>
       <td style="display: none;" data-ice="lines">8</td>
-      <td style="display: none;" data-ice="updated">2017-06-03 16:40:30 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/validate/loggerConstraints.js.html#errorLines=2">src/utils/validate/loggerConstraints.js</a></span></td>
@@ -227,34 +227,34 @@
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
       <td style="display: none;" data-ice="size">292 byte</td>
       <td style="display: none;" data-ice="lines">17</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2017-07-03 12:02:53 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/validate/validateCreator.js.html#errorLines=14,5">src/utils/validate/validateCreator.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-creatorConstraints">creatorConstraints</a></span>
 <span><a href="function/index.html#static-function-validateCreator">validateCreator</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
-      <td style="display: none;" data-ice="size">496 byte</td>
-      <td style="display: none;" data-ice="lines">18</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="size">403 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2017-08-03 12:03:46 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/validate/validateDefinition.js.html#errorLines=14,3">src/utils/validate/validateDefinition.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-definitionConstraints">definitionConstraints</a></span>
 <span><a href="function/index.html#static-function-validateDefinition">validateDefinition</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
-      <td style="display: none;" data-ice="size">512 byte</td>
-      <td style="display: none;" data-ice="lines">18</td>
-      <td style="display: none;" data-ice="updated">2017-05-02 06:16:24 (UTC)</td>
+      <td style="display: none;" data-ice="size">417 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2017-07-02 14:01:26 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/utils/validate/validateHandler.js.html#errorLines=14,3">src/utils/validate/validateHandler.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-handlerConstraints">handlerConstraints</a></span>
 <span><a href="function/index.html#static-function-validateHandler">validateHandler</a></span></td>
       <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
-      <td style="display: none;" data-ice="size">485 byte</td>
-      <td style="display: none;" data-ice="lines">18</td>
-      <td style="display: none;" data-ice="updated">2017-06-03 16:40:30 (UTC)</td>
+      <td style="display: none;" data-ice="size">387 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2017-07-02 14:01:18 (UTC)</td>
     </tr>
 </tbody>
 </table>

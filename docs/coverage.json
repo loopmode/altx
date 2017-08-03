@@ -1,7 +1,7 @@
 {
-  "coverage": "29.26%",
+  "coverage": "26.82%",
   "expectCount": 41,
-  "actualCount": 12,
+  "actualCount": 11,
   "files": {
     "src/BindHandlers.js": {
       "expectCount": 1,
@@ -41,6 +41,13 @@
       "actualCount": 1,
       "undocumentLines": []
     },
+    "src/callFactory.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        5
+      ]
+    },
     "src/callSeries.js": {
       "expectCount": 1,
       "actualCount": 1,
@@ -58,18 +65,6 @@
       "actualCount": 1,
       "undocumentLines": []
     },
-    "src/createCall.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        7
-      ]
-    },
-    "src/utils/defensive.js": {
-      "expectCount": 1,
-      "actualCount": 1,
-      "undocumentLines": []
-    },
     "src/utils/logging.js": {
       "expectCount": 4,
       "actualCount": 0,
@@ -80,11 +75,11 @@
         11
       ]
     },
-    "src/createViewAction.js": {
+    "src/createStore.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        4
+        12
       ]
     },
     "src/utils/validate/validateCreator.js": {
@@ -112,8 +107,8 @@
       "expectCount": 2,
       "actualCount": 0,
       "undocumentLines": [
-        6,
-        3
+        16,
+        12
       ]
     },
     "src/getSources.js": {
@@ -129,6 +124,13 @@
       "undocumentLines": [
         3,
         14
+      ]
+    },
+    "src/handlerFactory.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        4
       ]
     },
     "src/utils/validate/loggerConstraints.js": {

@@ -1,14 +1,14 @@
 import createActions from './createActions';
 import {createLogger} from './utils/logging';
 
-export default function createViewAction(action, {
+export default function handlerFactory(action, {
     namespace='global',
     logger=createLogger(action.id || action)
 }={}) {
     const name = action.id || action;
     action = typeof action === 'string' ? createActions(namespace, action)[action] : action;
     return {
-        define: (createDefinition) => {
+        create: (createDefinition) => {
             const definition = {
                 name,
                 action,

@@ -19,6 +19,8 @@ export function getAltInstance() {
 
 
 
+const root = (global || window);
+
 function setup(alt) {
     instance = alt;
     if (process.env.NODE_ENV !== 'production') {
@@ -35,11 +37,11 @@ function setup(alt) {
                 refreshAction.defer();
             }
         };
-        window.addEventListener('message', instance.handleMessage);
+        root && root.addEventListener && root.addEventListener('message', instance.handleMessage);
     }
 }
 function teardown(alt) {
     if (process.env.NODE_ENV !== 'production') {
-        window.removeEventListener('message', instance.handleMessage);
+        root && root.removeEventListener && root.removeEventListener('message', instance.handleMessage);
     }
 }

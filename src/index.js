@@ -11,8 +11,9 @@ export {resetStores} from './ImmutableStore';
 
 export {connectAlternative} from './decorators/connect';
 export callSeries from './callSeries';
-export createCall from './createCall';
+export createStore from './createStore';
+export callFactory from './callFactory';
 export createActions from './createActions';
-export createViewAction from './createViewAction';
+export handlerFactory from './handlerFactory';
 export getSources from './getSources';
 
