@@ -1,3 +1,7 @@
+### 1.0.1
+
+- Drop `promise` depdendency.
+
 ### 1.0.0
 
 - Breaking changes: 
