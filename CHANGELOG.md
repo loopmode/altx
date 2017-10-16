@@ -1,3 +1,7 @@
+### 1.1.2
+
+- Add `createAction` for single actions
+
 ### 1.1.0
 
 - Drop `promise` depdendency.
