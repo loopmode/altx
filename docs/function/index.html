@@ -39,6 +39,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createAction">createAction</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createActions">createActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createStore">createStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
@@ -227,7 +228,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Retuns a promise and executes a series of calls.</p>
+        <div data-ice="description"><p>Returns a promise and executes a series of functions that each return a promise.</p>
 </div>
       </div>
     </td>
@@ -284,6 +285,34 @@
         
         
         
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="function/index.html#static-function-createAction">createAction</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, namespace: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Creates a single action with a namespace.</p>
+</div>
       </div>
     </td>
     <td>
@@ -995,11 +1024,11 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/decorators/bindHandlers.js.html#lineNumber7">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/decorators/bindHandlers.js.html#lineNumber10">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindHandlers from &apos;<span><a href="file/src/decorators/bindHandlers.js.html#lineNumber7">@xailabs/altx/src/decorators/bindHandlers.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindHandlers from &apos;<span><a href="file/src/decorators/bindHandlers.js.html#lineNumber10">@xailabs/altx/src/decorators/bindHandlers.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Decorates a store with any number of action handlers.</p>
@@ -1151,16 +1180,16 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/callSeries.js.html#lineNumber13">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/callSeries.js.html#lineNumber20">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import callSeries from &apos;<span><a href="file/src/callSeries.js.html#lineNumber13">@xailabs/altx/src/callSeries.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import callSeries from &apos;<span><a href="file/src/callSeries.js.html#lineNumber20">@xailabs/altx/src/callSeries.js</a></span>&apos;</code></pre></div>
   
   
-  <div data-ice="description"><p>Retuns a promise and executes a series of calls.
-Uses a timeout initially so that we don&apos;t run into errors when still in the middle of a dispatch.</p>
-<p> import {callSeries} from &apos;shared/flux&apos;;</p>
+  <div data-ice="description"><p>Returns a promise and executes a series of functions that each return a promise.
+Uses an initial 0-timeout so that we don&apos;t run into &quot;Cannot dispatch in the middle of a dispatch&quot; errors in case
+one of the calls triggers a <code>loading</code> action</p>
 </div>
 
   
@@ -1184,14 +1213,14 @@ Uses a timeout initially so that we don&apos;t run into errors when still in the
       <td data-ice="name" data-depth="0">options</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>An array of function that each returns a promise</p>
+      <td data-ice="description"><p>An object with additional options</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" data-depth="1">options.log</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>Whether to log individual calls</p>
+      <td data-ice="description"><p>Whether to log each individual call to the console</p>
 </td>
     </tr>
 </tbody>
@@ -1205,7 +1234,7 @@ Uses a timeout initially so that we don&apos;t run into errors when still in the
       <tbody>
         <tr>
           <td class="return-type" data-ice="returnType"><span>promise</span></td>
-          <td class="return-desc" data-ice="returnDescription"><p>A promise that will be resolved when all calls succeeded or rejected if one call failed</p>
+          <td class="return-desc" data-ice="returnDescription"><p>A promise that will be resolved when all calls succeeded or rejected if at least one call failed</p>
 </td>
         </tr>
       </tbody>
@@ -1222,7 +1251,20 @@ Uses a timeout initially so that we don&apos;t run into errors when still in the
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">import {callSeries} from &apos;@xailabs/altx&apos;;
+const calls = [
+     () =&gt; fetch(&apos;foo&apos;),
+     () =&gt; fetch(&apos;bar&apos;),
+     () =&gt; new Promise((resolve) =&gt; setTimeout(resolve, 1000)),
+];
+callSeries(calls).then(console.log)</code></pre>
+    </div>
+</div>
 
   
 
@@ -1466,6 +1508,97 @@ represent the actual keyPath in the tree:</code></pre>
   
 
   
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-createAction">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">createAction</span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, namespace: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/createAction.js.html#lineNumber17">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createAction from &apos;<span><a href="file/src/createAction.js.html#lineNumber17">@xailabs/altx/src/createAction.js</a></span>&apos;</code></pre></div>
+  
+  
+  <div data-ice="description"><p>Creates a single action with a namespace.
+Basically just like <code>altx.generateActions</code>, but with a signle required argument <code>name</code> and an optional second argument <code>namespace</code>.</p>
+<p>Note: The returned object is very much the same as with the plural version <code>createActions</code>: You get back an object that has
+a function by the name you gave as well as an constant for the action name.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">name</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>The name to use for the action</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">namespace</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>The namespace to use for the action</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>An name object</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">createAction(&apos;myAction&apos;, &apos;myNamespace&apos;); // {name: &apos;myNamespace&apos;, myAction: function() {...}, MY_ACTION: &apos;myNamespace.myAction&apos;}</code></pre>
+    </div>
+</div>
 
   
 

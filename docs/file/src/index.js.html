@@ -39,6 +39,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createAction">createAction</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createActions">createActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createStore">createStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
@@ -65,8 +66,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/index.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export {getAltInstance} from &apos;./altInstance&apos;;
-export {setAltInstance} from &apos;./altInstance&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export { getAltInstance } from &apos;./altInstance&apos;;
+export { setAltInstance } from &apos;./altInstance&apos;;
 
 export connect from &apos;./decorators/connect&apos;;
 export bindCalls from &apos;./decorators/bindCalls&apos;;
@@ -74,16 +75,20 @@ export bindHandlers from &apos;./decorators/bindHandlers&apos;;
 export bindActions from &apos;./decorators/bindActions&apos;;
 
 export ImmutableStore from &apos;./ImmutableStore&apos;;
-export {resetStores} from &apos;./ImmutableStore&apos;;
+export { resetStores } from &apos;./ImmutableStore&apos;;
 
-export {connectAlternative} from &apos;./decorators/connect&apos;;
+export { connectAlternative } from &apos;./decorators/connect&apos;;
 export callSeries from &apos;./callSeries&apos;;
 export createStore from &apos;./createStore&apos;;
 export callFactory from &apos;./callFactory&apos;;
+export createAction from &apos;./createAction&apos;;
 export createActions from &apos;./createActions&apos;;
 export handlerFactory from &apos;./handlerFactory&apos;;
 export getSources from &apos;./getSources&apos;;
 
+export ActionListeners from &apos;alt-utils/lib/ActionListeners&apos;;
+export { decorate, datasource, bind } from &apos;alt-utils/lib/decorators&apos;;
+export immutable from &apos;alt-utils/lib/ImmutableUtil&apos;;
 </code></pre>
 
 </div>
