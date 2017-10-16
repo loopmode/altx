@@ -65,7 +65,237 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content">Please create README.md</div>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="altx">altx</h1>
+<p>Flux framework developed for the NISV client, built on top of (alt)[<a href="http://alt.js.org/">http://alt.js.org/</a>].
+It extends alt by adding a couple of concepts.</p>
+<p><a href="https://doc.esdoc.org/github.com/loopmode/altx/"><img src="https://doc.esdoc.org/github.com/loopmode/altx/badge.svg" alt="docs"></a></p>
+<h2 id="calls">Calls</h2>
+<p>One of these concepts are calls.<br>A call provides a way to define an asynchronous procedure, like fetching data from the server or sending data to it.</p>
+<p>A call automatically creates alt actions and hanlders and groups them together in a single place.</p>
+<pre><code><code class="source-code prettyprint">import {callFactory} from &apos;@xailabs/altx&apos;;
+import Immutable from &apos;immutable&apos;;
+import Api from &apos;api&apos;;
+
+export default callFactory(&apos;loadUsers&apos;, {namespace: &apos;users&apos;}).create({
+    dataSource: {
+        remote: () =&gt; Api.get(Api.endpoints.USERS)
+    },
+    reducers: {
+        loading(state) {
+            return state.setIn([&apos;pending&apos;, &apos;loadUsers&apos;], true);
+        },
+        error(state) {
+            return state.setIn([&apos;pending&apos;, &apos;loadUsers&apos;], false);
+        },
+        success(state, payload) {
+            return state
+                .setIn([&apos;pending&apos;, &apos;loadUsers&apos;], false)
+                .set(&apos;users&apos;, Immutable.fromJS(payload.items));
+        }
+    }
+});</code>
+</code></pre><p>The call creates three actions: </p>
+<ul>
+<li>The <code>users:loadUsers.loading</code> action is dispatched when the request is made</li>
+<li>The <code>users:loadUsers.success</code> action is dispatched when a response with status code below 400 is received</li>
+<li>The <code>users:loadUsers.error</code> action is dispatched when a response with status code above 400 was reiceved</li>
+</ul>
+<p>The actions are namespaced so they don&apos;t collide globally, but &quot;inside the call&quot; we simply speak of <code>loading</code> or <code>success</code> in the short form.<br>The namespace should, by convention, be the name of the responsible store, but it&apos;s really just used by the developer, for debugging or understanding logs.  </p>
+<p>If you need to access the generated actions manually, which is not very common, you&apos;d import the call and access them using its <code>actions</code> property:</p>
+<pre><code><code class="source-code prettyprint">import loadUsers from &apos;calls/loadUsers&apos;;
+
+// manually dispatching the action:
+loadUsers.actions.success(payload);
+
+// the generated name &apos;users:loadUsers.success&apos; is available per UPPERCASE notation
+actionListeners.addActionListener(loadUsers.actions.SUCCESS, (payload) =&gt; {...});</code>
+</code></pre><p>Additionally, the call creates three handler methods on the store and binds them to the actions. Each handler uses the reducer defined in the call and sets its result as the next state. Something like:</p>
+<pre><code><code class="source-code prettyprint">@bind(loadUsers.actions.loading)
+_loadUsers_loading(payload) {
+    const nextState = loadUsers.reducers.loading(this.state, payload);
+    this.setState(nextState);
+}
+@bind(loadUsers.actions.success)
+_loadUsers_success(payload) {
+    const nextState = loadUsers.reducers.success(this.state, payload);
+    this.setState(nextState);
+}
+@bind(loadUsers.actions.error)
+_loadUsers_error(payload) {
+    const nextState = loadUsers.reducers.error(this.state, payload);
+    this.setState(nextState);
+}</code>
+</code></pre><p>Each of those methods automatically </p>
+<h2 id="migrating-a-call-to-altx">Migrating a &quot;call&quot; to altx</h2>
+<p>This is a changelog of a migration. The functionality loads favourite folders from the server and was previously spread across three files: Action names were defined in <code>FavActions.js</code>, data fetching was defined in <code>FavSource.js</code> and data handling was defined in the store itself, <code>FavStore.js</code>.<br>There was a manual handling of pending state, and components were listening for a flag <code>isLoadingFolders</code> directly on the store state.
+This was changed to the call convention of using <code>setIn([&apos;pending&apos;, &apos;callName&apos;], true)</code>, however the components only had to change their binding from <code>isLoadingFolders</code> to <code>pending.loadFolders as isLoadingFolders</code>. Due to the flexible decorator syntax, no further changes were needed inside components.</p>
+<p>Note that most of the change is just removing stuff. The entire functionality is replaced by the couple of lines at the end of the diff.</p>
+<pre><code><code class="source-code prettyprint">diff --git a/src/app/components/FavDialogs/FavFolderSelect.jsx b/src/app/components/FavDialogs/FavFolderSelect.jsx
+index 151e788..f2a82de 100644
+--- a/src/app/components/FavDialogs/FavFolderSelect.jsx
++++ b/src/app/components/FavDialogs/FavFolderSelect.jsx
+@@ -15,7 +15,7 @@ import {injectIntl, intlShape, defineMessages, FormattedMessage} from &apos;react-int
+
+ const StoreConnection = connect([ {
+     store: FavStore,
+-    props: [&apos;folders&apos;, &apos;isLoadingFolders&apos;, &apos;recentlyUsedFolder&apos;]
++    props: [&apos;folders&apos;, &apos;pending.loadFolders as isLoadingFolders&apos;, &apos;recentlyUsedFolder&apos;]
+ }]);
+
+ const messages = defineMessages({
+diff --git a/src/app/routes/user/routes/favourites/components/folders/FavFoldersPage.jsx b/src/app/routes/user/routes/favourites/components/folders/FavFoldersPage.jsx
+index cc68e72..8d71f44 100644
+--- a/src/app/routes/user/routes/favourites/components/folders/FavFoldersPage.jsx
++++ b/src/app/routes/user/routes/favourites/components/folders/FavFoldersPage.jsx
+@@ -26,7 +26,7 @@ const messages = defineMessages({
+ const Stateful = connect([
+     {
+         store: FavStore,
+-        props: [&apos;folders&apos;, &apos;isLoadingFolders&apos;, &apos;favs&apos;]
++        props: [&apos;folders&apos;, &apos;pending.loadFolders as isLoadingFolders&apos;, &apos;favs&apos;]
+     }
+ ]);
+
+diff --git a/src/stores/favourites/FavActions.js b/src/stores/favourites/FavActions.js
+index b80521e..e46956b 100644
+--- a/src/stores/favourites/FavActions.js
++++ b/src/stores/favourites/FavActions.js
+@@ -5,10 +5,6 @@ export default alt.generateActions(
+     &apos;handleFolderError&apos;,
+     &apos;handleItemError&apos;,
+
+-    &apos;loadingFolders&apos;,
+-    &apos;handleFolders&apos;,
+-    &apos;handleFoldersError&apos;,
+-
+     &apos;loadingFavs&apos;,
+     &apos;handleFavs&apos;,
+
+diff --git a/src/stores/favourites/FavSource.js b/src/stores/favourites/FavSource.js
+index e5ac3b9..0722ac5 100644
+--- a/src/stores/favourites/FavSource.js
++++ b/src/stores/favourites/FavSource.js
+@@ -2,15 +2,6 @@ import FavActions from &apos;./FavActions&apos;;
+ import Api from &apos;api&apos;;
+
+ export default {
+-    // Fetch all available folders
+-    loadFolders() {
+-        return {
+-            loading: FavActions.loadingFolders,
+-            success: FavActions.handleFolders,
+-            error: FavActions.handleFolderError,
+-            remote: (state, options) =&gt; Api.get(`${Api.endpoints.FAVOURITES_FOLDERS}?fields=+createdAt,+modifiedAt&amp;sort=name`, null, options)
+-        };
+-    },
+     // Fetch all favs in a folder
+     loadFavs() {
+         return {
+diff --git a/src/stores/favourites/FavStore.js b/src/stores/favourites/FavStore.js
+index 65ff114..b8c62ec 100644
+--- a/src/stores/favourites/FavStore.js
++++ b/src/stores/favourites/FavStore.js
+@@ -16,15 +16,13 @@ class FavStore extends ImmutableStore {
+
+     constructor() {
+         super({
+-            isLoadingFolders: false,
+             folders: [],
+             favs: [],
+             isLoadingFavs: false,
+             recentlyUsedFolder: null,
+             folderError: null,
+             itemError: null,
+             pending: {}
+         });
+         this.exportPublicMethods({
+@@ -40,21 +38,6 @@ class FavStore extends ImmutableStore {
+
+     //====================================================================
+     //
+-    // LOAD FOLDERS
+-    //
+-    //====================================================================
+-
+-    @bind(FavActions.loadingFolders)
+-    loadingFolders() {
+-        this.change({isLoadingFolders: true});
+-    }
+-    @bind(FavActions.handleFolders)
+-    handleFolders(payload) {
+-        this.change({isLoadingFolders: false, folders: payload.items});
+-    }
+-
+-    //====================================================================
+-    //
+     // LOAD FAVS
+     //
+     //====================================================================
+@@ -118,21 +101,9 @@ class FavStore extends ImmutableStore {
+         this.change({favs: favs.delete(deletedIndex)});
+     }
+
+-    //====================================================================
+-    //
+-    // ERRORS
+-    //
+-    //====================================================================
+-
+-
+-    @bind(FavActions.handleFolderError)
+-    handleFolderError(folderError) {
+-        this.change({folderError, isLoadingFolders: false, isLoadingFavs: false});
+-        console.error(&apos;error getting fav folder: &apos;, folderError);
+-    }
+     @bind(FavActions.handleItemError)
+     handleItemError(itemError) {
+-        this.change({itemError, isLoadingFavs: false, isLoadingFolders: false});
++        this.change({itemError, isLoadingFavs: false});
+         console.error(&apos;error getting fav item: &apos;, itemError);
+     }
+ }
+diff --git a/src/stores/favourites/calls/index.js b/src/stores/favourites/calls/index.js
+index 66f8a2c..3673c8e 100644
+--- a/src/stores/favourites/calls/index.js
++++ b/src/stores/favourites/calls/index.js
+@@ -1,6 +1,7 @@
+ import {getSources} from &apos;@xailabs/altx&apos;;
+ const calls = [
+     require(&apos;./loadActions&apos;).default,
++    require(&apos;./loadFolders&apos;).default,
+ ];
+ export default calls;
+
+diff --git a/src/stores/favourites/calls/loadFolders.js b/src/stores/favourites/calls/loadFolders.js
+new file mode 100644
+index 0000000..8e61168
+--- /dev/null
++++ b/src/stores/favourites/calls/loadFolders.js
+@@ -0,0 +1,22 @@
++import {callFactory} from &apos;@xailabs/altx&apos;;
++import Api from &apos;api&apos;;
++import Immutable from &apos;immutable&apos;;
++/**
++ * loads all fav folders of the current user
++ */
++export default callFactory(&apos;loadFolders&apos;, {namespace: &apos;favs&apos;}).create({
++    dataSource: {
++        remote: (state, options) =&gt; Api.get(`${Api.endpoints.FAVOURITES_FOLDERS}?fields=+createdAt,+modifiedAt&amp;sort=name`, null, options)
++    },
++    reducers: {
++        loading: (state) =&gt; state.setIn([&apos;pending&apos;, &apos;loadFolders&apos;], true),
++        error: (state) =&gt; state.setIn([&apos;pending&apos;, &apos;loadFolders&apos;], false),
++
++        success(state, payload) {
++            return state
++                .setIn([&apos;pending&apos;, &apos;loadFolders&apos;], false)
++                .set(&apos;folders&apos;, Immutable.fromJS(payload.items));
++        }
++    }
++});
++</code>
+</code></pre></div>
+</div>
 
 <footer class="footer">
   Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>

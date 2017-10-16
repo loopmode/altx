@@ -1,6 +1,8 @@
-### 1.1.2
+### 1.2.0
 
 - Add `createAction` for single actions
+- Add readme from NISV project
+- Add hosted documentation
 
 ### 1.1.0
 

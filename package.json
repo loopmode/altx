@@ -1,12 +1,12 @@
 {
   "name": "@xailabs/altx",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Flux flavor based on alt.js",
   "main": "lib/index.js",
   "scripts": {
     "test": "babel-tape-runner test | faucet",
     "tape": "nodemon -w src -w test -q -x \"yarn test\"",
-    "docs": "esdoc",
+    "docs": "esdoc -c esdoc.json",
     "build": "echo [build] && babel src --out-dir lib && echo [build done]",
     "build:watch": "nodemon -w src -q -x \"yarn build\"",
     "prepublishOnly": "yarn test && yarn build"
