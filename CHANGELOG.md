@@ -1,3 +1,9 @@
+### 1.2.0
+
+- Add `createAction` for single actions
+- Add readme from NISV project
+- Add hosted documentation
+
 ### 1.1.0
 
 - Drop `promise` depdendency.

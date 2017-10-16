@@ -1,7 +1,7 @@
 {
-  "coverage": "26.82%",
-  "expectCount": 41,
-  "actualCount": 11,
+  "coverage": "28.57%",
+  "expectCount": 42,
+  "actualCount": 12,
   "files": {
     "src/BindHandlers.js": {
       "expectCount": 1,
@@ -59,6 +59,11 @@
       "undocumentLines": [
         178
       ]
+    },
+    "src/createAction.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
     },
     "src/createActions.js": {
       "expectCount": 1,

@@ -54,6 +54,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@xailabs/altx/src/createaction.js~createaction",
+    "function/index.html#static-function-createAction",
+    "<span>createAction</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createAction.js</span>",
+    "function"
+  ],
+  [
     "@xailabs/altx/src/createactions.js~createactions",
     "function/index.html#static-function-createActions",
     "<span>createActions</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createActions.js</span>",
@@ -603,6 +609,12 @@ window.esdocSearchIndex = [
     "src/callseries.js",
     "file/src/callSeries.js.html",
     "src/callSeries.js",
+    "file"
+  ],
+  [
+    "src/createaction.js",
+    "file/src/createAction.js.html",
+    "src/createAction.js",
     "file"
   ],
   [
