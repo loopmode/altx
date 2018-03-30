@@ -87,5 +87,4 @@ export default class StoreProvider extends React.Component {
             this.setState({ storeValues: this.getStoreValues() });
         }
     }
-}
-/* eslint-enable react/prop-types */
+} 
