@@ -1,3 +1,7 @@
+### 1.3.0
+
+- Add `StoreProvider` component
+
 ### 1.2.0
 
 - Add `createAction` for single actions
@@ -17,7 +21,6 @@
     - Rename `createViewAction` and `define` to `handlerFactory` and `create`
         - Before: `createViewAction('myAction').define({...})`
         - After: `handlerFactory('myAction').create({...})`
-
 - Add tests
 
 ### 0.9.6

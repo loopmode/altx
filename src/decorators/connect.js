@@ -97,25 +97,34 @@ import React, { createElement } from 'react';
 export default function connect(definitions) {
     return function(targetClass) {
         targetClass.getStores = function() {
-            return definitions.map((def) => def.store);
+            return definitions.map((definition) => definition.store);
         };
-        targetClass.getPropsFromStores = function(componentProps) {
-            return definitions.reduce((result, def) => {
-                if (typeof def.props === 'function') {
-                    // the props definition is itself a function. return with its result.
-                    return Object.assign(result, def.props(def.store.state, componentProps));
-                }
-                // the props definition is an array. evaluate and reduce each of its elements
-                return def.props.reduce((result, accessor) => {
-                    return Object.assign(result, mapProps(accessor, def.store.state, componentProps));
-                }, result);
+        targetClass.getPropsFromStores = function(componentProps) {            
+            return definitions.reduce((result, definition) => {
+                return Object.assign(result, reduceDefinedProps(definition, componentProps))
             }, {});
         };
         return connectToStores(targetClass);
     };
 }
 
-function mapProps(accessor, state, props) {
+
+
+export function reduceDefinedProps({props, store}, componentProps) {
+    
+    if (typeof props === 'function') {
+        // the props definition is itself a function. return with its result.
+        return props(store.state, componentProps);
+    }
+    // the props definition is an array. evaluate and reduce each of its elements
+    return props.reduce((result, accessor) => {
+        return Object.assign(result, mapProps(accessor, store.state, componentProps));
+    }, {});
+
+}
+
+
+export function mapProps(accessor, state, props) {
     switch (typeof accessor) {
         case 'function':
             return mapFuncAccessor(accessor, state, props);
