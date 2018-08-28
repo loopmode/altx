@@ -3,7 +3,7 @@
     "__docId__": 0,
     "kind": "file",
     "name": "src/altInstance.js",
-    "content": "/**\r\n * This is the alt instance that holds the state of the entire application.\r\n * All stores and actions are created on this instance.\r\n */\r\n\r\nimport Alt from 'alt';\r\n\r\nlet instance;\r\n\r\nsetAltInstance(new Alt());\r\n\r\nexport function setAltInstance(alt) {\r\n    if (instance) teardown(instance);\r\n    setup(alt);\r\n}\r\nexport function getAltInstance() {\r\n    return instance;\r\n}\r\n\r\n\r\n\r\nconst root = (global || window);\r\n\r\nfunction setup(alt) {\r\n    instance = alt;\r\n    if (process.env.NODE_ENV !== 'production') {\r\n\r\n        // Debugging with chrome devtools\r\n        // @see https://github.com/goatslacker/alt-devtool\r\n        require('alt-utils/lib/chromeDebug')(instance);\r\n\r\n        // sometimes, chromeDebug just doesn't update until an action is dispatched.\r\n        // we use a dummy action to do just that\r\n        const refreshAction = instance.generateActions('__refresh__').__refresh__;\r\n        instance.handleMessage = (e) => {\r\n            if (e.data && e.data.type === 'ALT' && e.data.source === 'alt-devtools') {\r\n                refreshAction.defer();\r\n            }\r\n        };\r\n        root && root.addEventListener && root.addEventListener('message', instance.handleMessage);\r\n    }\r\n}\r\nfunction teardown(alt) {\r\n    if (process.env.NODE_ENV !== 'production') {\r\n        root && root.removeEventListener && root.removeEventListener('message', instance.handleMessage);\r\n    }\r\n}",
+    "content": "/**\n * This is the alt instance that holds the state of the entire application.\n * All stores and actions are created on this instance.\n */\n\nimport Alt from 'alt';\n\nlet instance;\n\nsetAltInstance(new Alt());\n\nexport function setAltInstance(alt) {\n    if (instance) teardown(instance);\n    setup(alt);\n}\nexport function getAltInstance() {\n    return instance;\n}\n\nconst root = global || window;\n\nfunction setup(alt) {\n    instance = alt;\n    if (process.env.NODE_ENV === 'development') {\n        // Debugging with chrome devtools\n        // @see https://github.com/goatslacker/alt-devtool\n        require('alt-utils/lib/chromeDebug')(instance);\n\n        // sometimes, chromeDebug just doesn't update until an action is dispatched.\n        // we use a dummy action to do just that\n        const refreshAction = instance.generateActions('__refresh__').__refresh__;\n        instance.handleMessage = e => {\n            if (e.data && e.data.type === 'ALT' && e.data.source === 'alt-devtools') {\n                refreshAction.defer();\n            }\n        };\n        root && root.addEventListener && root.addEventListener('message', instance.handleMessage);\n    }\n}\nfunction teardown() {\n    if (process.env.NODE_ENV === 'development') {\n        root && root.removeEventListener && root.removeEventListener('message', instance.handleMessage);\n    }\n}\n",
     "static": true,
     "longname": "src/altInstance.js",
     "access": null,
@@ -82,7 +82,7 @@
     "importPath": "@xailabs/altx/src/altInstance.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 20,
     "undocument": true,
     "unknown": [
       {
@@ -110,7 +110,7 @@
     "importPath": "@xailabs/altx/src/altInstance.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 22,
     "undocument": true,
     "unknown": [
       {
@@ -141,7 +141,7 @@
     "importPath": "@xailabs/altx/src/altInstance.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 40,
     "undocument": true,
     "unknown": [
       {
@@ -149,20 +149,13 @@
         "tagValue": ""
       }
     ],
-    "params": [
-      {
-        "name": "alt",
-        "types": [
-          "*"
-        ]
-      }
-    ]
+    "params": []
   },
   {
     "__docId__": 6,
     "kind": "file",
     "name": "src/BindHandlers.js",
-    "content": "import {\r\n    bind as bindAlt\r\n} from 'alt-utils/lib/decorators';\r\n\r\n\r\n// DEPRECATED\r\n// replace with \"calls and viewActions!\"\r\n\r\n\r\n/**\r\n * Creates a decorator for binding action handlers to a store.\r\n * A binding is created for each action that has a matching handler method mapping.\r\n *\r\n * The decorator takes any number of action handler definitions as arguments and applies their\r\n * bindings after concatinating them to a flat list, so you can pass either of these:\r\n * - an array of handler definitions\r\n * - any number of array of handler definitions\r\n * - any number of handlerdefinitions without arrays\r\n * - any mixed variation\r\n *\r\n * See manual/usage/action-handlers.md for more on this topic.\r\n */\r\nexport default function BindHandlers(...args) {\r\n    const definitions = args.reduce((result, def) => {\r\n        if (Array.isArray(def)) {\r\n            def.forEach(d => result.push(d));\r\n        }\r\n        else {\r\n            result.push(def);\r\n        }\r\n        return result;\r\n    }, []);\r\n    return function decorateStore(StoreClass) {\r\n        definitions.forEach(function bindActions({handler, bindings}, i) {\r\n            if (!handler || !handler.prototype) {\r\n                throw new Error('Invalid action handler');\r\n            }\r\n            // we need unique prefixes for the potentionally same method names\r\n            // using handler.prototype.constructor.name alone is useless after mangling/uglifying!\r\n            const name = `$${i}_${handler.prototype.constructor.name}`;\r\n            // collect the names of the methods defined in the handler decorator\r\n            const methodNames = Object.keys(bindings);\r\n            // now for each decorator method that has an action by the same name...\r\n            methodNames.forEach(function bindAction(methodName) {\r\n                if (typeof bindings[methodName] !== 'function') {\r\n                    throw new Error(`bindings.${methodName} is not a function (handler: ${name})`);\r\n                }\r\n                if (typeof handler.prototype[methodName] !== 'function') {\r\n                    throw new Error(`${name}.${methodName} is not a function`);\r\n                }\r\n                const storeMethodName = `${name}_${methodName}`;\r\n                // ...copy the method from the decorator class to the store class\r\n                StoreClass.prototype[storeMethodName] = handler.prototype[methodName];\r\n                // and bind the action to it, using Alt's 'bind' util\r\n                const applyBinding = bindAlt(bindings[methodName]);\r\n                applyBinding(\r\n                    StoreClass,\r\n                    storeMethodName,\r\n                    Object.getOwnPropertyDescriptor(StoreClass.prototype, storeMethodName)\r\n                );\r\n            });\r\n        });\r\n        return StoreClass;\r\n    };\r\n}\r\n\r\n",
+    "content": "import { bind as bindAlt } from 'alt-utils/lib/decorators';\r\n\r\n// DEPRECATED\r\n// replace with \"calls and viewActions!\"\r\n\r\n/**\r\n * Creates a decorator for binding action handlers to a store.\r\n * A binding is created for each action that has a matching handler method mapping.\r\n *\r\n * The decorator takes any number of action handler definitions as arguments and applies their\r\n * bindings after concatinating them to a flat list, so you can pass either of these:\r\n * - an array of handler definitions\r\n * - any number of array of handler definitions\r\n * - any number of handlerdefinitions without arrays\r\n * - any mixed variation\r\n *\r\n * See manual/usage/action-handlers.md for more on this topic.\r\n */\r\nexport default function BindHandlers(...args) {\r\n    const definitions = args.reduce((result, def) => {\r\n        if (Array.isArray(def)) {\r\n            def.forEach(d => result.push(d));\r\n        } else {\r\n            result.push(def);\r\n        }\r\n        return result;\r\n    }, []);\r\n    return function decorateStore(StoreClass) {\r\n        definitions.forEach(function bindActions({ handler, bindings }, i) {\r\n            if (!handler || !handler.prototype) {\r\n                throw new Error('Invalid action handler');\r\n            }\r\n            // we need unique prefixes for the potentionally same method names\r\n            // using handler.prototype.constructor.name alone is useless after mangling/uglifying!\r\n            const name = `$${i}_${handler.prototype.constructor.name}`;\r\n            // collect the names of the methods defined in the handler decorator\r\n            const methodNames = Object.keys(bindings);\r\n            // now for each decorator method that has an action by the same name...\r\n            methodNames.forEach(function bindAction(methodName) {\r\n                if (typeof bindings[methodName] !== 'function') {\r\n                    throw new Error(`bindings.${methodName} is not a function (handler: ${name})`);\r\n                }\r\n                if (typeof handler.prototype[methodName] !== 'function') {\r\n                    throw new Error(`${name}.${methodName} is not a function`);\r\n                }\r\n                const storeMethodName = `${name}_${methodName}`;\r\n                // ...copy the method from the decorator class to the store class\r\n                StoreClass.prototype[storeMethodName] = handler.prototype[methodName];\r\n                // and bind the action to it, using Alt's 'bind' util\r\n                const applyBinding = bindAlt(bindings[methodName]);\r\n                applyBinding(\r\n                    StoreClass,\r\n                    storeMethodName,\r\n                    Object.getOwnPropertyDescriptor(StoreClass.prototype, storeMethodName)\r\n                );\r\n            });\r\n        });\r\n        return StoreClass;\r\n    };\r\n}\r\n",
     "static": true,
     "longname": "src/BindHandlers.js",
     "access": null,
@@ -183,7 +176,7 @@
     "importPath": "@xailabs/altx/src/BindHandlers.js",
     "importStyle": "BindHandlers",
     "description": "Creates a decorator for binding action handlers to a store.\nA binding is created for each action that has a matching handler method mapping.\n\nThe decorator takes any number of action handler definitions as arguments and applies their\nbindings after concatinating them to a flat list, so you can pass either of these:\n- an array of handler definitions\n- any number of array of handler definitions\n- any number of handlerdefinitions without arrays\n- any mixed variation\n\nSee manual/usage/action-handlers.md for more on this topic.",
-    "lineNumber": 23,
+    "lineNumber": 19,
     "params": [
       {
         "name": "args",
@@ -203,7 +196,7 @@
     "__docId__": 8,
     "kind": "file",
     "name": "src/callFactory.js",
-    "content": "import {validateCreator, validateDefinition} from './utils/validate';\r\nimport {createLogger} from './utils/logging';\r\nimport createActions from './createActions';\r\n\r\nexport default function callFactory(name, {\r\n    namespace='global',\r\n    defaultActions=['loading', 'error', 'success'],\r\n    actions=createActions(`${namespace}:${name}`, defaultActions),\r\n    logger=createLogger(`${namespace}:${name}`),\r\n}={}) {\r\n    const errors = validateCreator({name, actions, logger}, logger);\r\n    const errorKeys = errors && Object.keys(errors);\r\n    if (errorKeys && errorKeys.length) {\r\n        throw new Error(errors[errorKeys[0]]);\r\n    }\r\n\r\n    return {\r\n\r\n        name,\r\n        actions,\r\n\r\n        create: (definition) => {\r\n            const createDefinition = typeof definition === 'function' ? definition : () => definition;\r\n            const call = Object.assign(createDefinition({name, actions, logger}), {\r\n                name,\r\n                actions,\r\n                logger\r\n            });\r\n            if (validateDefinition(call, logger)) {\r\n                throw new Error('Invalid call');\r\n            }\r\n            call.dataSource = {\r\n                // set the default actions\r\n                ...(call.actions || {}),\r\n                // set dataSource from the definition passed om - potentially overriding the actions\r\n                ...(call.dataSource || {})\r\n            };\r\n            return call;\r\n        },\r\n        createActions: (actionNames) => createActions(`${namespace}:${name}`, actionNames)\r\n    };\r\n}\r\n",
+    "content": "import { validateCreator, validateDefinition } from './utils/validate';\r\nimport { createLogger } from './utils/logging';\r\nimport createActions from './createActions';\r\n\r\nexport default function callFactory(\r\n    name,\r\n    {\r\n        namespace = 'global',\r\n        defaultActions = ['loading', 'error', 'success'],\r\n        actions = createActions(`${namespace}:${name}`, defaultActions),\r\n        logger = createLogger(`${namespace}:${name}`)\r\n    } = {}\r\n) {\r\n    const errors = validateCreator({ name, actions, logger }, logger);\r\n    const errorKeys = errors && Object.keys(errors);\r\n    if (errorKeys && errorKeys.length) {\r\n        throw new Error(errors[errorKeys[0]]);\r\n    }\r\n\r\n    return {\r\n        name,\r\n        actions,\r\n\r\n        create: definition => {\r\n            const createDefinition = typeof definition === 'function' ? definition : () => definition;\r\n            const call = Object.assign(createDefinition({ name, actions, logger }), {\r\n                name,\r\n                actions,\r\n                logger\r\n            });\r\n            if (validateDefinition(call, logger)) {\r\n                throw new Error('Invalid call');\r\n            }\r\n            call.dataSource = {\r\n                // set the default actions\r\n                ...(call.actions || {}),\r\n                // set dataSource from the definition passed om - potentially overriding the actions\r\n                ...(call.dataSource || {})\r\n            };\r\n            return call;\r\n        },\r\n        createActions: actionNames => createActions(`${namespace}:${name}`, actionNames)\r\n    };\r\n}\r\n",
     "static": true,
     "longname": "src/callFactory.js",
     "access": null,
@@ -259,7 +252,7 @@
     "__docId__": 10,
     "kind": "file",
     "name": "src/callSeries.js",
-    "content": "/**\r\n * Returns a promise and executes a series of functions that each return a promise.\r\n * Uses an initial 0-timeout so that we don't run into \"Cannot dispatch in the middle of a dispatch\" errors in case\r\n * one of the calls triggers a `loading` action\r\n *\r\n * @example\r\n * import {callSeries} from '@xailabs/altx';\r\n * const calls = [\r\n *      () => fetch('foo'),\r\n *      () => fetch('bar'),\r\n *      () => new Promise((resolve) => setTimeout(resolve, 1000)),\r\n * ];\r\n * callSeries(calls).then(console.log)\r\n *\r\n * @param {array} calls - An array of function that each returns a promise\r\n * @param {object} options - An object with additional options\r\n * @param {boolean} options.log - Whether to log each individual call to the console\r\n * @return {promise} - A promise that will be resolved when all calls succeeded or rejected if at least one call failed\r\n */\r\nexport default function callSeries(calls, {log = false} =  {}) {\r\n    return new Promise((resolve, reject) => {\r\n        let results = [];\r\n        setTimeout(() => {\r\n            function series(list) {\r\n                log && console.log('[callSeries] list', list);\r\n                var p = Promise.resolve();\r\n                return list.reduce(function(pacc, fn) {\r\n                    return pacc = pacc.then(res => {\r\n                        log && console.log('[callSeries] res', res);\r\n                        results.push(res);\r\n                        return fn(res);\r\n                    });\r\n                }, p);\r\n            }\r\n            series(calls)\r\n                .then(() => setTimeout(() => resolve(results)))\r\n                .catch((err) => reject(err));\r\n        });\r\n    });\r\n}\r\n",
+    "content": "/**\r\n * Returns a promise and executes a series of functions that each return a promise.\r\n * Uses an initial 0-timeout so that we don't run into \"Cannot dispatch in the middle of a dispatch\" errors in case\r\n * one of the calls triggers a `loading` action\r\n *\r\n * @example\r\n * import {callSeries} from '@xailabs/altx';\r\n * const calls = [\r\n *      () => fetch('foo'),\r\n *      () => fetch('bar'),\r\n *      () => new Promise((resolve) => setTimeout(resolve, 1000)),\r\n * ];\r\n * callSeries(calls).then(console.log)\r\n *\r\n * @param {array} calls - An array of function that each returns a promise\r\n * @param {object} options - An object with additional options\r\n * @param {boolean} options.log - Whether to log each individual call to the console\r\n * @return {promise} - A promise that will be resolved when all calls succeeded or rejected if at least one call failed\r\n */\r\nexport default function callSeries(calls, { log = false } = {}) {\r\n    return new Promise((resolve, reject) => {\r\n        let results = [];\r\n        setTimeout(() => {\r\n            function series(list) {\r\n                log && console.log('[callSeries] list', list);\r\n                var p = Promise.resolve();\r\n                return list.reduce(function(pacc, fn) {\r\n                    return (pacc = pacc.then(res => {\r\n                        log && console.log('[callSeries] res', res);\r\n                        results.push(res);\r\n                        return fn(res);\r\n                    }));\r\n                }, p);\r\n            }\r\n            series(calls)\r\n                .then(() => setTimeout(() => resolve(results)))\r\n                .catch(err => reject(err));\r\n        });\r\n    });\r\n}\r\n",
     "static": true,
     "longname": "src/callSeries.js",
     "access": null,
@@ -389,7 +382,7 @@
     "__docId__": 14,
     "kind": "file",
     "name": "src/createActions.js",
-    "content": "import {getAltInstance} from './altInstance';\r\n\r\n/**\r\n * Creates simple (data-pass-through) actions with a namespace.\r\n * Basically just like `alt.generateActions`, but within a given namespace instead of 'global'.\r\n *\r\n * @param {string} namespace - The namespace to use for the actions\r\n * @param {array<string>} actions - An array of action names\r\n * @return {object} An object containing the generated actions and constants\r\n */\r\nexport default function createActions(namespace, actions) {\r\n    return getAltInstance().createActions({\r\n        name: namespace,\r\n        ...[].concat(actions).reduce((result, action) => {\r\n            result[action] = (data={}) => data;\r\n            return result;\r\n        }, {})\r\n    });\r\n}\r\n",
+    "content": "import { getAltInstance } from './altInstance';\r\n\r\n/**\r\n * Creates simple (data-pass-through) actions with a namespace.\r\n * Basically just like `alt.generateActions`, but within a given namespace instead of 'global'.\r\n *\r\n * @param {string} namespace - The namespace to use for the actions\r\n * @param {array<string>} actions - An array of action names\r\n * @return {object} An object containing the generated actions and constants\r\n */\r\nexport default function createActions(namespace, actions) {\r\n    return getAltInstance().createActions({\r\n        name: namespace,\r\n        ...[].concat(actions).reduce((result, action) => {\r\n            result[action] = (data = {}) => data;\r\n            return result;\r\n        }, {})\r\n    });\r\n}\r\n",
     "static": true,
     "longname": "src/createActions.js",
     "access": null,
@@ -446,7 +439,7 @@
     "__docId__": 16,
     "kind": "file",
     "name": "src/createStore.js",
-    "content": "import Immutable from 'immutable';\r\nimport { decorate, datasource, bind } from 'alt-utils/lib/decorators';\r\nimport immutable from 'alt-utils/lib/ImmutableUtil';\r\n\r\nimport {getAltInstance} from './altInstance';\r\nimport ImmutableStore from './ImmutableStore';\r\nimport getSources from './getSources';\r\n\r\nimport bindCalls from './decorators/bindCalls';\r\nimport bindActions from './decorators/bindActions';\r\n\r\nexport default function createStore(displayName, {\r\n    alt,\r\n    state,\r\n    calls,\r\n    sources,\r\n    viewActions\r\n} = {}) {\r\n\r\n    if (!displayName) {\r\n        throw new Error('displayName is required');\r\n    }\r\n\r\n    alt = alt || getAltInstance();\r\n    state = state || Immutable.fromJS({});\r\n\r\n    calls = calls || [];\r\n    sources = sources || getSources(calls);\r\n    viewActions = viewActions || [];\r\n\r\n    return alt.createStore((\r\n        @decorate(alt)\r\n        @datasource(sources)\r\n        @bindCalls(calls)\r\n        @bindActions(viewActions)\r\n        @immutable\r\n        class extends ImmutableStore {\r\n            constructor() {\r\n                super(state);\r\n            }\r\n        }\r\n    ), displayName);\r\n\r\n}\r\n",
+    "content": "import Immutable from 'immutable';\nimport { decorate, datasource } from 'alt-utils/lib/decorators';\nimport immutable from 'alt-utils/lib/ImmutableUtil';\n\nimport { getAltInstance } from './altInstance';\nimport ImmutableStore from './ImmutableStore';\nimport getSources from './getSources';\n\nimport bindCalls from './decorators/bindCalls';\nimport bindActions from './decorators/bindActions';\n\nexport default function createStore(displayName, { alt, state, calls, sources, viewActions } = {}) {\n    if (!displayName) {\n        throw new Error('displayName is required');\n    }\n\n    alt = alt || getAltInstance();\n    state = state || Immutable.fromJS({});\n\n    calls = calls || [];\n    sources = sources || getSources(calls);\n    viewActions = viewActions || [];\n\n    return alt.createStore(\n        @decorate(alt)\n        @datasource(sources)\n        @bindCalls(calls)\n        @bindActions(viewActions)\n        @immutable\n        class extends ImmutableStore {\n            constructor() {\n                super(state);\n            }\n        },\n        displayName\n    );\n}\n",
     "static": true,
     "longname": "src/createStore.js",
     "access": null,
@@ -502,7 +495,7 @@
     "__docId__": 18,
     "kind": "file",
     "name": "src/decorators/bindActions.js",
-    "content": "import {bind} from 'alt-utils/lib/decorators';\r\nimport flatten from '../utils/flatten';\r\nimport {getLevel as getLogLevel, logLevel} from '../utils/logging';\r\n\r\n/**\r\n * Decorates a store with any number of viewAction definitions.\r\n */\r\nexport default function bindActions(...args) {\r\n    return function decorate(storeClass) {\r\n        const calls = flatten(args);\r\n        calls.forEach(call => bindViewActionHandler(storeClass, call));\r\n        return storeClass;\r\n    };\r\n}\r\n\r\n\r\nfunction bindViewActionHandler(storeClass, definition) {\r\n\r\n    const {name, action, reducer, sideEffect, logger, logging} = definition;\r\n\r\n    const handlerName = `${name}`;\r\n\r\n    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\r\n\r\n    storeClass.prototype[handlerName] = function handleViewAction(payload) {\r\n\r\n        if (logging || getLogLevel() === logLevel.FORCE) {\r\n            logger[payload instanceof Error ? 'error' : 'log'](payload && payload.toJS ? payload.toJS() : payload);\r\n        }\r\n\r\n        const currentState = this.state;\r\n        let nextState = currentState;\r\n\r\n        try {\r\n            nextState = reducer && reducer(currentState, payload);\r\n        }\r\n        catch (error) {\r\n            console.error(`${handlerName}: error executing reducer`, error);\r\n        }\r\n\r\n        if (nextState && nextState !== currentState) {\r\n            this.setState(nextState);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            setTimeout(() => {\r\n                try {\r\n                    sideEffect({state: nextState, prevState: currentState, payload});\r\n                }\r\n                catch (error) {\r\n                    console.error(`${handlerName}: error executing sideEffect`, error);\r\n                }\r\n            });\r\n        }\r\n    };\r\n\r\n    const bindActionHandler = bind(action);\r\n\r\n    bindActionHandler(\r\n        storeClass,\r\n        handlerName,\r\n        Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName)\r\n    );\r\n\r\n};\r\n",
+    "content": "import { bind } from 'alt-utils/lib/decorators';\r\nimport flatten from '../utils/flatten';\r\nimport { getLevel as getLogLevel, logLevel } from '../utils/logging';\r\n\r\n/**\r\n * Decorates a store with any number of viewAction definitions.\r\n */\r\nexport default function bindActions(...args) {\r\n    return function decorate(storeClass) {\r\n        const calls = flatten(args);\r\n        calls.forEach(call => bindViewActionHandler(storeClass, call));\r\n        return storeClass;\r\n    };\r\n}\r\n\r\nfunction bindViewActionHandler(storeClass, definition) {\r\n    const { name, action, reducer, sideEffect, logger, logging } = definition;\r\n\r\n    const handlerName = `${name}`;\r\n\r\n    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\r\n\r\n    storeClass.prototype[handlerName] = function handleViewAction(payload) {\r\n        if (logging || getLogLevel() === logLevel.FORCE) {\r\n            logger[payload instanceof Error ? 'error' : 'log'](payload && payload.toJS ? payload.toJS() : payload);\r\n        }\r\n\r\n        const currentState = this.state;\r\n        let nextState = currentState;\r\n\r\n        try {\r\n            nextState = reducer && reducer(currentState, payload);\r\n        } catch (error) {\r\n            console.error(`${handlerName}: error executing reducer`, error);\r\n        }\r\n\r\n        if (nextState && nextState !== currentState) {\r\n            this.setState(nextState);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            setTimeout(() => {\r\n                try {\r\n                    sideEffect({ state: nextState, prevState: currentState, payload });\r\n                } catch (error) {\r\n                    console.error(`${handlerName}: error executing sideEffect`, error);\r\n                }\r\n            });\r\n        }\r\n    };\r\n\r\n    const bindActionHandler = bind(action);\r\n\r\n    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));\r\n}\r\n",
     "static": true,
     "longname": "src/decorators/bindActions.js",
     "access": null,
@@ -553,7 +546,7 @@
     "importPath": "@xailabs/altx/src/decorators/bindActions.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 16,
     "undocument": true,
     "unknown": [
       {
@@ -580,7 +573,7 @@
     "__docId__": 21,
     "kind": "file",
     "name": "src/decorators/bindCalls.js",
-    "content": "import {bind} from 'alt-utils/lib/decorators';\r\nimport flatten from '../utils/flatten';\r\nimport {getLevel as getLogLevel, logLevel} from '../utils/logging';\r\n/**\r\n * Decorates a store with any number of call definitions.\r\n */\r\nexport default function bindCalls(...args) {\r\n    return function decorate(storeClass) {\r\n        const calls = flatten(args);\r\n        calls.forEach(call => decorateStoreWithCall(storeClass, call));\r\n        return storeClass;\r\n    };\r\n}\r\n\r\n/**\r\n * Decorates a store with a single call definition.\r\n * Attaches the dataSource specified in the call definition using alt's datasource decorator.\r\n * Creates and binds a handler function for all reducers and actions specified in the call definition.\r\n */\r\nfunction decorateStoreWithCall(storeClass, callDefinition) {\r\n    const actionNames = Object.keys(callDefinition.actions).reduce((result, key) => {\r\n        // remove ACTION_CONSTANT variants generated by alt\r\n        if (result.indexOf(key.toLowerCase()) === -1) {\r\n            result.push(key);\r\n        }\r\n        return result;\r\n    }, []);\r\n    actionNames.forEach(reducerName => {\r\n        bindReducerHandler(reducerName, storeClass, callDefinition);\r\n    });\r\n}\r\n\r\n/**\r\n * Attaches a single reducer handling to the store.\r\n * A new handler method will be created on the store for each action associated\r\n * with a reducer (defaults to the action names: loading, error, success). Each handler will pass\r\n * the current state and the action payload to the reducer with the same name\r\n * and mutate the store with the new state returned by the reducer.\r\n * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.\r\n */\r\nfunction bindReducerHandler(reducerName, storeClass, callDefinition) {\r\n\r\n    const handlerName = `_${callDefinition.name}_${reducerName}`;\r\n\r\n    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\r\n\r\n    storeClass.prototype[handlerName] = function handleCallAction(payload) {\r\n\r\n        const reducer = callDefinition.hasOwnProperty('reducers') && callDefinition.reducers[reducerName];\r\n        const sideEffect = callDefinition.hasOwnProperty('sideEffects') && callDefinition.sideEffects[reducerName];\r\n        const logging = callDefinition.hasOwnProperty('logging') && callDefinition.logging;\r\n        const logger = callDefinition.hasOwnProperty('logger') && callDefinition.logger;\r\n        const isError = payload instanceof Error;\r\n        if (isError) {\r\n            if (payload.response && payload.response.body && payload.response.body.message) {\r\n                logger.error(reducerName, payload.response.body.message);\r\n            }\r\n            // logger.debug(payload);\r\n        }\r\n        else if (logging || getLogLevel() === logLevel.FORCE) {\r\n            logger[isError ? 'error' : 'log'](reducerName, payload && payload.toJS ? payload.toJS() : payload);\r\n        }\r\n\r\n        const currentState = this.state;\r\n        let nextState = currentState;\r\n\r\n        if (reducer) {\r\n            //console.log(`[${handlerName}]`, payload, callDefinition);\r\n            try {\r\n                nextState = reducer(currentState, payload);\r\n            }\r\n            catch (error) {\r\n                console.error(`Error in reducer (${callDefinition.name}, ${reducerName})`, error);\r\n            }\r\n        }\r\n\r\n        if (reducer && !nextState) console.warn(`reducer \"${reducerName}\" in call \"${callDefinition.name}\" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`);\r\n\r\n        if (nextState) {\r\n            this.setState(nextState);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            setTimeout(() => {\r\n                try {\r\n                    sideEffect({state: nextState, prevState: currentState, payload});\r\n                }\r\n                catch (error) {\r\n                    console.error(`Error in sideEffect (${callDefinition.name}, ${reducerName})`, error);\r\n                }\r\n            });\r\n        }\r\n    };\r\n\r\n    const action = callDefinition.actions[reducerName];\r\n    const bindActionHandler = bind(action);\r\n\r\n    bindActionHandler(\r\n        storeClass,\r\n        handlerName,\r\n        Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName)\r\n    );\r\n\r\n};\r\n",
+    "content": "import { bind } from 'alt-utils/lib/decorators';\r\nimport flatten from '../utils/flatten';\r\nimport { getLevel as getLogLevel, logLevel } from '../utils/logging';\r\n/**\r\n * Decorates a store with any number of call definitions.\r\n */\r\nexport default function bindCalls(...args) {\r\n    return function decorate(storeClass) {\r\n        const calls = flatten(args);\r\n        calls.forEach(call => decorateStoreWithCall(storeClass, call));\r\n        return storeClass;\r\n    };\r\n}\r\n\r\n/**\r\n * Decorates a store with a single call definition.\r\n * Attaches the dataSource specified in the call definition using alt's datasource decorator.\r\n * Creates and binds a handler function for all reducers and actions specified in the call definition.\r\n */\r\nfunction decorateStoreWithCall(storeClass, callDefinition) {\r\n    const actionNames = Object.keys(callDefinition.actions).reduce((result, key) => {\r\n        // remove ACTION_CONSTANT variants generated by alt\r\n        if (result.indexOf(key.toLowerCase()) === -1) {\r\n            result.push(key);\r\n        }\r\n        return result;\r\n    }, []);\r\n    actionNames.forEach(reducerName => {\r\n        bindReducerHandler(reducerName, storeClass, callDefinition);\r\n    });\r\n}\r\n\r\n/**\r\n * Attaches a single reducer handling to the store.\r\n * A new handler method will be created on the store for each action associated\r\n * with a reducer (defaults to the action names: loading, error, success). Each handler will pass\r\n * the current state and the action payload to the reducer with the same name\r\n * and mutate the store with the new state returned by the reducer.\r\n * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.\r\n */\r\nfunction bindReducerHandler(reducerName, storeClass, callDefinition) {\r\n    const handlerName = `_${callDefinition.name}_${reducerName}`;\r\n\r\n    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\r\n\r\n    storeClass.prototype[handlerName] = function handleCallAction(payload) {\r\n        const reducer = callDefinition.hasOwnProperty('reducers') && callDefinition.reducers[reducerName];\r\n        const sideEffect = callDefinition.hasOwnProperty('sideEffects') && callDefinition.sideEffects[reducerName];\r\n        const logging = callDefinition.hasOwnProperty('logging') && callDefinition.logging;\r\n        const logger = callDefinition.hasOwnProperty('logger') && callDefinition.logger;\r\n        const isError = payload instanceof Error;\r\n        if (isError) {\r\n            if (payload.response && payload.response.body && payload.response.body.message) {\r\n                logger.error(reducerName, payload.response.body.message);\r\n            }\r\n            // logger.debug(payload);\r\n        } else if (logging || getLogLevel() === logLevel.FORCE) {\r\n            logger[isError ? 'error' : 'log'](reducerName, payload && payload.toJS ? payload.toJS() : payload);\r\n        }\r\n\r\n        const currentState = this.state;\r\n        let nextState = currentState;\r\n\r\n        if (reducer) {\r\n            //console.log(`[${handlerName}]`, payload, callDefinition);\r\n            try {\r\n                nextState = reducer(currentState, payload);\r\n            } catch (error) {\r\n                console.error(`Error in reducer (${callDefinition.name}, ${reducerName})`, error);\r\n            }\r\n        }\r\n\r\n        if (reducer && !nextState)\r\n            console.warn(\r\n                `reducer \"${reducerName}\" in call \"${\r\n                    callDefinition.name\r\n                }\" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`\r\n            );\r\n\r\n        if (nextState) {\r\n            this.setState(nextState);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            setTimeout(() => {\r\n                try {\r\n                    sideEffect({ state: nextState, prevState: currentState, payload });\r\n                } catch (error) {\r\n                    console.error(`Error in sideEffect (${callDefinition.name}, ${reducerName})`, error);\r\n                }\r\n            });\r\n        }\r\n    };\r\n\r\n    const action = callDefinition.actions[reducerName];\r\n    const bindActionHandler = bind(action);\r\n\r\n    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));\r\n}\r\n",
     "static": true,
     "longname": "src/decorators/bindCalls.js",
     "access": null,
@@ -687,7 +680,7 @@
     "__docId__": 25,
     "kind": "file",
     "name": "src/decorators/bindHandlers.js",
-    "content": "import {bind} from 'alt-utils/lib/decorators';\r\nimport flattenArrays from '../utils/flatten';\r\n\r\n// TODO clean up and refactor terminoloy, potentially deprecate the old \"handlers\" system\r\n// (viewActions are now called handlers, e.g. handlerFactory)\r\n\r\n/**\r\n * Decorates a store with any number of action handlers.\r\n */\r\nexport default function bindHandlers(actions, ...handlers) {\r\n    return function decorateStore(storeClass) {\r\n        // attach bound handler methods to the store class for each handler definition\r\n        flattenArrays(handlers).forEach(handler => attachBoundHandler(storeClass, actions[handler.name], handler));\r\n        return storeClass;\r\n    };\r\n}\r\n/**\r\n * Attaches a single reducer handling to the store.\r\n *\r\n * A new handler method will be created on the store class.\r\n * The handler method invokes the reducer giving it the current store state.\r\n * It then sets the reducer result as the new store state.\r\n *\r\n * If a sideEffect function is defined, it will be called with the signature `{state, prevState, payload}`\r\n *\r\n * @param {object} storeClass - The class of the store to be decorated\r\n * @param {object} action - An altjs action\r\n * @param {object} handler - An handler object with `{name[, reducer, sideEffect]}`\r\n */\r\nfunction attachBoundHandler(storeClass, action, handler) {\r\n    // name is required\r\n\r\n    const methodName = `__handle_${handler.name}`;\r\n\r\n    if (storeClass.prototype[methodName]) throw new Error(`Duplicate method \"${methodName}\"`);\r\n\r\n    /**\r\n     * Handles an action call and sets the next state of the store.\r\n     *\r\n     * @param {any} payload - the single argument that can be specified when calling an action.\r\n     *                      If you need to use more than one argument, use an object with any properties you need.\r\n     */\r\n    storeClass.prototype[methodName] = function handleAction(payload) {\r\n\r\n        const reducer = handler.hasOwnProperty('reducer') && handler.reducer;\r\n        const sideEffect = handler.hasOwnProperty('sideEffect') && handler.sideEffect;\r\n\r\n        const currentState = this.state;\r\n\r\n\r\n        // the actual operation: run the reducer and set its result as state\r\n        let nextState = currentState;\r\n        if (reducer) {\r\n            try {\r\n                nextState = reducer(currentState, payload);\r\n            }\r\n            catch (error) {\r\n                console.error(`Error in reducer (${handler.name}, ${handler.name})`, error);\r\n            }\r\n        }\r\n        if (nextState) {\r\n            this.setState(nextState);\r\n        }\r\n        else if (reducer) {\r\n            console.warn(`reducer \"${handler.name}\" in call \"${handler.name}\" did not return a new state.\r\n                Either you forgot to return it, or if no state change is required, maybe you should use a sideEffect instead of a reducer.\r\n            `);\r\n        }\r\n\r\n\r\n\r\n        if (sideEffect) {\r\n            try {\r\n                sideEffect({state: nextState, prevState: currentState, payload});\r\n            }\r\n            catch (error) {\r\n                console.error(`Error in sideEffect (${handler.name}, ${handler.name})`, error);\r\n            }\r\n        }\r\n    };\r\n\r\n    const bindhandler = bind(action);\r\n\r\n    bindhandler(\r\n        storeClass,\r\n        methodName,\r\n        Object.getOwnPropertyDescriptor(storeClass.prototype, methodName)\r\n    );\r\n\r\n};\r\n",
+    "content": "import { bind } from 'alt-utils/lib/decorators';\r\nimport flattenArrays from '../utils/flatten';\r\n\r\n// TODO clean up and refactor terminoloy, potentially deprecate the old \"handlers\" system\r\n// (viewActions are now called handlers, e.g. handlerFactory)\r\n\r\n/**\r\n * Decorates a store with any number of action handlers.\r\n */\r\nexport default function bindHandlers(actions, ...handlers) {\r\n    return function decorateStore(storeClass) {\r\n        // attach bound handler methods to the store class for each handler definition\r\n        flattenArrays(handlers).forEach(handler => attachBoundHandler(storeClass, actions[handler.name], handler));\r\n        return storeClass;\r\n    };\r\n}\r\n/**\r\n * Attaches a single reducer handling to the store.\r\n *\r\n * A new handler method will be created on the store class.\r\n * The handler method invokes the reducer giving it the current store state.\r\n * It then sets the reducer result as the new store state.\r\n *\r\n * If a sideEffect function is defined, it will be called with the signature `{state, prevState, payload}`\r\n *\r\n * @param {object} storeClass - The class of the store to be decorated\r\n * @param {object} action - An altjs action\r\n * @param {object} handler - An handler object with `{name[, reducer, sideEffect]}`\r\n */\r\nfunction attachBoundHandler(storeClass, action, handler) {\r\n    // name is required\r\n\r\n    const methodName = `__handle_${handler.name}`;\r\n\r\n    if (storeClass.prototype[methodName]) throw new Error(`Duplicate method \"${methodName}\"`);\r\n\r\n    /**\r\n     * Handles an action call and sets the next state of the store.\r\n     *\r\n     * @param {any} payload - the single argument that can be specified when calling an action.\r\n     *                      If you need to use more than one argument, use an object with any properties you need.\r\n     */\r\n    storeClass.prototype[methodName] = function handleAction(payload) {\r\n        const reducer = handler.hasOwnProperty('reducer') && handler.reducer;\r\n        const sideEffect = handler.hasOwnProperty('sideEffect') && handler.sideEffect;\r\n\r\n        const currentState = this.state;\r\n\r\n        // the actual operation: run the reducer and set its result as state\r\n        let nextState = currentState;\r\n        if (reducer) {\r\n            try {\r\n                nextState = reducer(currentState, payload);\r\n            } catch (error) {\r\n                console.error(`Error in reducer (${handler.name}, ${handler.name})`, error);\r\n            }\r\n        }\r\n        if (nextState) {\r\n            this.setState(nextState);\r\n        } else if (reducer) {\r\n            console.warn(`reducer \"${handler.name}\" in call \"${handler.name}\" did not return a new state.\r\n                Either you forgot to return it, or if no state change is required, maybe you should use a sideEffect instead of a reducer.\r\n            `);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            try {\r\n                sideEffect({ state: nextState, prevState: currentState, payload });\r\n            } catch (error) {\r\n                console.error(`Error in sideEffect (${handler.name}, ${handler.name})`, error);\r\n            }\r\n        }\r\n    };\r\n\r\n    const bindhandler = bind(action);\r\n\r\n    bindhandler(storeClass, methodName, Object.getOwnPropertyDescriptor(storeClass.prototype, methodName));\r\n}\r\n",
     "static": true,
     "longname": "src/decorators/bindHandlers.js",
     "access": null,
@@ -782,7 +775,7 @@
     "__docId__": 28,
     "kind": "file",
     "name": "src/decorators/connect.js",
-    "content": "import connectToStores from 'alt-utils/lib/connectToStores';\r\nimport React, { createElement } from 'react';\r\n\r\n// TODO: deprecate connectAlternative asap!\r\n\r\n\r\n/* eslint-disable */\r\n/**\r\n * A component decorator for connecting to immutable stores.\r\n *\r\n * Basically a wrapper around `alt/utils/connectToStores`.  \r\n * Adds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.\r\n *\r\n * - Supports multiple stores.\r\n * - Supports a simplified, string-based access to stores, with optional renaming of props.\r\n * - Supports more flexible, redux-like access to stores using mapper functions.\r\n *\r\n * ### String notation\r\n *\r\n * @example\r\n * @connect([{store: MyStore, props: ['myValue', 'anotherValue']}])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          const {myValue, anotherValue} = this.props;\r\n *          ...\r\n *      }\r\n * }\r\n *\r\n * You can rename props using the ` as ` alias syntax\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: PeopleStore,\r\n *      props: ['items as people']\r\n * }, {\r\n *      store: ProductStore,\r\n *      props: ['items as products']\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          // this.props.people, this.props.products, ...\r\n *      }\r\n * }\r\n *\r\n * ### Function notation\r\n *\r\n * Use mapper functions instead of strings in order to manually retrieve store values.\r\n * The function receives the store state and the component props.\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: MyStore,\r\n *      props: (state, props) => {\r\n *          return {\r\n *              item: state.get('items').filter(item => item.get('id') === props.id)\r\n *          }\r\n *      }\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          const item = this.props.item;\r\n *      }\r\n * }\r\n *\r\n * Technically, you could also mix all access methods, but this defeats the purpose of simple access:\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: MyStore,\r\n *      props: ['someProp', 'anotherProp', (state, props) => {\r\n *          return {\r\n *              item: state.get('items').filter(item => item.get('id') === props.id)\r\n *          }\r\n *      }, 'some.nested.value as foo']\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      ...\r\n * }\r\n *\r\n * There are however valid usecase for mixing access methods. For example, you might have keys that themselves contain dots.\r\n * For example, that is the case when using `validate.js` with nested constraints and keeping validation results in the store.\r\n * There might be an `errors` map in your storewith keys like `user.address.street`. In such a case you wouldn't be able to access those values because the dots do not\r\n * represent the actual keyPath in the tree:\r\n *\r\n * @example\r\n * @connect([{\r\n *   store,\r\n *   props: ['user.address.street', (state) => ({errors: state.getIn(['errors', 'user.address.street'])})]\r\n * }])\r\n *\r\n * @see https://github.com/goatslacker/alt/blob/master/docs/utils/immutable.md\r\n * @see https://github.com/goatslacker/alt/blob/master/src/utils/connectToStores.js\r\n *\r\n * @param {Array<{store: AltStore, props: Array<string>}>} definitions - A list of objects that each define a store connection\r\n */\r\n/* eslint-enable */\r\nexport default function connect(definitions) {\r\n    return function(targetClass) {\r\n        targetClass.getStores = function() {\r\n            return definitions.map((def) => def.store);\r\n        };\r\n        targetClass.getPropsFromStores = function(componentProps) {\r\n            return definitions.reduce((result, def) => {\r\n                if (typeof def.props === 'function') {\r\n                    // the props definition is itself a function. return with its result.\r\n                    return Object.assign(result, def.props(def.store.state, componentProps));\r\n                }\r\n                // the props definition is an array. evaluate and reduce each of its elements\r\n                return def.props.reduce((result, accessor) => {\r\n                    return Object.assign(result, mapProps(accessor, def.store.state, componentProps));\r\n                }, result);\r\n            }, {});\r\n        };\r\n        return connectToStores(targetClass);\r\n    };\r\n}\r\n\r\nfunction mapProps(accessor, state, props) {\r\n    switch (typeof accessor) {\r\n        case 'function':\r\n            return mapFuncAccessor(accessor, state, props);\r\n        case 'string':\r\n            return mapStringAccessor(accessor, state);\r\n    }\r\n}\r\n\r\nfunction mapFuncAccessor(accessor, state, props) {\r\n    return accessor(state, props);\r\n}\r\n\r\nfunction mapStringAccessor(accessor, state) {\r\n    const {keyPath, propName} = parseAccessor(accessor);\r\n    return {\r\n        [propName]: state.getIn(keyPath)\r\n    };\r\n}\r\n\r\n/**\r\n * Takes the accessor defined by the component and retrieves `keyPath` and `propName`\r\n * The accessor may be the name of a top-level value in the store, or a path to a nested value.\r\n * Nested values can be accessed using a dot-separated syntax (e.g. `some.nested.value`).\r\n *\r\n * The name of the prop received by the component is the last part of the accessor in case of\r\n * a nested syntax, or the accessor itself in case of a simple top-level accessor.\r\n *\r\n * If you need to pass the value using a different prop name, you can use the ` as ` alias syntax,\r\n * e.g. `someProp as myProp` or `some.prop as myProp`.\r\n *\r\n * examples:\r\n *\r\n *      'someValue' // {keyPath: ['someValue'], propName: 'someValue'}\r\n *      'someValue as foo' // {keyPath: ['someValue'], propName: 'foo'}\r\n *      'some.nested.value' // {keyPath: ['some', 'nested', 'value'], propName: 'value'}\r\n *      'some.nested.value as foo' // {keyPath: ['some', 'nested', 'value'], propName: 'foo'}\r\n *\r\n * @param {string} string - The value accessor passed by the component decorator.\r\n * @return {object} result - A `{storeName, propName}` object\r\n * @return {string} result.keyPath - An immutablejs keyPath array to the value in the store\r\n * @return {string} result.propName - name for the prop as expected by the component\r\n */\r\nfunction parseAccessor(accessor) {\r\n    let keyPath, propName;\r\n    if (accessor.indexOf(' as ') > -1) {\r\n        // e.g. 'foo as bar' or 'some.foo as bar'\r\n        const parts = accessor.split(' as ');\r\n        keyPath = parts[0].split('.');\r\n        propName = parts[1];\r\n    }\r\n    else {\r\n        // e.g. 'foo' or 'some.foo'\r\n        keyPath = accessor.split('.');\r\n        propName = keyPath[keyPath.length - 1];\r\n    }\r\n    return {keyPath, propName};\r\n}\r\n\r\n\r\nfunction connectAlternative(store, mapStateToProps, WrappedComponent) {\r\n    return class Connect extends React.Component {\r\n\r\n        constructor(props, context) {\r\n            super(props, context);\r\n            const storeState = store.getState();\r\n            this.state = { storeState: mapStateToProps(storeState, props) };\r\n        }\r\n\r\n        componentDidMount() {\r\n            this._isMounted = true;\r\n            this.storeSubscription = store.listen(this.handleStoreUpdate);\r\n        }\r\n\r\n        componentWillUnmount() {\r\n            this._isMounted = false;\r\n            if (this.storeSubscription) {\r\n                store.unlisten(this.storeSubscription);\r\n            }\r\n        }\r\n\r\n        // if we use props in mapStateToProps,\r\n        // we need to run it again when props have changed\r\n        componentWillReceiveProps(nextProps) {\r\n            //untested! should work though\r\n            if(mapStateToProps.length > 1) {\r\n                this.setState({storeState: mapStateToProps(store.getState(), nextProps)});\r\n            }\r\n        }\r\n\r\n        handleStoreUpdate = state => {\r\n            if(this._isMounted) {\r\n                this.setState({ storeState: mapStateToProps(state, this.props) });\r\n            }\r\n        }\r\n\r\n        render() {\r\n            const mergedProps = { ...this.props, ...this.state.storeState };\r\n            return createElement(WrappedComponent, mergedProps);\r\n        }\r\n\r\n    };\r\n}\r\n\r\nexport {connectAlternative};\r\n",
+    "content": "import connectToStores from 'alt-utils/lib/connectToStores';\r\nimport React, { createElement } from 'react';\r\n\r\n// TODO: deprecate connectAlternative asap!\r\n\r\n/* eslint-disable */\r\n/**\r\n * A component decorator for connecting to immutable stores.\r\n *\r\n * Basically a wrapper around `alt/utils/connectToStores`.  \r\n * Adds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.\r\n *\r\n * - Supports multiple stores.\r\n * - Supports a simplified, string-based access to stores, with optional renaming of props.\r\n * - Supports more flexible, redux-like access to stores using mapper functions.\r\n *\r\n * ### String notation\r\n *\r\n * @example\r\n * @connect([{store: MyStore, props: ['myValue', 'anotherValue']}])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          const {myValue, anotherValue} = this.props;\r\n *          ...\r\n *      }\r\n * }\r\n *\r\n * You can rename props using the ` as ` alias syntax\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: PeopleStore,\r\n *      props: ['items as people']\r\n * }, {\r\n *      store: ProductStore,\r\n *      props: ['items as products']\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          // this.props.people, this.props.products, ...\r\n *      }\r\n * }\r\n *\r\n * ### Function notation\r\n *\r\n * Use mapper functions instead of strings in order to manually retrieve store values.\r\n * The function receives the store state and the component props.\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: MyStore,\r\n *      props: (state, props) => {\r\n *          return {\r\n *              item: state.get('items').filter(item => item.get('id') === props.id)\r\n *          }\r\n *      }\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          const item = this.props.item;\r\n *      }\r\n * }\r\n *\r\n * Technically, you could also mix all access methods, but this defeats the purpose of simple access:\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: MyStore,\r\n *      props: ['someProp', 'anotherProp', (state, props) => {\r\n *          return {\r\n *              item: state.get('items').filter(item => item.get('id') === props.id)\r\n *          }\r\n *      }, 'some.nested.value as foo']\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      ...\r\n * }\r\n *\r\n * There are however valid usecase for mixing access methods. For example, you might have keys that themselves contain dots.\r\n * For example, that is the case when using `validate.js` with nested constraints and keeping validation results in the store.\r\n * There might be an `errors` map in your storewith keys like `user.address.street`. In such a case you wouldn't be able to access those values because the dots do not\r\n * represent the actual keyPath in the tree:\r\n *\r\n * @example\r\n * @connect([{\r\n *   store,\r\n *   props: ['user.address.street', (state) => ({errors: state.getIn(['errors', 'user.address.street'])})]\r\n * }])\r\n *\r\n * @see https://github.com/goatslacker/alt/blob/master/docs/utils/immutable.md\r\n * @see https://github.com/goatslacker/alt/blob/master/src/utils/connectToStores.js\r\n *\r\n * @param {Array<{store: AltStore, props: Array<string>}>} definitions - A list of objects that each define a store connection\r\n */\r\n/* eslint-enable */\r\nexport default function connect(definitions) {\r\n    return function(targetClass) {\r\n        targetClass.getStores = function() {\r\n            return definitions.map(def => def.store);\r\n        };\r\n        targetClass.getPropsFromStores = function(componentProps) {\r\n            return definitions.reduce((result, def) => {\r\n                if (typeof def.props === 'function') {\r\n                    // the props definition is itself a function. return with its result.\r\n                    return Object.assign(result, def.props(def.store.state, componentProps));\r\n                }\r\n                // the props definition is an array. evaluate and reduce each of its elements\r\n                return def.props.reduce((result, accessor) => {\r\n                    return Object.assign(result, mapProps(accessor, def.store.state, componentProps));\r\n                }, result);\r\n            }, {});\r\n        };\r\n        return connectToStores(targetClass);\r\n    };\r\n}\r\n\r\nfunction mapProps(accessor, state, props) {\r\n    switch (typeof accessor) {\r\n        case 'function':\r\n            return mapFuncAccessor(accessor, state, props);\r\n        case 'string':\r\n            return mapStringAccessor(accessor, state);\r\n    }\r\n}\r\n\r\nfunction mapFuncAccessor(accessor, state, props) {\r\n    return accessor(state, props);\r\n}\r\n\r\nfunction mapStringAccessor(accessor, state) {\r\n    const { keyPath, propName } = parseAccessor(accessor);\r\n    return {\r\n        [propName]: state.getIn(keyPath)\r\n    };\r\n}\r\n\r\n/**\r\n * Takes the accessor defined by the component and retrieves `keyPath` and `propName`\r\n * The accessor may be the name of a top-level value in the store, or a path to a nested value.\r\n * Nested values can be accessed using a dot-separated syntax (e.g. `some.nested.value`).\r\n *\r\n * The name of the prop received by the component is the last part of the accessor in case of\r\n * a nested syntax, or the accessor itself in case of a simple top-level accessor.\r\n *\r\n * If you need to pass the value using a different prop name, you can use the ` as ` alias syntax,\r\n * e.g. `someProp as myProp` or `some.prop as myProp`.\r\n *\r\n * examples:\r\n *\r\n *      'someValue' // {keyPath: ['someValue'], propName: 'someValue'}\r\n *      'someValue as foo' // {keyPath: ['someValue'], propName: 'foo'}\r\n *      'some.nested.value' // {keyPath: ['some', 'nested', 'value'], propName: 'value'}\r\n *      'some.nested.value as foo' // {keyPath: ['some', 'nested', 'value'], propName: 'foo'}\r\n *\r\n * @param {string} string - The value accessor passed by the component decorator.\r\n * @return {object} result - A `{storeName, propName}` object\r\n * @return {string} result.keyPath - An immutablejs keyPath array to the value in the store\r\n * @return {string} result.propName - name for the prop as expected by the component\r\n */\r\nfunction parseAccessor(accessor) {\r\n    let keyPath, propName;\r\n    if (accessor.indexOf(' as ') > -1) {\r\n        // e.g. 'foo as bar' or 'some.foo as bar'\r\n        const parts = accessor.split(' as ');\r\n        keyPath = parts[0].split('.');\r\n        propName = parts[1];\r\n    } else {\r\n        // e.g. 'foo' or 'some.foo'\r\n        keyPath = accessor.split('.');\r\n        propName = keyPath[keyPath.length - 1];\r\n    }\r\n    return { keyPath, propName };\r\n}\r\n\r\nfunction connectAlternative(store, mapStateToProps, WrappedComponent) {\r\n    return class Connect extends React.Component {\r\n        constructor(props, context) {\r\n            super(props, context);\r\n            const storeState = store.getState();\r\n            this.state = { storeState: mapStateToProps(storeState, props) };\r\n        }\r\n\r\n        componentDidMount() {\r\n            this._isMounted = true;\r\n            this.storeSubscription = store.listen(this.handleStoreUpdate);\r\n        }\r\n\r\n        componentWillUnmount() {\r\n            this._isMounted = false;\r\n            if (this.storeSubscription) {\r\n                store.unlisten(this.storeSubscription);\r\n            }\r\n        }\r\n\r\n        // if we use props in mapStateToProps,\r\n        // we need to run it again when props have changed\r\n        componentWillReceiveProps(nextProps) {\r\n            //untested! should work though\r\n            if (mapStateToProps.length > 1) {\r\n                this.setState({ storeState: mapStateToProps(store.getState(), nextProps) });\r\n            }\r\n        }\r\n\r\n        handleStoreUpdate = state => {\r\n            if (this._isMounted) {\r\n                this.setState({ storeState: mapStateToProps(state, this.props) });\r\n            }\r\n        };\r\n\r\n        render() {\r\n            const mergedProps = { ...this.props, ...this.state.storeState };\r\n            return createElement(WrappedComponent, mergedProps);\r\n        }\r\n    };\r\n}\r\n\r\nexport { connectAlternative };\r\n",
     "static": true,
     "longname": "src/decorators/connect.js",
     "access": null,
@@ -814,7 +807,7 @@
       "https://github.com/goatslacker/alt/blob/master/docs/utils/immutable.md",
       "https://github.com/goatslacker/alt/blob/master/src/utils/connectToStores.js"
     ],
-    "lineNumber": 97,
+    "lineNumber": 96,
     "params": [
       {
         "nullable": null,
@@ -847,7 +840,7 @@
     "importPath": "@xailabs/altx/src/decorators/connect.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 118,
+    "lineNumber": 117,
     "undocument": true,
     "unknown": [
       {
@@ -895,7 +888,7 @@
     "importPath": "@xailabs/altx/src/decorators/connect.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 126,
     "undocument": true,
     "unknown": [
       {
@@ -943,7 +936,7 @@
     "importPath": "@xailabs/altx/src/decorators/connect.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 131,
+    "lineNumber": 130,
     "undocument": true,
     "unknown": [
       {
@@ -985,7 +978,7 @@
     "importPath": "@xailabs/altx/src/decorators/connect.js",
     "importStyle": null,
     "description": "Takes the accessor defined by the component and retrieves `keyPath` and `propName`\nThe accessor may be the name of a top-level value in the store, or a path to a nested value.\nNested values can be accessed using a dot-separated syntax (e.g. `some.nested.value`).\n\nThe name of the prop received by the component is the last part of the accessor in case of\na nested syntax, or the accessor itself in case of a simple top-level accessor.\n\nIf you need to pass the value using a different prop name, you can use the ` as ` alias syntax,\ne.g. `someProp as myProp` or `some.prop as myProp`.\n\nexamples:\n\n     'someValue' // {keyPath: ['someValue'], propName: 'someValue'}\n     'someValue as foo' // {keyPath: ['someValue'], propName: 'foo'}\n     'some.nested.value' // {keyPath: ['some', 'nested', 'value'], propName: 'value'}\n     'some.nested.value as foo' // {keyPath: ['some', 'nested', 'value'], propName: 'foo'}",
-    "lineNumber": 161,
+    "lineNumber": 160,
     "params": [
       {
         "nullable": null,
@@ -1021,7 +1014,7 @@
     "importPath": "@xailabs/altx/src/decorators/connect.js",
     "importStyle": "{connectAlternative}",
     "description": null,
-    "lineNumber": 178,
+    "lineNumber": 175,
     "undocument": true,
     "unknown": [
       {
@@ -1106,7 +1099,7 @@
     "__docId__": 37,
     "kind": "file",
     "name": "src/handlerFactory.js",
-    "content": "import createActions from './createActions';\r\nimport {createLogger} from './utils/logging';\r\n\r\nexport default function handlerFactory(action, {\r\n    namespace='global',\r\n    logger=createLogger(action.id || action)\r\n}={}) {\r\n    const name = action.id || action;\r\n    action = typeof action === 'string' ? createActions(namespace, action)[action] : action;\r\n    return {\r\n        create: (createDefinition) => {\r\n            const definition = {\r\n                name,\r\n                action,\r\n                namespace,\r\n                logger\r\n            };\r\n            if (typeof createDefinition === 'function') {\r\n                return Object.assign(definition, createDefinition({namespace, logger}));\r\n            }\r\n            else {\r\n                return Object.assign(definition, createDefinition);\r\n            }\r\n        }\r\n    };\r\n}\r\n",
+    "content": "import createActions from './createActions';\r\nimport { createLogger } from './utils/logging';\r\n\r\nexport default function handlerFactory(\r\n    action,\r\n    { namespace = 'global', logger = createLogger(action.id || action) } = {}\r\n) {\r\n    const name = action.id || action;\r\n    action = typeof action === 'string' ? createActions(namespace, action)[action] : action;\r\n    return {\r\n        create: createDefinition => {\r\n            const definition = {\r\n                name,\r\n                action,\r\n                namespace,\r\n                logger\r\n            };\r\n            if (typeof createDefinition === 'function') {\r\n                return Object.assign(definition, createDefinition({ namespace, logger }));\r\n            } else {\r\n                return Object.assign(definition, createDefinition);\r\n            }\r\n        }\r\n    };\r\n}\r\n",
     "static": true,
     "longname": "src/handlerFactory.js",
     "access": null,
@@ -1162,7 +1155,7 @@
     "__docId__": 39,
     "kind": "file",
     "name": "src/ImmutableStore.js",
-    "content": "import Immutable from 'immutable';\r\nimport transmitter from 'transmitter';\r\n\r\nconst reset = transmitter();\r\nexport function resetStores() {\r\n    reset.publish();\r\n}\r\n\r\n\r\nexport default class ImmutableStore {\r\n    constructor(initialData) {\r\n        this.listName = 'items';\r\n        this.exportPublicMethods({\r\n            getItemById: this.getItemById,\r\n            getIndexById: this.getIndexById,\r\n            find: this.find,\r\n            reset: this.reset\r\n        });\r\n        if (initialData) {\r\n            this.init(initialData);\r\n        }\r\n        reset.subscribe(() => {\r\n            const data = this.initialData || {};\r\n            const nextState = data.toJS ? data : Immutable.fromJS(data);\r\n            this.setState(nextState);\r\n        });\r\n    }\r\n\r\n    init(data) {\r\n        this.initialData = data;\r\n        this.state = data.toJS ? data : Immutable.fromJS(data);\r\n        return this.state;\r\n    }\r\n\r\n    reset = () => {\r\n        this.change(this.initialData);\r\n    };\r\n\r\n    getItemById = (id, listName) => {\r\n        const list = this.state.get(listName || this.listName);\r\n        if (list) {\r\n            return list.find((item) => item.get('id') === id);\r\n        }\r\n        else {\r\n            console.warn(this, 'Failed in getItemById(): list not found');\r\n            //debugger; //eslint-disable-line\r\n        }\r\n        return null;\r\n    };\r\n\r\n    getIndexById = (id, listName) => {\r\n        listName = listName || this.listName;\r\n        const list = this.state.get(listName);\r\n        if (list) {\r\n            return list.indexOf(this.getItemById(id, listName));\r\n        }\r\n        console.warn(this, 'Failed in getIndexById(): list not found');\r\n        return -1;\r\n    };\r\n\r\n    /**\r\n     * Changes a property to a new value.\r\n     * There are three modes of calling this function:\r\n     *\r\n     * __change('key', value)__\r\n     * changes one property of the state object.\r\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/set\r\n     *\r\n     * __change({key: value, ...})__\r\n     * changes any number of state properties at once\r\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\r\n     *\r\n     * __change({id:5}, {key: value})__\r\n     * changes any number of properties on any matching item within a list\r\n     * @see {@link #changeItem()}\r\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\r\n     */\r\n    change(prop, value) {\r\n        if (arguments.length === 2 && typeof prop !== 'string') {\r\n            this.changeItem(prop, value);\r\n        } else\r\n        if (arguments.length === 2) {\r\n            this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));\r\n        } else {\r\n            this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));\r\n        }\r\n    }\r\n\r\n    setItemProp(id, key, value, listName) {\r\n        return this.state.merge({\r\n            [listName || this.listName]: this.state.get(listName || this.listName).map((item) => {\r\n                if (item.get('id') === id) {\r\n                    return item.set(key, value);\r\n                }\r\n                return item;\r\n            })\r\n        });\r\n    }\r\n\r\n    /**\r\n     * Changes a specific item in a list within the state object.\r\n     * @throws Error if when no item could be found\r\n     * @param {object} filter\r\n     * @param {object} filter.item - An object that specifies key/value pairs that must be matched by list items, e.g. {id: 13}\r\n     * @param {string} [filter.list] - The name of the list to search in. Defaults to 'items'\r\n     * @param {object} data - An object containing key/value pairs for data to be set at matched items\r\n     */\r\n    changeItem(filter, data) {\r\n        //console.log('changeItem', filter, data);\r\n        const listName = filter.list || this.listName;\r\n        const list = this.state.get(listName);\r\n        //console.log('list found', list.toJS());\r\n        const matchingItem = this.find(listName, filter.item);\r\n        if(matchingItem) {\r\n            //console.log('item found', matchingItem);\r\n            const matchingIndex = list.indexOf(matchingItem);\r\n            const newItem = matchingItem.merge(data);\r\n            const newList = list.set(matchingIndex, newItem);\r\n            //console.log('new list', newList.toJS());\r\n            this.change({\r\n                [listName]: newList\r\n            });\r\n        } else {\r\n            throw new Error('changeItem: no item found for filter: ' + JSON.stringify(filter) + ', list:', JSON.stringify(list.toJS()));\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Returns a list of items that match a filter.\r\n     *\r\n     * @param {string} listName - The name of the list within the state object.\r\n     * @param {object} filter - An object with key/value pairs to test items against\r\n     * @returns {List} A new immutable list that only contains items that matched all key/value pairs of `filter`\r\n     */\r\n    find = (listName, filter) => {\r\n        const list = this.state.get(listName);\r\n        const result = list.find((item) => {\r\n            let match = true;\r\n            Object.keys(filter).map((prop) => {\r\n                const itemValue = item.get(prop);\r\n                const filterValue = filter[prop];\r\n                if (itemValue !== filterValue) {\r\n                    match = false;\r\n                }\r\n            });\r\n            return match;\r\n        });\r\n        return result;\r\n    };\r\n\r\n    useApi() {\r\n        return this.getInstance();\r\n    }\r\n}\r\n\r\n",
+    "content": "import Immutable from 'immutable';\nimport transmitter from 'transmitter';\n\nconst reset = transmitter();\nexport function resetStores() {\n    reset.publish();\n}\n\nexport default class ImmutableStore {\n    constructor(initialData) {\n        this.listName = 'items';\n        this.exportPublicMethods({\n            getItemById: this.getItemById,\n            getIndexById: this.getIndexById,\n            find: this.find,\n            reset: this.reset\n        });\n        if (initialData) {\n            this.init(initialData);\n        }\n        reset.subscribe(() => {\n            const data = this.initialData || {};\n            const nextState = data.toJS ? data : Immutable.fromJS(data);\n            this.setState(nextState);\n        });\n\n        if (process.env.NODE_ENV === 'development') {\n            window.postMessage(\n                {\n                    payload: { action: 'REFRESH' },\n                    source: 'alt-hook'\n                },\n                '*'\n            );\n        }\n    }\n\n    init(data) {\n        this.initialData = data;\n        this.state = data.toJS ? data : Immutable.fromJS(data);\n        return this.state;\n    }\n\n    reset = () => {\n        this.change(this.initialData);\n    };\n\n    getItemById = (id, listName) => {\n        const list = this.state.get(listName || this.listName);\n        if (list) {\n            return list.find(item => item.get('id') === id);\n        } else {\n            console.warn(this, 'Failed in getItemById(): list not found');\n            //debugger; //eslint-disable-line\n        }\n        return null;\n    };\n\n    getIndexById = (id, listName) => {\n        listName = listName || this.listName;\n        const list = this.state.get(listName);\n        if (list) {\n            return list.indexOf(this.getItemById(id, listName));\n        }\n        console.warn(this, 'Failed in getIndexById(): list not found');\n        return -1;\n    };\n\n    /**\n     * Changes a property to a new value.\n     * There are three modes of calling this function:\n     *\n     * __change('key', value)__\n     * changes one property of the state object.\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/set\n     *\n     * __change({key: value, ...})__\n     * changes any number of state properties at once\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\n     *\n     * __change({id:5}, {key: value})__\n     * changes any number of properties on any matching item within a list\n     * @see {@link #changeItem()}\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\n     */\n    change(prop, value) {\n        if (arguments.length === 2 && typeof prop !== 'string') {\n            this.changeItem(prop, value);\n        } else if (arguments.length === 2) {\n            this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));\n        } else {\n            this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));\n        }\n    }\n\n    setItemProp(id, key, value, listName) {\n        return this.state.merge({\n            [listName || this.listName]: this.state.get(listName || this.listName).map(item => {\n                if (item.get('id') === id) {\n                    return item.set(key, value);\n                }\n                return item;\n            })\n        });\n    }\n\n    /**\n     * Changes a specific item in a list within the state object.\n     * @throws Error if when no item could be found\n     * @param {object} filter\n     * @param {object} filter.item - An object that specifies key/value pairs that must be matched by list items, e.g. {id: 13}\n     * @param {string} [filter.list] - The name of the list to search in. Defaults to 'items'\n     * @param {object} data - An object containing key/value pairs for data to be set at matched items\n     */\n    changeItem(filter, data) {\n        //console.log('changeItem', filter, data);\n        const listName = filter.list || this.listName;\n        const list = this.state.get(listName);\n        //console.log('list found', list.toJS());\n        const matchingItem = this.find(listName, filter.item);\n        if (matchingItem) {\n            //console.log('item found', matchingItem);\n            const matchingIndex = list.indexOf(matchingItem);\n            const newItem = matchingItem.merge(data);\n            const newList = list.set(matchingIndex, newItem);\n            //console.log('new list', newList.toJS());\n            this.change({\n                [listName]: newList\n            });\n        } else {\n            throw new Error(\n                'changeItem: no item found for filter: ' + JSON.stringify(filter) + ', list:',\n                JSON.stringify(list.toJS())\n            );\n        }\n    }\n\n    /**\n     * Returns a list of items that match a filter.\n     *\n     * @param {string} listName - The name of the list within the state object.\n     * @param {object} filter - An object with key/value pairs to test items against\n     * @returns {List} A new immutable list that only contains items that matched all key/value pairs of `filter`\n     */\n    find = (listName, filter) => {\n        const list = this.state.get(listName);\n        const result = list.find(item => {\n            let match = true;\n            Object.keys(filter).map(prop => {\n                const itemValue = item.get(prop);\n                const filterValue = filter[prop];\n                if (itemValue !== filterValue) {\n                    match = false;\n                }\n            });\n            return match;\n        });\n        return result;\n    };\n\n    useApi() {\n        return this.getInstance();\n    }\n}\n",
     "static": true,
     "longname": "src/ImmutableStore.js",
     "access": null,
@@ -1231,7 +1224,7 @@
     "importPath": "@xailabs/altx/src/ImmutableStore.js",
     "importStyle": "ImmutableStore",
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 9,
     "undocument": true,
     "unknown": [
       {
@@ -1252,7 +1245,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 10,
     "undocument": true,
     "unknown": [
       {
@@ -1278,7 +1271,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#listName",
     "access": null,
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 11,
     "undocument": true,
     "unknown": [
       {
@@ -1303,7 +1296,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#init",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 38,
     "undocument": true,
     "unknown": [
       {
@@ -1334,7 +1327,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#initialData",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 39,
     "undocument": true,
     "unknown": [
       {
@@ -1357,7 +1350,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#state",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 40,
     "undocument": true,
     "unknown": [
       {
@@ -1380,7 +1373,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#reset",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 44,
     "undocument": true,
     "unknown": [
       {
@@ -1403,7 +1396,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#getItemById",
     "access": null,
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 48,
     "undocument": true,
     "unknown": [
       {
@@ -1426,7 +1419,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#getIndexById",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 59,
     "undocument": true,
     "unknown": [
       {
@@ -1457,7 +1450,7 @@
       "{@link #changeItem()}",
       "https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep"
     ],
-    "lineNumber": 78,
+    "lineNumber": 86,
     "params": [
       {
         "name": "prop",
@@ -1484,7 +1477,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#setItemProp",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 96,
     "undocument": true,
     "unknown": [
       {
@@ -1535,7 +1528,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#changeItem",
     "access": null,
     "description": "Changes a specific item in a list within the state object.",
-    "lineNumber": 108,
+    "lineNumber": 115,
     "params": [
       {
         "nullable": null,
@@ -1596,7 +1589,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#find",
     "access": null,
     "description": "Returns a list of items that match a filter.",
-    "lineNumber": 135,
+    "lineNumber": 145,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1650,7 +1643,7 @@
     "longname": "src/ImmutableStore.js~ImmutableStore#useApi",
     "access": null,
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 161,
     "undocument": true,
     "unknown": [
       {
@@ -1680,7 +1673,7 @@
     "__docId__": 57,
     "kind": "file",
     "name": "src/utils/flatten.js",
-    "content": "/**\r\n * Reduces a mixed array to a flat one.\r\n */\r\nexport default function flatten(...args) {\r\n    return args.reduce((result, arg) => {\r\n        if (Array.isArray(arg)) {\r\n            arg.forEach(e => {\r\n                if (Array.isArray(e)) {\r\n                    result = result.concat(flatten(e));\r\n                }\r\n                else {\r\n                    result.push(e);\r\n                }\r\n            });\r\n        }\r\n        else {\r\n            result.push(arg);\r\n        }\r\n        return result;\r\n    }, []);\r\n}\r\n",
+    "content": "/**\r\n * Reduces a mixed array to a flat one.\r\n */\r\nexport default function flatten(...args) {\r\n    return args.reduce((result, arg) => {\r\n        if (Array.isArray(arg)) {\r\n            arg.forEach(e => {\r\n                if (Array.isArray(e)) {\r\n                    result = result.concat(flatten(e));\r\n                } else {\r\n                    result.push(e);\r\n                }\r\n            });\r\n        } else {\r\n            result.push(arg);\r\n        }\r\n        return result;\r\n    }, []);\r\n}\r\n",
     "static": true,
     "longname": "src/utils/flatten.js",
     "access": null,
@@ -1721,7 +1714,7 @@
     "__docId__": 59,
     "kind": "file",
     "name": "src/utils/logging.js",
-    "content": "/** Never log */\r\nconst NONE = 0;\r\n/** Log if a definition has `logging: true` */\r\nconst ALLOW = 1;\r\n/** Always log, regardless of `logging` in definition */\r\nconst FORCE = 2;\r\nexport const logLevel = {NONE, ALLOW, FORCE};\r\n\r\n\r\nlet level = ALLOW;\r\nexport function setLevel(value) {\r\n    level = value;\r\n}\r\nexport function getLevel() {\r\n    return level;\r\n}\r\n\r\nexport function createLogger(name) {\r\n    return {\r\n        log: (...args) => level > NONE && console.log(`[${name}]`, ...args),\r\n        info: (...args) => level > NONE && console.info(`[${name}]`, ...args),\r\n        warn: (...args) => level > NONE && console.warn(`[${name}]`, ...args),\r\n        error: (...args) => level > NONE && console.error(`[${name}]`, ...args),\r\n        trace: (...args) => level > NONE && console.trace(`[${name}]`, ...args),\r\n    };\r\n}\r\n",
+    "content": "/** Never log */\r\nconst NONE = 0;\r\n/** Log if a definition has `logging: true` */\r\nconst ALLOW = 1;\r\n/** Always log, regardless of `logging` in definition */\r\nconst FORCE = 2;\r\nexport const logLevel = { NONE, ALLOW, FORCE };\r\n\r\nlet level = ALLOW;\r\nexport function setLevel(value) {\r\n    level = value;\r\n}\r\nexport function getLevel() {\r\n    return level;\r\n}\r\n\r\nexport function createLogger(name) {\r\n    return {\r\n        log: (...args) => level > NONE && console.log(`[${name}]`, ...args),\r\n        info: (...args) => level > NONE && console.info(`[${name}]`, ...args),\r\n        warn: (...args) => level > NONE && console.warn(`[${name}]`, ...args),\r\n        error: (...args) => level > NONE && console.error(`[${name}]`, ...args),\r\n        trace: (...args) => level > NONE && console.trace(`[${name}]`, ...args)\r\n    };\r\n}\r\n",
     "static": true,
     "longname": "src/utils/logging.js",
     "access": null,
@@ -1823,7 +1816,7 @@
     "importPath": "@xailabs/altx/src/utils/logging.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 9,
     "undocument": true,
     "unknown": [
       {
@@ -1851,7 +1844,7 @@
     "importPath": "@xailabs/altx/src/utils/logging.js",
     "importStyle": "{setLevel}",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 10,
     "undocument": true,
     "unknown": [
       {
@@ -1882,7 +1875,7 @@
     "importPath": "@xailabs/altx/src/utils/logging.js",
     "importStyle": "{getLevel}",
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 13,
     "undocument": true,
     "unknown": [
       {
@@ -1911,7 +1904,7 @@
     "importPath": "@xailabs/altx/src/utils/logging.js",
     "importStyle": "{createLogger}",
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 17,
     "undocument": true,
     "unknown": [
       {
@@ -1937,7 +1930,7 @@
     "__docId__": 68,
     "kind": "file",
     "name": "src/utils/validate/loggerConstraints.js",
-    "content": "\r\nconst loggerConstraints = {\r\n    'logger.warn': {\r\n        presence: true,\r\n    },\r\n    'logger.error': {\r\n        presence: true,\r\n    },\r\n    'logger.log': {\r\n        presence: true,\r\n    },\r\n    'logger.info': {\r\n        presence: true,\r\n    },\r\n};\r\n\r\nexport default loggerConstraints;\r\n",
+    "content": "const loggerConstraints = {\r\n    'logger.warn': {\r\n        presence: true\r\n    },\r\n    'logger.error': {\r\n        presence: true\r\n    },\r\n    'logger.log': {\r\n        presence: true\r\n    },\r\n    'logger.info': {\r\n        presence: true\r\n    }\r\n};\r\n\r\nexport default loggerConstraints;\r\n",
     "static": true,
     "longname": "src/utils/validate/loggerConstraints.js",
     "access": null,
@@ -1956,7 +1949,7 @@
     "importPath": "@xailabs/altx/src/utils/validate/loggerConstraints.js",
     "importStyle": "loggerConstraints",
     "description": null,
-    "lineNumber": 2,
+    "lineNumber": 1,
     "undocument": true,
     "unknown": [
       {
@@ -1974,7 +1967,7 @@
     "__docId__": 70,
     "kind": "file",
     "name": "src/utils/validate/validateCreator.js",
-    "content": "import validate from 'validate.js';\r\n\r\nimport loggerConstraints from './loggerConstraints';\r\n\r\nexport const creatorConstraints = (/*call*/) => ({\r\n    name: {\r\n        presence: true,\r\n    },\r\n    actions: {\r\n        presence: true,\r\n    },\r\n    ...loggerConstraints\r\n});\r\nexport default function validateCreator(call, logger=window.console) {\r\n    return validate(call, creatorConstraints(call));\r\n};\r\n",
+    "content": "import validate from 'validate.js';\n\nimport loggerConstraints from './loggerConstraints';\n\nexport const creatorConstraints = (/*call*/) => ({\n    name: {\n        presence: true\n    },\n    actions: {\n        presence: true\n    },\n    ...loggerConstraints\n});\nexport default function validateCreator(call) {\n    return validate(call, creatorConstraints(call));\n}\n",
     "static": true,
     "longname": "src/utils/validate/validateCreator.js",
     "access": null,
@@ -2033,13 +2026,6 @@
         "types": [
           "*"
         ]
-      },
-      {
-        "name": "logger",
-        "optional": true,
-        "types": [
-          "*"
-        ]
       }
     ],
     "return": {
@@ -2052,7 +2038,7 @@
     "__docId__": 73,
     "kind": "file",
     "name": "src/utils/validate/validateDefinition.js",
-    "content": "import validate from 'validate.js';\r\n\r\nexport const definitionConstraints = (/*definition}*/) => ({\r\n    sideEffects: {\r\n        presence: false,\r\n    },\r\n    dataSource: {\r\n        presence: true,\r\n    },\r\n    reducers: {\r\n        presence: false,\r\n    },\r\n});\r\nexport default function validateDefinition(definition, logger=window.console) {\r\n    return validate(definition, definitionConstraints(definition));\r\n};\r\n",
+    "content": "import validate from 'validate.js';\n\nexport const definitionConstraints = (/*definition}*/) => ({\n    sideEffects: {\n        presence: false\n    },\n    dataSource: {\n        presence: true\n    },\n    reducers: {\n        presence: false\n    }\n});\nexport default function validateDefinition(definition) {\n    return validate(definition, definitionConstraints(definition));\n}\n",
     "static": true,
     "longname": "src/utils/validate/validateDefinition.js",
     "access": null,
@@ -2111,13 +2097,6 @@
         "types": [
           "*"
         ]
-      },
-      {
-        "name": "logger",
-        "optional": true,
-        "types": [
-          "*"
-        ]
       }
     ],
     "return": {
@@ -2130,7 +2109,7 @@
     "__docId__": 76,
     "kind": "file",
     "name": "src/utils/validate/validateHandler.js",
-    "content": "import validate from 'validate.js';\r\n\r\nexport const handlerConstraints = (/*handler}*/) => ({\r\n    sideEffect: {\r\n        presence: false,\r\n    },\r\n    reducer: {\r\n        presence: true,\r\n    },\r\n    name: {\r\n        presence: true,\r\n    },\r\n});\r\nexport default function validateHandler(handler, logger=window.console) {\r\n    return validate(handler, handlerConstraints(handler));\r\n};\r\n",
+    "content": "import validate from 'validate.js';\n\nexport const handlerConstraints = (/*handler}*/) => ({\n    sideEffect: {\n        presence: false\n    },\n    reducer: {\n        presence: true\n    },\n    name: {\n        presence: true\n    }\n});\nexport default function validateHandler(handler) {\n    return validate(handler, handlerConstraints(handler));\n}\n",
     "static": true,
     "longname": "src/utils/validate/validateHandler.js",
     "access": null,
@@ -2189,13 +2168,6 @@
         "types": [
           "*"
         ]
-      },
-      {
-        "name": "logger",
-        "optional": true,
-        "types": [
-          "*"
-        ]
       }
     ],
     "return": {
@@ -2208,7 +2180,7 @@
     "__docId__": 79,
     "kind": "file",
     "name": "src/utils/validate.js",
-    "content": "// TODO deeper validation logic, e.g. ensure that\r\n// - each key in bindings is also a key in reducers\r\n// - each value of bindings exists in actions etc\r\n\r\nexport {default as validateCreator} from './validate/validateCreator';\r\nexport {default as validateDefinition} from './validate/validateDefinition';\r\nexport {default as validateHandler} from './validate/validateHandler';\r\n\r\n",
+    "content": "// TODO deeper validation logic, e.g. ensure that\r\n// - each key in bindings is also a key in reducers\r\n// - each value of bindings exists in actions etc\r\n\r\nexport { default as validateCreator } from './validate/validateCreator';\r\nexport { default as validateDefinition } from './validate/validateDefinition';\r\nexport { default as validateHandler } from './validate/validateHandler';\r\n",
     "static": true,
     "longname": "src/utils/validate.js",
     "access": null,

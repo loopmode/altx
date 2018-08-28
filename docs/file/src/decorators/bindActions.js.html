@@ -66,9 +66,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/decorators/bindActions.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {bind} from &apos;alt-utils/lib/decorators&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { bind } from &apos;alt-utils/lib/decorators&apos;;
 import flatten from &apos;../utils/flatten&apos;;
-import {getLevel as getLogLevel, logLevel} from &apos;../utils/logging&apos;;
+import { getLevel as getLogLevel, logLevel } from &apos;../utils/logging&apos;;
 
 /**
  * Decorates a store with any number of viewAction definitions.
@@ -81,17 +81,14 @@ export default function bindActions(...args) {
     };
 }
 
-
 function bindViewActionHandler(storeClass, definition) {
-
-    const {name, action, reducer, sideEffect, logger, logging} = definition;
+    const { name, action, reducer, sideEffect, logger, logging } = definition;
 
     const handlerName = `${name}`;
 
     if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler &quot;${handlerName}&quot;`);
 
     storeClass.prototype[handlerName] = function handleViewAction(payload) {
-
         if (logging || getLogLevel() === logLevel.FORCE) {
             logger[payload instanceof Error ? &apos;error&apos; : &apos;log&apos;](payload &amp;&amp; payload.toJS ? payload.toJS() : payload);
         }
@@ -101,8 +98,7 @@ function bindViewActionHandler(storeClass, definition) {
 
         try {
             nextState = reducer &amp;&amp; reducer(currentState, payload);
-        }
-        catch (error) {
+        } catch (error) {
             console.error(`${handlerName}: error executing reducer`, error);
         }
 
@@ -113,9 +109,8 @@ function bindViewActionHandler(storeClass, definition) {
         if (sideEffect) {
             setTimeout(() =&gt; {
                 try {
-                    sideEffect({state: nextState, prevState: currentState, payload});
-                }
-                catch (error) {
+                    sideEffect({ state: nextState, prevState: currentState, payload });
+                } catch (error) {
                     console.error(`${handlerName}: error executing sideEffect`, error);
                 }
             });
@@ -124,13 +119,8 @@ function bindViewActionHandler(storeClass, definition) {
 
     const bindActionHandler = bind(action);
 
-    bindActionHandler(
-        storeClass,
-        handlerName,
-        Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName)
-    );
-
-};
+    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));
+}
 </code></pre>
 
 </div>

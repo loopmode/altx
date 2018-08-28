@@ -66,7 +66,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/createActions.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {getAltInstance} from &apos;./altInstance&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { getAltInstance } from &apos;./altInstance&apos;;
 
 /**
  * Creates simple (data-pass-through) actions with a namespace.
@@ -80,7 +80,7 @@ export default function createActions(namespace, actions) {
     return getAltInstance().createActions({
         name: namespace,
         ...[].concat(actions).reduce((result, action) =&gt; {
-            result[action] = (data={}) =&gt; data;
+            result[action] = (data = {}) =&gt; data;
             return result;
         }, {})
     });

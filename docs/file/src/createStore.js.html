@@ -67,24 +67,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/createStore.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Immutable from &apos;immutable&apos;;
-import { decorate, datasource, bind } from &apos;alt-utils/lib/decorators&apos;;
+import { decorate, datasource } from &apos;alt-utils/lib/decorators&apos;;
 import immutable from &apos;alt-utils/lib/ImmutableUtil&apos;;
 
-import {getAltInstance} from &apos;./altInstance&apos;;
+import { getAltInstance } from &apos;./altInstance&apos;;
 import ImmutableStore from &apos;./ImmutableStore&apos;;
 import getSources from &apos;./getSources&apos;;
 
 import bindCalls from &apos;./decorators/bindCalls&apos;;
 import bindActions from &apos;./decorators/bindActions&apos;;
 
-export default function createStore(displayName, {
-    alt,
-    state,
-    calls,
-    sources,
-    viewActions
-} = {}) {
-
+export default function createStore(displayName, { alt, state, calls, sources, viewActions } = {}) {
     if (!displayName) {
         throw new Error(&apos;displayName is required&apos;);
     }
@@ -96,7 +89,7 @@ export default function createStore(displayName, {
     sources = sources || getSources(calls);
     viewActions = viewActions || [];
 
-    return alt.createStore((
+    return alt.createStore(
         @decorate(alt)
         @datasource(sources)
         @bindCalls(calls)
@@ -106,9 +99,9 @@ export default function createStore(displayName, {
             constructor() {
                 super(state);
             }
-        }
-    ), displayName);
-
+        },
+        displayName
+    );
 }
 </code></pre>
 

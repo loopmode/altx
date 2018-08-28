@@ -67,16 +67,16 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/handlerFactory.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import createActions from &apos;./createActions&apos;;
-import {createLogger} from &apos;./utils/logging&apos;;
+import { createLogger } from &apos;./utils/logging&apos;;
 
-export default function handlerFactory(action, {
-    namespace=&apos;global&apos;,
-    logger=createLogger(action.id || action)
-}={}) {
+export default function handlerFactory(
+    action,
+    { namespace = &apos;global&apos;, logger = createLogger(action.id || action) } = {}
+) {
     const name = action.id || action;
     action = typeof action === &apos;string&apos; ? createActions(namespace, action)[action] : action;
     return {
-        create: (createDefinition) =&gt; {
+        create: createDefinition =&gt; {
             const definition = {
                 name,
                 action,
@@ -84,9 +84,8 @@ export default function handlerFactory(action, {
                 logger
             };
             if (typeof createDefinition === &apos;function&apos;) {
-                return Object.assign(definition, createDefinition({namespace, logger}));
-            }
-            else {
+                return Object.assign(definition, createDefinition({ namespace, logger }));
+            } else {
                 return Object.assign(definition, createDefinition);
             }
         }

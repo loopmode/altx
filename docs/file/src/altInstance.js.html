@@ -85,14 +85,11 @@ export function getAltInstance() {
     return instance;
 }
 
-
-
-const root = (global || window);
+const root = global || window;
 
 function setup(alt) {
     instance = alt;
-    if (process.env.NODE_ENV !== &apos;production&apos;) {
-
+    if (process.env.NODE_ENV === &apos;development&apos;) {
         // Debugging with chrome devtools
         // @see https://github.com/goatslacker/alt-devtool
         require(&apos;alt-utils/lib/chromeDebug&apos;)(instance);
@@ -100,7 +97,7 @@ function setup(alt) {
         // sometimes, chromeDebug just doesn&apos;t update until an action is dispatched.
         // we use a dummy action to do just that
         const refreshAction = instance.generateActions(&apos;__refresh__&apos;).__refresh__;
-        instance.handleMessage = (e) =&gt; {
+        instance.handleMessage = e =&gt; {
             if (e.data &amp;&amp; e.data.type === &apos;ALT&apos; &amp;&amp; e.data.source === &apos;alt-devtools&apos;) {
                 refreshAction.defer();
             }
@@ -108,11 +105,12 @@ function setup(alt) {
         root &amp;&amp; root.addEventListener &amp;&amp; root.addEventListener(&apos;message&apos;, instance.handleMessage);
     }
 }
-function teardown(alt) {
-    if (process.env.NODE_ENV !== &apos;production&apos;) {
+function teardown() {
+    if (process.env.NODE_ENV === &apos;development&apos;) {
         root &amp;&amp; root.removeEventListener &amp;&amp; root.removeEventListener(&apos;message&apos;, instance.handleMessage);
     }
-}</code></pre>
+}
+</code></pre>
 
 </div>
 

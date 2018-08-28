@@ -66,9 +66,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/decorators/bindCalls.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {bind} from &apos;alt-utils/lib/decorators&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { bind } from &apos;alt-utils/lib/decorators&apos;;
 import flatten from &apos;../utils/flatten&apos;;
-import {getLevel as getLogLevel, logLevel} from &apos;../utils/logging&apos;;
+import { getLevel as getLogLevel, logLevel } from &apos;../utils/logging&apos;;
 /**
  * Decorates a store with any number of call definitions.
  */
@@ -107,13 +107,11 @@ function decorateStoreWithCall(storeClass, callDefinition) {
  * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.
  */
 function bindReducerHandler(reducerName, storeClass, callDefinition) {
-
     const handlerName = `_${callDefinition.name}_${reducerName}`;
 
     if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler &quot;${handlerName}&quot;`);
 
     storeClass.prototype[handlerName] = function handleCallAction(payload) {
-
         const reducer = callDefinition.hasOwnProperty(&apos;reducers&apos;) &amp;&amp; callDefinition.reducers[reducerName];
         const sideEffect = callDefinition.hasOwnProperty(&apos;sideEffects&apos;) &amp;&amp; callDefinition.sideEffects[reducerName];
         const logging = callDefinition.hasOwnProperty(&apos;logging&apos;) &amp;&amp; callDefinition.logging;
@@ -124,8 +122,7 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
                 logger.error(reducerName, payload.response.body.message);
             }
             // logger.debug(payload);
-        }
-        else if (logging || getLogLevel() === logLevel.FORCE) {
+        } else if (logging || getLogLevel() === logLevel.FORCE) {
             logger[isError ? &apos;error&apos; : &apos;log&apos;](reducerName, payload &amp;&amp; payload.toJS ? payload.toJS() : payload);
         }
 
@@ -136,13 +133,17 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
             //console.log(`[${handlerName}]`, payload, callDefinition);
             try {
                 nextState = reducer(currentState, payload);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error(`Error in reducer (${callDefinition.name}, ${reducerName})`, error);
             }
         }
 
-        if (reducer &amp;&amp; !nextState) console.warn(`reducer &quot;${reducerName}&quot; in call &quot;${callDefinition.name}&quot; did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`);
+        if (reducer &amp;&amp; !nextState)
+            console.warn(
+                `reducer &quot;${reducerName}&quot; in call &quot;${
+                    callDefinition.name
+                }&quot; did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`
+            );
 
         if (nextState) {
             this.setState(nextState);
@@ -151,9 +152,8 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
         if (sideEffect) {
             setTimeout(() =&gt; {
                 try {
-                    sideEffect({state: nextState, prevState: currentState, payload});
-                }
-                catch (error) {
+                    sideEffect({ state: nextState, prevState: currentState, payload });
+                } catch (error) {
                     console.error(`Error in sideEffect (${callDefinition.name}, ${reducerName})`, error);
                 }
             });
@@ -163,13 +163,8 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
     const action = callDefinition.actions[reducerName];
     const bindActionHandler = bind(action);
 
-    bindActionHandler(
-        storeClass,
-        handlerName,
-        Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName)
-    );
-
-};
+    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));
+}
 </code></pre>
 
 </div>

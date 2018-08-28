@@ -66,14 +66,10 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/BindHandlers.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {
-    bind as bindAlt
-} from &apos;alt-utils/lib/decorators&apos;;
-
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { bind as bindAlt } from &apos;alt-utils/lib/decorators&apos;;
 
 // DEPRECATED
 // replace with &quot;calls and viewActions!&quot;
-
 
 /**
  * Creates a decorator for binding action handlers to a store.
@@ -92,14 +88,13 @@ export default function BindHandlers(...args) {
     const definitions = args.reduce((result, def) =&gt; {
         if (Array.isArray(def)) {
             def.forEach(d =&gt; result.push(d));
-        }
-        else {
+        } else {
             result.push(def);
         }
         return result;
     }, []);
     return function decorateStore(StoreClass) {
-        definitions.forEach(function bindActions({handler, bindings}, i) {
+        definitions.forEach(function bindActions({ handler, bindings }, i) {
             if (!handler || !handler.prototype) {
                 throw new Error(&apos;Invalid action handler&apos;);
             }
@@ -131,7 +126,6 @@ export default function BindHandlers(...args) {
         return StoreClass;
     };
 }
-
 </code></pre>
 
 </div>

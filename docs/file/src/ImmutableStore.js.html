@@ -74,7 +74,6 @@ export function resetStores() {
     reset.publish();
 }
 
-
 export default class ImmutableStore {
     constructor(initialData) {
         this.listName = &apos;items&apos;;
@@ -92,6 +91,16 @@ export default class ImmutableStore {
             const nextState = data.toJS ? data : Immutable.fromJS(data);
             this.setState(nextState);
         });
+
+        if (process.env.NODE_ENV === &apos;development&apos;) {
+            window.postMessage(
+                {
+                    payload: { action: &apos;REFRESH&apos; },
+                    source: &apos;alt-hook&apos;
+                },
+                &apos;*&apos;
+            );
+        }
     }
 
     init(data) {
@@ -107,9 +116,8 @@ export default class ImmutableStore {
     getItemById = (id, listName) =&gt; {
         const list = this.state.get(listName || this.listName);
         if (list) {
-            return list.find((item) =&gt; item.get(&apos;id&apos;) === id);
-        }
-        else {
+            return list.find(item =&gt; item.get(&apos;id&apos;) === id);
+        } else {
             console.warn(this, &apos;Failed in getItemById(): list not found&apos;);
             //debugger; //eslint-disable-line
         }
@@ -146,8 +154,7 @@ export default class ImmutableStore {
     change(prop, value) {
         if (arguments.length === 2 &amp;&amp; typeof prop !== &apos;string&apos;) {
             this.changeItem(prop, value);
-        } else
-        if (arguments.length === 2) {
+        } else if (arguments.length === 2) {
             this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));
         } else {
             this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));
@@ -156,7 +163,7 @@ export default class ImmutableStore {
 
     setItemProp(id, key, value, listName) {
         return this.state.merge({
-            [listName || this.listName]: this.state.get(listName || this.listName).map((item) =&gt; {
+            [listName || this.listName]: this.state.get(listName || this.listName).map(item =&gt; {
                 if (item.get(&apos;id&apos;) === id) {
                     return item.set(key, value);
                 }
@@ -179,7 +186,7 @@ export default class ImmutableStore {
         const list = this.state.get(listName);
         //console.log(&apos;list found&apos;, list.toJS());
         const matchingItem = this.find(listName, filter.item);
-        if(matchingItem) {
+        if (matchingItem) {
             //console.log(&apos;item found&apos;, matchingItem);
             const matchingIndex = list.indexOf(matchingItem);
             const newItem = matchingItem.merge(data);
@@ -189,7 +196,10 @@ export default class ImmutableStore {
                 [listName]: newList
             });
         } else {
-            throw new Error(&apos;changeItem: no item found for filter: &apos; + JSON.stringify(filter) + &apos;, list:&apos;, JSON.stringify(list.toJS()));
+            throw new Error(
+                &apos;changeItem: no item found for filter: &apos; + JSON.stringify(filter) + &apos;, list:&apos;,
+                JSON.stringify(list.toJS())
+            );
         }
     }
 
@@ -202,9 +212,9 @@ export default class ImmutableStore {
      */
     find = (listName, filter) =&gt; {
         const list = this.state.get(listName);
-        const result = list.find((item) =&gt; {
+        const result = list.find(item =&gt; {
             let match = true;
-            Object.keys(filter).map((prop) =&gt; {
+            Object.keys(filter).map(prop =&gt; {
                 const itemValue = item.get(prop);
                 const filterValue = filter[prop];
                 if (itemValue !== filterValue) {
@@ -220,7 +230,6 @@ export default class ImmutableStore {
         return this.getInstance();
     }
 }
-
 </code></pre>
 
 </div>

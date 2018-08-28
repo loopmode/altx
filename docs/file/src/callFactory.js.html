@@ -66,30 +66,32 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/callFactory.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {validateCreator, validateDefinition} from &apos;./utils/validate&apos;;
-import {createLogger} from &apos;./utils/logging&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { validateCreator, validateDefinition } from &apos;./utils/validate&apos;;
+import { createLogger } from &apos;./utils/logging&apos;;
 import createActions from &apos;./createActions&apos;;
 
-export default function callFactory(name, {
-    namespace=&apos;global&apos;,
-    defaultActions=[&apos;loading&apos;, &apos;error&apos;, &apos;success&apos;],
-    actions=createActions(`${namespace}:${name}`, defaultActions),
-    logger=createLogger(`${namespace}:${name}`),
-}={}) {
-    const errors = validateCreator({name, actions, logger}, logger);
+export default function callFactory(
+    name,
+    {
+        namespace = &apos;global&apos;,
+        defaultActions = [&apos;loading&apos;, &apos;error&apos;, &apos;success&apos;],
+        actions = createActions(`${namespace}:${name}`, defaultActions),
+        logger = createLogger(`${namespace}:${name}`)
+    } = {}
+) {
+    const errors = validateCreator({ name, actions, logger }, logger);
     const errorKeys = errors &amp;&amp; Object.keys(errors);
     if (errorKeys &amp;&amp; errorKeys.length) {
         throw new Error(errors[errorKeys[0]]);
     }
 
     return {
-
         name,
         actions,
 
-        create: (definition) =&gt; {
+        create: definition =&gt; {
             const createDefinition = typeof definition === &apos;function&apos; ? definition : () =&gt; definition;
-            const call = Object.assign(createDefinition({name, actions, logger}), {
+            const call = Object.assign(createDefinition({ name, actions, logger }), {
                 name,
                 actions,
                 logger
@@ -105,7 +107,7 @@ export default function callFactory(name, {
             };
             return call;
         },
-        createActions: (actionNames) =&gt; createActions(`${namespace}:${name}`, actionNames)
+        createActions: actionNames =&gt; createActions(`${namespace}:${name}`, actionNames)
     };
 }
 </code></pre>
