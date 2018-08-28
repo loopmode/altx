@@ -1,22 +1,15 @@
 import Immutable from 'immutable';
-import { decorate, datasource, bind } from 'alt-utils/lib/decorators';
+import { decorate, datasource } from 'alt-utils/lib/decorators';
 import immutable from 'alt-utils/lib/ImmutableUtil';
 
-import {getAltInstance} from './altInstance';
+import { getAltInstance } from './altInstance';
 import ImmutableStore from './ImmutableStore';
 import getSources from './getSources';
 
 import bindCalls from './decorators/bindCalls';
 import bindActions from './decorators/bindActions';
 
-export default function createStore(displayName, {
-    alt,
-    state,
-    calls,
-    sources,
-    viewActions
-} = {}) {
-
+export default function createStore(displayName, { alt, state, calls, sources, viewActions } = {}) {
     if (!displayName) {
         throw new Error('displayName is required');
     }
@@ -28,7 +21,7 @@ export default function createStore(displayName, {
     sources = sources || getSources(calls);
     viewActions = viewActions || [];
 
-    return alt.createStore((
+    return alt.createStore(
         @decorate(alt)
         @datasource(sources)
         @bindCalls(calls)
@@ -38,7 +31,7 @@ export default function createStore(displayName, {
             constructor() {
                 super(state);
             }
-        }
-    ), displayName);
-
+        },
+        displayName
+    );
 }

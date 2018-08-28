@@ -1,6 +1,6 @@
-import {bind} from 'alt-utils/lib/decorators';
+import { bind } from 'alt-utils/lib/decorators';
 import flatten from '../utils/flatten';
-import {getLevel as getLogLevel, logLevel} from '../utils/logging';
+import { getLevel as getLogLevel, logLevel } from '../utils/logging';
 /**
  * Decorates a store with any number of call definitions.
  */
@@ -39,13 +39,11 @@ function decorateStoreWithCall(storeClass, callDefinition) {
  * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.
  */
 function bindReducerHandler(reducerName, storeClass, callDefinition) {
-
     const handlerName = `_${callDefinition.name}_${reducerName}`;
 
     if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler "${handlerName}"`);
 
     storeClass.prototype[handlerName] = function handleCallAction(payload) {
-
         const reducer = callDefinition.hasOwnProperty('reducers') && callDefinition.reducers[reducerName];
         const sideEffect = callDefinition.hasOwnProperty('sideEffects') && callDefinition.sideEffects[reducerName];
         const logging = callDefinition.hasOwnProperty('logging') && callDefinition.logging;
@@ -56,8 +54,7 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
                 logger.error(reducerName, payload.response.body.message);
             }
             // logger.debug(payload);
-        }
-        else if (logging || getLogLevel() === logLevel.FORCE) {
+        } else if (logging || getLogLevel() === logLevel.FORCE) {
             logger[isError ? 'error' : 'log'](reducerName, payload && payload.toJS ? payload.toJS() : payload);
         }
 
@@ -68,13 +65,17 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
             //console.log(`[${handlerName}]`, payload, callDefinition);
             try {
                 nextState = reducer(currentState, payload);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error(`Error in reducer (${callDefinition.name}, ${reducerName})`, error);
             }
         }
 
-        if (reducer && !nextState) console.warn(`reducer "${reducerName}" in call "${callDefinition.name}" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`);
+        if (reducer && !nextState)
+            console.warn(
+                `reducer "${reducerName}" in call "${
+                    callDefinition.name
+                }" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`
+            );
 
         if (nextState) {
             this.setState(nextState);
@@ -83,9 +84,8 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
         if (sideEffect) {
             setTimeout(() => {
                 try {
-                    sideEffect({state: nextState, prevState: currentState, payload});
-                }
-                catch (error) {
+                    sideEffect({ state: nextState, prevState: currentState, payload });
+                } catch (error) {
                     console.error(`Error in sideEffect (${callDefinition.name}, ${reducerName})`, error);
                 }
             });
@@ -95,10 +95,5 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
     const action = callDefinition.actions[reducerName];
     const bindActionHandler = bind(action);
 
-    bindActionHandler(
-        storeClass,
-        handlerName,
-        Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName)
-    );
-
-};
+    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));
+}

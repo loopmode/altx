@@ -6,7 +6,6 @@ export function resetStores() {
     reset.publish();
 }
 
-
 export default class ImmutableStore {
     constructor(initialData) {
         this.listName = 'items';
@@ -39,9 +38,8 @@ export default class ImmutableStore {
     getItemById = (id, listName) => {
         const list = this.state.get(listName || this.listName);
         if (list) {
-            return list.find((item) => item.get('id') === id);
-        }
-        else {
+            return list.find(item => item.get('id') === id);
+        } else {
             console.warn(this, 'Failed in getItemById(): list not found');
             //debugger; //eslint-disable-line
         }
@@ -78,8 +76,7 @@ export default class ImmutableStore {
     change(prop, value) {
         if (arguments.length === 2 && typeof prop !== 'string') {
             this.changeItem(prop, value);
-        } else
-        if (arguments.length === 2) {
+        } else if (arguments.length === 2) {
             this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));
         } else {
             this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));
@@ -88,7 +85,7 @@ export default class ImmutableStore {
 
     setItemProp(id, key, value, listName) {
         return this.state.merge({
-            [listName || this.listName]: this.state.get(listName || this.listName).map((item) => {
+            [listName || this.listName]: this.state.get(listName || this.listName).map(item => {
                 if (item.get('id') === id) {
                     return item.set(key, value);
                 }
@@ -111,7 +108,7 @@ export default class ImmutableStore {
         const list = this.state.get(listName);
         //console.log('list found', list.toJS());
         const matchingItem = this.find(listName, filter.item);
-        if(matchingItem) {
+        if (matchingItem) {
             //console.log('item found', matchingItem);
             const matchingIndex = list.indexOf(matchingItem);
             const newItem = matchingItem.merge(data);
@@ -121,7 +118,10 @@ export default class ImmutableStore {
                 [listName]: newList
             });
         } else {
-            throw new Error('changeItem: no item found for filter: ' + JSON.stringify(filter) + ', list:', JSON.stringify(list.toJS()));
+            throw new Error(
+                'changeItem: no item found for filter: ' + JSON.stringify(filter) + ', list:',
+                JSON.stringify(list.toJS())
+            );
         }
     }
 
@@ -134,9 +134,9 @@ export default class ImmutableStore {
      */
     find = (listName, filter) => {
         const list = this.state.get(listName);
-        const result = list.find((item) => {
+        const result = list.find(item => {
             let match = true;
-            Object.keys(filter).map((prop) => {
+            Object.keys(filter).map(prop => {
                 const itemValue = item.get(prop);
                 const filterValue = filter[prop];
                 if (itemValue !== filterValue) {
@@ -152,4 +152,3 @@ export default class ImmutableStore {
         return this.getInstance();
     }
 }
-

@@ -1,27 +1,29 @@
-import {validateCreator, validateDefinition} from './utils/validate';
-import {createLogger} from './utils/logging';
+import { validateCreator, validateDefinition } from './utils/validate';
+import { createLogger } from './utils/logging';
 import createActions from './createActions';
 
-export default function callFactory(name, {
-    namespace='global',
-    defaultActions=['loading', 'error', 'success'],
-    actions=createActions(`${namespace}:${name}`, defaultActions),
-    logger=createLogger(`${namespace}:${name}`),
-}={}) {
-    const errors = validateCreator({name, actions, logger}, logger);
+export default function callFactory(
+    name,
+    {
+        namespace = 'global',
+        defaultActions = ['loading', 'error', 'success'],
+        actions = createActions(`${namespace}:${name}`, defaultActions),
+        logger = createLogger(`${namespace}:${name}`)
+    } = {}
+) {
+    const errors = validateCreator({ name, actions, logger }, logger);
     const errorKeys = errors && Object.keys(errors);
     if (errorKeys && errorKeys.length) {
         throw new Error(errors[errorKeys[0]]);
     }
 
     return {
-
         name,
         actions,
 
-        create: (definition) => {
+        create: definition => {
             const createDefinition = typeof definition === 'function' ? definition : () => definition;
-            const call = Object.assign(createDefinition({name, actions, logger}), {
+            const call = Object.assign(createDefinition({ name, actions, logger }), {
                 name,
                 actions,
                 logger
@@ -37,6 +39,6 @@ export default function callFactory(name, {
             };
             return call;
         },
-        createActions: (actionNames) => createActions(`${namespace}:${name}`, actionNames)
+        createActions: actionNames => createActions(`${namespace}:${name}`, actionNames)
     };
 }

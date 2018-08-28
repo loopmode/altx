@@ -1,4 +1,4 @@
-import {getAltInstance} from './altInstance';
+import { getAltInstance } from './altInstance';
 
 /**
  * Creates simple (data-pass-through) actions with a namespace.
@@ -12,7 +12,7 @@ export default function createActions(namespace, actions) {
     return getAltInstance().createActions({
         name: namespace,
         ...[].concat(actions).reduce((result, action) => {
-            result[action] = (data={}) => data;
+            result[action] = (data = {}) => data;
             return result;
         }, {})
     });

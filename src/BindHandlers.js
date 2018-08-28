@@ -1,11 +1,7 @@
-import {
-    bind as bindAlt
-} from 'alt-utils/lib/decorators';
-
+import { bind as bindAlt } from 'alt-utils/lib/decorators';
 
 // DEPRECATED
 // replace with "calls and viewActions!"
-
 
 /**
  * Creates a decorator for binding action handlers to a store.
@@ -24,14 +20,13 @@ export default function BindHandlers(...args) {
     const definitions = args.reduce((result, def) => {
         if (Array.isArray(def)) {
             def.forEach(d => result.push(d));
-        }
-        else {
+        } else {
             result.push(def);
         }
         return result;
     }, []);
     return function decorateStore(StoreClass) {
-        definitions.forEach(function bindActions({handler, bindings}, i) {
+        definitions.forEach(function bindActions({ handler, bindings }, i) {
             if (!handler || !handler.prototype) {
                 throw new Error('Invalid action handler');
             }
@@ -63,4 +58,3 @@ export default function BindHandlers(...args) {
         return StoreClass;
     };
 }
-

@@ -3,7 +3,6 @@ import React, { createElement } from 'react';
 
 // TODO: deprecate connectAlternative asap!
 
-
 /* eslint-disable */
 /**
  * A component decorator for connecting to immutable stores.
@@ -97,7 +96,7 @@ import React, { createElement } from 'react';
 export default function connect(definitions) {
     return function(targetClass) {
         targetClass.getStores = function() {
-            return definitions.map((def) => def.store);
+            return definitions.map(def => def.store);
         };
         targetClass.getPropsFromStores = function(componentProps) {
             return definitions.reduce((result, def) => {
@@ -129,7 +128,7 @@ function mapFuncAccessor(accessor, state, props) {
 }
 
 function mapStringAccessor(accessor, state) {
-    const {keyPath, propName} = parseAccessor(accessor);
+    const { keyPath, propName } = parseAccessor(accessor);
     return {
         [propName]: state.getIn(keyPath)
     };
@@ -165,19 +164,16 @@ function parseAccessor(accessor) {
         const parts = accessor.split(' as ');
         keyPath = parts[0].split('.');
         propName = parts[1];
-    }
-    else {
+    } else {
         // e.g. 'foo' or 'some.foo'
         keyPath = accessor.split('.');
         propName = keyPath[keyPath.length - 1];
     }
-    return {keyPath, propName};
+    return { keyPath, propName };
 }
-
 
 function connectAlternative(store, mapStateToProps, WrappedComponent) {
     return class Connect extends React.Component {
-
         constructor(props, context) {
             super(props, context);
             const storeState = store.getState();
@@ -200,23 +196,22 @@ function connectAlternative(store, mapStateToProps, WrappedComponent) {
         // we need to run it again when props have changed
         componentWillReceiveProps(nextProps) {
             //untested! should work though
-            if(mapStateToProps.length > 1) {
-                this.setState({storeState: mapStateToProps(store.getState(), nextProps)});
+            if (mapStateToProps.length > 1) {
+                this.setState({ storeState: mapStateToProps(store.getState(), nextProps) });
             }
         }
 
         handleStoreUpdate = state => {
-            if(this._isMounted) {
+            if (this._isMounted) {
                 this.setState({ storeState: mapStateToProps(state, this.props) });
             }
-        }
+        };
 
         render() {
             const mergedProps = { ...this.props, ...this.state.storeState };
             return createElement(WrappedComponent, mergedProps);
         }
-
     };
 }
 
-export {connectAlternative};
+export { connectAlternative };

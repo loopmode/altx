@@ -1,17 +1,16 @@
-
 const loggerConstraints = {
     'logger.warn': {
-        presence: true,
+        presence: true
     },
     'logger.error': {
-        presence: true,
+        presence: true
     },
     'logger.log': {
-        presence: true,
+        presence: true
     },
     'logger.info': {
-        presence: true,
-    },
+        presence: true
+    }
 };
 
 export default loggerConstraints;

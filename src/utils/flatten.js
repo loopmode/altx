@@ -7,13 +7,11 @@ export default function flatten(...args) {
             arg.forEach(e => {
                 if (Array.isArray(e)) {
                     result = result.concat(flatten(e));
-                }
-                else {
+                } else {
                     result.push(e);
                 }
             });
-        }
-        else {
+        } else {
             result.push(arg);
         }
         return result;

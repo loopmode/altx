@@ -2,15 +2,15 @@ import validate from 'validate.js';
 
 export const definitionConstraints = (/*definition}*/) => ({
     sideEffects: {
-        presence: false,
+        presence: false
     },
     dataSource: {
-        presence: true,
+        presence: true
     },
     reducers: {
-        presence: false,
-    },
+        presence: false
+    }
 });
-export default function validateDefinition(definition, logger=window.console) {
+export default function validateDefinition(definition) {
     return validate(definition, definitionConstraints(definition));
-};
+}

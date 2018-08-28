@@ -4,8 +4,7 @@ const NONE = 0;
 const ALLOW = 1;
 /** Always log, regardless of `logging` in definition */
 const FORCE = 2;
-export const logLevel = {NONE, ALLOW, FORCE};
-
+export const logLevel = { NONE, ALLOW, FORCE };
 
 let level = ALLOW;
 export function setLevel(value) {
@@ -21,6 +20,6 @@ export function createLogger(name) {
         info: (...args) => level > NONE && console.info(`[${name}]`, ...args),
         warn: (...args) => level > NONE && console.warn(`[${name}]`, ...args),
         error: (...args) => level > NONE && console.error(`[${name}]`, ...args),
-        trace: (...args) => level > NONE && console.trace(`[${name}]`, ...args),
+        trace: (...args) => level > NONE && console.trace(`[${name}]`, ...args)
     };
 }

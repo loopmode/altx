@@ -4,13 +4,13 @@ import loggerConstraints from './loggerConstraints';
 
 export const creatorConstraints = (/*call*/) => ({
     name: {
-        presence: true,
+        presence: true
     },
     actions: {
-        presence: true,
+        presence: true
     },
     ...loggerConstraints
 });
-export default function validateCreator(call, logger=window.console) {
+export default function validateCreator(call) {
     return validate(call, creatorConstraints(call));
-};
+}

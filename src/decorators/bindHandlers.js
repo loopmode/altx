@@ -1,4 +1,4 @@
-import {bind} from 'alt-utils/lib/decorators';
+import { bind } from 'alt-utils/lib/decorators';
 import flattenArrays from '../utils/flatten';
 
 // TODO clean up and refactor terminoloy, potentially deprecate the old "handlers" system
@@ -41,39 +41,32 @@ function attachBoundHandler(storeClass, action, handler) {
      *                      If you need to use more than one argument, use an object with any properties you need.
      */
     storeClass.prototype[methodName] = function handleAction(payload) {
-
         const reducer = handler.hasOwnProperty('reducer') && handler.reducer;
         const sideEffect = handler.hasOwnProperty('sideEffect') && handler.sideEffect;
 
         const currentState = this.state;
-
 
         // the actual operation: run the reducer and set its result as state
         let nextState = currentState;
         if (reducer) {
             try {
                 nextState = reducer(currentState, payload);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error(`Error in reducer (${handler.name}, ${handler.name})`, error);
             }
         }
         if (nextState) {
             this.setState(nextState);
-        }
-        else if (reducer) {
+        } else if (reducer) {
             console.warn(`reducer "${handler.name}" in call "${handler.name}" did not return a new state.
                 Either you forgot to return it, or if no state change is required, maybe you should use a sideEffect instead of a reducer.
             `);
         }
 
-
-
         if (sideEffect) {
             try {
-                sideEffect({state: nextState, prevState: currentState, payload});
-            }
-            catch (error) {
+                sideEffect({ state: nextState, prevState: currentState, payload });
+            } catch (error) {
                 console.error(`Error in sideEffect (${handler.name}, ${handler.name})`, error);
             }
         }
@@ -81,10 +74,5 @@ function attachBoundHandler(storeClass, action, handler) {
 
     const bindhandler = bind(action);
 
-    bindhandler(
-        storeClass,
-        methodName,
-        Object.getOwnPropertyDescriptor(storeClass.prototype, methodName)
-    );
-
-};
+    bindhandler(storeClass, methodName, Object.getOwnPropertyDescriptor(storeClass.prototype, methodName));
+}

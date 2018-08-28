@@ -2,15 +2,15 @@ import validate from 'validate.js';
 
 export const handlerConstraints = (/*handler}*/) => ({
     sideEffect: {
-        presence: false,
+        presence: false
     },
     reducer: {
-        presence: true,
+        presence: true
     },
     name: {
-        presence: true,
-    },
+        presence: true
+    }
 });
-export default function validateHandler(handler, logger=window.console) {
+export default function validateHandler(handler) {
     return validate(handler, handlerConstraints(handler));
-};
+}

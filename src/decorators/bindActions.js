@@ -1,6 +1,6 @@
-import {bind} from 'alt-utils/lib/decorators';
+import { bind } from 'alt-utils/lib/decorators';
 import flatten from '../utils/flatten';
-import {getLevel as getLogLevel, logLevel} from '../utils/logging';
+import { getLevel as getLogLevel, logLevel } from '../utils/logging';
 
 /**
  * Decorates a store with any number of viewAction definitions.
@@ -13,17 +13,14 @@ export default function bindActions(...args) {
     };
 }
 
-
 function bindViewActionHandler(storeClass, definition) {
-
-    const {name, action, reducer, sideEffect, logger, logging} = definition;
+    const { name, action, reducer, sideEffect, logger, logging } = definition;
 
     const handlerName = `${name}`;
 
     if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler "${handlerName}"`);
 
     storeClass.prototype[handlerName] = function handleViewAction(payload) {
-
         if (logging || getLogLevel() === logLevel.FORCE) {
             logger[payload instanceof Error ? 'error' : 'log'](payload && payload.toJS ? payload.toJS() : payload);
         }
@@ -33,8 +30,7 @@ function bindViewActionHandler(storeClass, definition) {
 
         try {
             nextState = reducer && reducer(currentState, payload);
-        }
-        catch (error) {
+        } catch (error) {
             console.error(`${handlerName}: error executing reducer`, error);
         }
 
@@ -45,9 +41,8 @@ function bindViewActionHandler(storeClass, definition) {
         if (sideEffect) {
             setTimeout(() => {
                 try {
-                    sideEffect({state: nextState, prevState: currentState, payload});
-                }
-                catch (error) {
+                    sideEffect({ state: nextState, prevState: currentState, payload });
+                } catch (error) {
                     console.error(`${handlerName}: error executing sideEffect`, error);
                 }
             });
@@ -56,10 +51,5 @@ function bindViewActionHandler(storeClass, definition) {
 
     const bindActionHandler = bind(action);
 
-    bindActionHandler(
-        storeClass,
-        handlerName,
-        Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName)
-    );
-
-};
+    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));
+}

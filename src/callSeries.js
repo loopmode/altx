@@ -17,7 +17,7 @@
  * @param {boolean} options.log - Whether to log each individual call to the console
  * @return {promise} - A promise that will be resolved when all calls succeeded or rejected if at least one call failed
  */
-export default function callSeries(calls, {log = false} =  {}) {
+export default function callSeries(calls, { log = false } = {}) {
     return new Promise((resolve, reject) => {
         let results = [];
         setTimeout(() => {
@@ -25,16 +25,16 @@ export default function callSeries(calls, {log = false} =  {}) {
                 log && console.log('[callSeries] list', list);
                 var p = Promise.resolve();
                 return list.reduce(function(pacc, fn) {
-                    return pacc = pacc.then(res => {
+                    return (pacc = pacc.then(res => {
                         log && console.log('[callSeries] res', res);
                         results.push(res);
                         return fn(res);
-                    });
+                    }));
                 }, p);
             }
             series(calls)
                 .then(() => setTimeout(() => resolve(results)))
-                .catch((err) => reject(err));
+                .catch(err => reject(err));
         });
     });
 }
