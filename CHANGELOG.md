@@ -1,6 +1,7 @@
 ### 1.2.1
 
 -   Add eslint+prettier setup, fix formatting
+-   Refresh devtool upon store instantiation
 
 ### 1.2.0
 

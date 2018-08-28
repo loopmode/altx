@@ -23,6 +23,16 @@ export default class ImmutableStore {
             const nextState = data.toJS ? data : Immutable.fromJS(data);
             this.setState(nextState);
         });
+
+        if (process.env.NODE_ENV === 'development') {
+            window.postMessage(
+                {
+                    payload: { action: 'REFRESH' },
+                    source: 'alt-hook'
+                },
+                '*'
+            );
+        }
     }
 
     init(data) {
