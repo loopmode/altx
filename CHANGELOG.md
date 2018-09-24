@@ -1,4 +1,4 @@
-### 1.3.0.
+### 1.4.0.
 
 -   New store decorator: `decorators/bindStorage`
 -   ImmutableStore: Accept options object in constructor
