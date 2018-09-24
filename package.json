@@ -54,6 +54,8 @@
     "esdoc": "^0.5.2",
     "esdoc-importpath-plugin": "0.0.1",
     "faucet": "^0.0.1",
+    "jsdom": "^12.0.0",
+    "jsdom-global": "^3.0.2",
     "nodemon": "^1.11.0",
     "tape": "^4.7.0"
   }

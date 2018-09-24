@@ -1,5 +1,4 @@
-console.warn('[test/index.js]', new Date().toISOString(), '\n----------------------------------------------------------\n');
-
+require('jsdom-global')();
 require('babel-register');
 
 require('./callFactory.test');
