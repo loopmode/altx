@@ -5,6 +5,7 @@ export connect from './decorators/connect';
 export bindCalls from './decorators/bindCalls';
 export bindHandlers from './decorators/bindHandlers';
 export bindActions from './decorators/bindActions';
+export bindStorage from './decorators/bindStorage';
 
 export ImmutableStore from './ImmutableStore';
 export { resetStores } from './ImmutableStore';

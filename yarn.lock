@@ -116,6 +116,12 @@
     eslint-plugin-prettier "^2.3.1"
     eslint-plugin-react "^7.3.0"
 
+"@loopmode/events@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@loopmode/events/-/events-1.0.4.tgz#31c41fdd6f2a33f21fc611de31f29b4509dc36d8"
+  dependencies:
+    detect-passive-events "^1.0.4"
+
 abab@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.3.tgz#b81de5f7274ec4e756d797cd834f303642724e5d"
@@ -1589,6 +1595,10 @@ detect-indent@^4.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-4.0.0.tgz#f76d064352cdf43a1cb6ce619c4ee3a9475de208"
   dependencies:
     repeating "^2.0.0"
+
+detect-passive-events@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/detect-passive-events/-/detect-passive-events-1.0.4.tgz#6ed477e6e5bceb79079735dcd357789d37f9a91a"
 
 doctrine@1.5.0:
   version "1.5.0"

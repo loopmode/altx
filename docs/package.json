@@ -1,6 +1,6 @@
 {
   "name": "@xailabs/altx",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Flux flavor based on alt.js",
   "main": "lib/index.js",
   "scripts": {
@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/loopmode/altx#readme",
   "dependencies": {
+    "@loopmode/events": "^1.0.4",
     "alt": "^0.18.6",
     "alt-utils": "^2.0.0",
     "immutable": "^3.8.1",
@@ -51,6 +52,7 @@
     "babel-register": "^6.24.1",
     "babel-tape-runner": "^2.0.1",
     "esdoc": "^0.5.2",
+    "esdoc-importpath-plugin": "0.0.1",
     "faucet": "^0.0.1",
     "nodemon": "^1.11.0",
     "tape": "^4.7.0"

@@ -7,8 +7,16 @@ export function resetStores() {
 }
 
 export default class ImmutableStore {
-    constructor(initialData) {
-        this.listName = 'items';
+    /**
+     * Creates the instance.
+     * @param {Object} [initialData] - Plain or immutable data object for the initial data of this store. When `reset()` is called, the state is reverted to this data.
+     * @param {Object} [options] - Options object
+     * @param {Object} [options.env] - Pass `process.env` so that the instance can refresh the alt devtool when `NODE_ENV === 'development'` is detected
+     * @param {String} [options.listName='items'] - Name of the list entry to use in the `getItemById`, the `getIndexById` and the `find` methods.
+     */
+    constructor(initialData, { env = process.env, listName = 'items' } = {}) {
+        this.listName = listName;
+        // TODO get rid of getItemById, getIndexById, find
         this.exportPublicMethods({
             getItemById: this.getItemById,
             getIndexById: this.getIndexById,
@@ -24,7 +32,7 @@ export default class ImmutableStore {
             this.setState(nextState);
         });
 
-        if (process.env.NODE_ENV === 'development') {
+        if (env.NODE_ENV === 'development') {
             window.postMessage(
                 {
                     payload: { action: 'REFRESH' },

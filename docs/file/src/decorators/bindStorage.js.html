@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">src/actionHandlerFactory.js | API Document</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/decorators/bindStorage.js | API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -35,17 +35,19 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ImmutableStore.js~ImmutableStore.html">ImmutableStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-BindHandlers">BindHandlers</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resetStores">resetStores</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-actionHandlerFactory">actionHandlerFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getAltInstance">getAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createAction">createAction</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createActions">createActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createStore">createStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-handlerFactory">handlerFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindStorage">bindStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connectAlternative">connectAlternative</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
@@ -64,31 +66,127 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">src/actionHandlerFactory.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import createActions from &apos;./createActions&apos;;
-import {createLogger} from &apos;./utils/logging&apos;;
+<div class="content" data-ice="content"><h1 data-ice="title">src/decorators/bindStorage.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Immutable from &apos;immutable&apos;;
+import Events from &apos;@loopmode/events&apos;;
 
-export default function actionHandlerFactory(action, {
-    namespace=&apos;global&apos;,
-    logger=createLogger(action.id || action)
-}={}) {
-    const name = action.id || action;
-    action = typeof action === &apos;string&apos; ? createActions(namespace, action)[action] : action;
-    return {
-        create: (createDefinition) =&gt; {
-            const definition = {
-                name,
-                action,
-                namespace,
-                logger
+/**
+ * Decorator for ImmutableStore to persist values across browser refresh.
+ *
+ * Supports `window.localStorage` and `window.sessionStorage` as well as `localForage` or any other backend that implements the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).
+ * The storage backend may return promises for asynchronous usage.
+ *
+ * To store only specific parts of the state, provide a `keyPaths` array. Omit `keyPaths` to persist the entire state of the store.
+ *
+ * @param {Object} options
+ * @param {Array&lt;Array|String&gt;} [options.keyPaths] - An array of keyPaths. Each keyPath can be an array of strings as used in Immutable.js, e.g. `[&apos;foo&apos;, &apos;bar&apos;]` or a string with dot delimiters, e.g. `&apos;foo.bar&apos;`
+ * @param {Object} [options.storage=window.localStorage] - An object that supports the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) methods
+ * @param {Function} [options.parse] - A function that receives the persisted value and returns the data object. Defaults to `JSON.parse` if `storage` is an instance of `window.Storage`
+ * @param {Function} [options.encode] - A function that receives the data object and returns the value to be persisted. Defaults to `JSON.stringify` if `storage` is an instance of `window.Storage`
+ * @param {Boolean} [options.logging] - Whether to log details to the console during operations
+ * @return {Function} - The decorator function for the target store
+ */
+export default function bindStorage({ storage = window.localStorage, keyPaths, parse, encode, logging } = {}) {
+    if (storage instanceof window.Storage) {
+        parse = parse || JSON.parse;
+        encode = encode || JSON.stringify;
+    }
+    return function decorate(StoreClass) {
+        return class PersistableStore extends StoreClass {
+            constructor(model) {
+                super(model);
+                this.persistenceEnable({ storage, keyPaths });
+                this.exportPublicMethods({
+                    persistenceEnable: () =&gt; this.persistenceEnable({ storage, keyPaths }),
+                    persistenceDisable: () =&gt; this.persistenceDisable()
+                });
+            }
+
+            persistenceEnable = ({ storage, keyPaths }) =&gt; {
+                this.persistenceConfig = {
+                    storage,
+                    name: `persisted.${this.displayName}`,
+                    keyPaths:
+                        keyPaths &amp;&amp;
+                        keyPaths.map(keyPath =&gt; {
+                            if (typeof keyPath === &apos;string&apos;) return keyPath.split(&apos;.&apos;);
+                            return keyPath;
+                        })
+                };
+
+                if (logging) {
+                    console.log(&apos;[PersistableStore] persistenceEnable&apos;, { store: this });
+                }
+
+                Events.on(&apos;beforeunload&apos;, this.persistenceSave);
+
+                this.persistenceRestore();
             };
-            if (typeof createDefinition === &apos;function&apos;) {
-                return Object.assign(definition, createDefinition({namespace, logger}));
-            }
-            else {
-                return Object.assign(definition, createDefinition);
-            }
-        }
+            persistenceDisable = () =&gt; {
+                if (logging) {
+                    console.log(&apos;[PersistableStore] persistenceDisable&apos;, { store: this });
+                }
+
+                Events.off(&apos;beforeunload&apos;, this.persistenceSave);
+            };
+            persistenceRestore = async () =&gt; {
+                try {
+                    const { storage, name } = this.persistenceConfig;
+                    let data = await storage.getItem(name);
+                    if (data) {
+                        if (parse) data = parse(data);
+
+                        data = Immutable.fromJS(data);
+                        this.persistenceExtendInitialData(data);
+
+                        const nextState = this.state.mergeDeep(data);
+
+                        if (logging) {
+                            console.log(&apos;[PersistableStore] persistenceRestore&apos;, { store: this, data, nextState });
+                        }
+
+                        this.setState(nextState);
+                    }
+                } catch (error) {
+                    console.warn(&apos;[PersistableStore] persistenceRestore failed&apos;, { error, store: this });
+                }
+            };
+            persistenceSave = async () =&gt; {
+                try {
+                    const { storage, name, keyPaths } = this.persistenceConfig;
+                    let data = this.state;
+
+                    if (keyPaths &amp;&amp; keyPaths.length) {
+                        data = keyPaths.reduce(
+                            (result, keyPath) =&gt; result.setIn(keyPath, this.state.getIn(keyPath)),
+                            Immutable.fromJS({})
+                        );
+                    }
+
+                    data = data.toJS();
+
+                    if (encode) data = encode(data);
+
+                    if (logging) {
+                        console.log(&apos;[PersistableStore] persistenceRestore&apos;, { store: this, data });
+                    }
+
+                    await storage.setItem(name, data);
+                } catch (error) {
+                    console.warn(&apos;[PersistableStore] persistenceSave failed&apos;, { error, store: this });
+                }
+            };
+            persistenceExtendInitialData = persistedData =&gt; {
+                if (!this.initialData) {
+                    return;
+                }
+                const wasImmutable = typeof this.initialData.toJS === &apos;function&apos;;
+                this.initialData = Immutable.fromJS(this.initialData).mergeDeep(persistedData);
+                if (!wasImmutable) {
+                    this.initialData = this.initialData.toJS();
+                }
+            };
+        };
     };
 }
 </code></pre>

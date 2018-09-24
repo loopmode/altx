@@ -1,176 +1,182 @@
 window.esdocSearchIndex = [
   [
-    "@xailabs/altx/src/bindhandlers.js~bindhandlers",
+    "@xailabs/altx/lib/bindhandlers.js~bindhandlers",
     "function/index.html#static-function-BindHandlers",
-    "<span>BindHandlers</span> <span class=\"search-result-import-path\">@xailabs/altx/src/BindHandlers.js</span>",
+    "<span>BindHandlers</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/BindHandlers.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/immutablestore.js~immutablestore",
+    "@xailabs/altx/lib/immutablestore.js~immutablestore",
     "class/src/ImmutableStore.js~ImmutableStore.html",
-    "<span>ImmutableStore</span> <span class=\"search-result-import-path\">@xailabs/altx/src/ImmutableStore.js</span>",
+    "<span>ImmutableStore</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/ImmutableStore.js</span>",
     "class"
   ],
   [
-    "@xailabs/altx/src/decorators/bindactions.js~bindactions",
+    "@xailabs/altx/lib/decorators/bindactions.js~bindactions",
     "function/index.html#static-function-bindActions",
-    "<span>bindActions</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/bindActions.js</span>",
+    "<span>bindActions</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/decorators/bindActions.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/decorators/bindcalls.js~bindcalls",
+    "@xailabs/altx/lib/decorators/bindcalls.js~bindcalls",
     "function/index.html#static-function-bindCalls",
-    "<span>bindCalls</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/bindCalls.js</span>",
+    "<span>bindCalls</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/decorators/bindCalls.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/decorators/bindhandlers.js~bindhandlers",
+    "@xailabs/altx/lib/decorators/bindhandlers.js~bindhandlers",
     "function/index.html#static-function-bindHandlers",
-    "<span>bindHandlers</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/bindHandlers.js</span>",
+    "<span>bindHandlers</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/decorators/bindHandlers.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/callfactory.js~callfactory",
+    "@xailabs/altx/lib/decorators/bindstorage.js~bindstorage",
+    "function/index.html#static-function-bindStorage",
+    "<span>bindStorage</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/decorators/bindStorage.js</span>",
+    "function"
+  ],
+  [
+    "@xailabs/altx/lib/callfactory.js~callfactory",
     "function/index.html#static-function-callFactory",
-    "<span>callFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/src/callFactory.js</span>",
+    "<span>callFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/callFactory.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/callseries.js~callseries",
+    "@xailabs/altx/lib/callseries.js~callseries",
     "function/index.html#static-function-callSeries",
-    "<span>callSeries</span> <span class=\"search-result-import-path\">@xailabs/altx/src/callSeries.js</span>",
+    "<span>callSeries</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/callSeries.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/decorators/connect.js~connect",
+    "@xailabs/altx/lib/decorators/connect.js~connect",
     "function/index.html#static-function-connect",
-    "<span>connect</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/connect.js</span>",
+    "<span>connect</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/decorators/connect.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/decorators/connect.js~connectalternative",
+    "@xailabs/altx/lib/decorators/connect.js~connectalternative",
     "function/index.html#static-function-connectAlternative",
-    "<span>connectAlternative</span> <span class=\"search-result-import-path\">@xailabs/altx/src/decorators/connect.js</span>",
+    "<span>connectAlternative</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/decorators/connect.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/createaction.js~createaction",
+    "@xailabs/altx/lib/createaction.js~createaction",
     "function/index.html#static-function-createAction",
-    "<span>createAction</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createAction.js</span>",
+    "<span>createAction</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/createAction.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/createactions.js~createactions",
+    "@xailabs/altx/lib/createactions.js~createactions",
     "function/index.html#static-function-createActions",
-    "<span>createActions</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createActions.js</span>",
+    "<span>createActions</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/createActions.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/logging.js~createlogger",
+    "@xailabs/altx/lib/utils/logging.js~createlogger",
     "function/index.html#static-function-createLogger",
-    "<span>createLogger</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/logging.js</span>",
+    "<span>createLogger</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/logging.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/createstore.js~createstore",
+    "@xailabs/altx/lib/createstore.js~createstore",
     "function/index.html#static-function-createStore",
-    "<span>createStore</span> <span class=\"search-result-import-path\">@xailabs/altx/src/createStore.js</span>",
+    "<span>createStore</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/createStore.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/validate/validatecreator.js~creatorconstraints",
+    "@xailabs/altx/lib/utils/validate/validatecreator.js~creatorconstraints",
     "function/index.html#static-function-creatorConstraints",
-    "<span>creatorConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateCreator.js</span>",
+    "<span>creatorConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateCreator.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/validate/validatedefinition.js~definitionconstraints",
+    "@xailabs/altx/lib/utils/validate/validatedefinition.js~definitionconstraints",
     "function/index.html#static-function-definitionConstraints",
-    "<span>definitionConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateDefinition.js</span>",
+    "<span>definitionConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateDefinition.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/flatten.js~flatten",
+    "@xailabs/altx/lib/utils/flatten.js~flatten",
     "function/index.html#static-function-flatten",
-    "<span>flatten</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/flatten.js</span>",
+    "<span>flatten</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/flatten.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/altinstance.js~getaltinstance",
+    "@xailabs/altx/lib/altinstance.js~getaltinstance",
     "function/index.html#static-function-getAltInstance",
-    "<span>getAltInstance</span> <span class=\"search-result-import-path\">@xailabs/altx/src/altInstance.js</span>",
+    "<span>getAltInstance</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/altInstance.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/logging.js~getlevel",
+    "@xailabs/altx/lib/utils/logging.js~getlevel",
     "function/index.html#static-function-getLevel",
-    "<span>getLevel</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/logging.js</span>",
+    "<span>getLevel</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/logging.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/getsources.js~getsources",
+    "@xailabs/altx/lib/getsources.js~getsources",
     "function/index.html#static-function-getSources",
-    "<span>getSources</span> <span class=\"search-result-import-path\">@xailabs/altx/src/getSources.js</span>",
+    "<span>getSources</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/getSources.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/validate/validatehandler.js~handlerconstraints",
+    "@xailabs/altx/lib/utils/validate/validatehandler.js~handlerconstraints",
     "function/index.html#static-function-handlerConstraints",
-    "<span>handlerConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateHandler.js</span>",
+    "<span>handlerConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateHandler.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/handlerfactory.js~handlerfactory",
+    "@xailabs/altx/lib/handlerfactory.js~handlerfactory",
     "function/index.html#static-function-handlerFactory",
-    "<span>handlerFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/src/handlerFactory.js</span>",
+    "<span>handlerFactory</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/handlerFactory.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/logging.js~loglevel",
+    "@xailabs/altx/lib/utils/logging.js~loglevel",
     "variable/index.html#static-variable-logLevel",
-    "<span>logLevel</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/logging.js</span>",
+    "<span>logLevel</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/logging.js</span>",
     "variable"
   ],
   [
-    "@xailabs/altx/src/utils/validate/loggerconstraints.js~loggerconstraints",
+    "@xailabs/altx/lib/utils/validate/loggerconstraints.js~loggerconstraints",
     "variable/index.html#static-variable-loggerConstraints",
-    "<span>loggerConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/loggerConstraints.js</span>",
+    "<span>loggerConstraints</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/loggerConstraints.js</span>",
     "variable"
   ],
   [
-    "@xailabs/altx/src/immutablestore.js~resetstores",
+    "@xailabs/altx/lib/immutablestore.js~resetstores",
     "function/index.html#static-function-resetStores",
-    "<span>resetStores</span> <span class=\"search-result-import-path\">@xailabs/altx/src/ImmutableStore.js</span>",
+    "<span>resetStores</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/ImmutableStore.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/altinstance.js~setaltinstance",
+    "@xailabs/altx/lib/altinstance.js~setaltinstance",
     "function/index.html#static-function-setAltInstance",
-    "<span>setAltInstance</span> <span class=\"search-result-import-path\">@xailabs/altx/src/altInstance.js</span>",
+    "<span>setAltInstance</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/altInstance.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/logging.js~setlevel",
+    "@xailabs/altx/lib/utils/logging.js~setlevel",
     "function/index.html#static-function-setLevel",
-    "<span>setLevel</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/logging.js</span>",
+    "<span>setLevel</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/logging.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/validate/validatecreator.js~validatecreator",
+    "@xailabs/altx/lib/utils/validate/validatecreator.js~validatecreator",
     "function/index.html#static-function-validateCreator",
-    "<span>validateCreator</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateCreator.js</span>",
+    "<span>validateCreator</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateCreator.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/validate/validatedefinition.js~validatedefinition",
+    "@xailabs/altx/lib/utils/validate/validatedefinition.js~validatedefinition",
     "function/index.html#static-function-validateDefinition",
-    "<span>validateDefinition</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateDefinition.js</span>",
+    "<span>validateDefinition</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateDefinition.js</span>",
     "function"
   ],
   [
-    "@xailabs/altx/src/utils/validate/validatehandler.js~validatehandler",
+    "@xailabs/altx/lib/utils/validate/validatehandler.js~validatehandler",
     "function/index.html#static-function-validateHandler",
-    "<span>validateHandler</span> <span class=\"search-result-import-path\">@xailabs/altx/src/utils/validate/validateHandler.js</span>",
+    "<span>validateHandler</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateHandler.js</span>",
     "function"
   ],
   [
@@ -645,6 +651,12 @@ window.esdocSearchIndex = [
     "src/decorators/bindhandlers.js",
     "file/src/decorators/bindHandlers.js.html",
     "src/decorators/bindHandlers.js",
+    "file"
+  ],
+  [
+    "src/decorators/bindstorage.js",
+    "file/src/decorators/bindStorage.js.html",
+    "src/decorators/bindStorage.js",
     "file"
   ],
   [

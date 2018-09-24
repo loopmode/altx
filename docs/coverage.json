@@ -1,7 +1,7 @@
 {
-  "coverage": "28.57%",
-  "expectCount": 42,
-  "actualCount": 12,
+  "coverage": "32.55%",
+  "expectCount": 43,
+  "actualCount": 14,
   "files": {
     "src/BindHandlers.js": {
       "expectCount": 1,
@@ -10,20 +10,19 @@
     },
     "src/ImmutableStore.js": {
       "expectCount": 15,
-      "actualCount": 3,
+      "actualCount": 4,
       "undocumentLines": [
         9,
-        10,
-        59,
-        48,
-        38,
-        39,
-        11,
-        44,
+        67,
+        56,
+        46,
+        47,
+        18,
+        52,
         5,
-        96,
-        40,
-        161
+        104,
+        48,
+        169
       ]
     },
     "src/decorators/bindActions.js": {
@@ -37,6 +36,11 @@
       "undocumentLines": []
     },
     "src/decorators/bindHandlers.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/decorators/bindStorage.js": {
       "expectCount": 1,
       "actualCount": 1,
       "undocumentLines": []

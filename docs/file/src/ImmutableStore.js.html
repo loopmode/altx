@@ -47,6 +47,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindStorage">bindStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connectAlternative">connectAlternative</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
@@ -75,8 +76,16 @@ export function resetStores() {
 }
 
 export default class ImmutableStore {
-    constructor(initialData) {
-        this.listName = &apos;items&apos;;
+    /**
+     * Creates the instance.
+     * @param {Object} [initialData] - Plain or immutable data object for the initial data of this store. When `reset()` is called, the state is reverted to this data.
+     * @param {Object} [options] - Options object
+     * @param {Object} [options.env] - Pass `process.env` so that the instance can refresh the alt devtool when `NODE_ENV === &apos;development&apos;` is detected
+     * @param {String} [options.listName=&apos;items&apos;] - Name of the list entry to use in the `getItemById`, the `getIndexById` and the `find` methods.
+     */
+    constructor(initialData, { env = process.env, listName = &apos;items&apos; } = {}) {
+        this.listName = listName;
+        // TODO get rid of getItemById, getIndexById, find
         this.exportPublicMethods({
             getItemById: this.getItemById,
             getIndexById: this.getIndexById,
@@ -92,7 +101,7 @@ export default class ImmutableStore {
             this.setState(nextState);
         });
 
-        if (process.env.NODE_ENV === &apos;development&apos;) {
+        if (env.NODE_ENV === &apos;development&apos;) {
             window.postMessage(
                 {
                     payload: { action: &apos;REFRESH&apos; },

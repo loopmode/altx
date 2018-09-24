@@ -47,6 +47,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindStorage">bindStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connect">connect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-connectAlternative">connectAlternative</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flatten">flatten</a></span></span></li>
@@ -174,6 +175,34 @@
         
         
         <div data-ice="description"><p>Decorates a store with any number of action handlers.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="function/index.html#static-function-bindStorage">bindStorage</a></span></span><span data-ice="signature">(options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Decorator for ImmutableStore to persist values across browser refresh.</p>
 </div>
       </div>
     </td>
@@ -802,7 +831,7 @@
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import BindHandlers from &apos;<span><a href="file/src/BindHandlers.js.html#lineNumber19">@xailabs/altx/src/BindHandlers.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import BindHandlers from &apos;<span><a href="file/src/BindHandlers.js.html#lineNumber19">@xailabs/altx/lib/BindHandlers.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Creates a decorator for binding action handlers to a store.
@@ -884,7 +913,7 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindActions from &apos;<span><a href="file/src/decorators/bindActions.js.html#lineNumber8">@xailabs/altx/src/decorators/bindActions.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindActions from &apos;<span><a href="file/src/decorators/bindActions.js.html#lineNumber8">@xailabs/altx/lib/decorators/bindActions.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Decorates a store with any number of viewAction definitions.</p>
@@ -956,7 +985,7 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindCalls from &apos;<span><a href="file/src/decorators/bindCalls.js.html#lineNumber7">@xailabs/altx/src/decorators/bindCalls.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindCalls from &apos;<span><a href="file/src/decorators/bindCalls.js.html#lineNumber7">@xailabs/altx/lib/decorators/bindCalls.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Decorates a store with any number of call definitions.</p>
@@ -1028,7 +1057,7 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindHandlers from &apos;<span><a href="file/src/decorators/bindHandlers.js.html#lineNumber10">@xailabs/altx/src/decorators/bindHandlers.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindHandlers from &apos;<span><a href="file/src/decorators/bindHandlers.js.html#lineNumber10">@xailabs/altx/lib/decorators/bindHandlers.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Decorates a store with any number of action handlers.</p>
@@ -1091,6 +1120,118 @@ bindings after concatinating them to a flat list, so you can pass either of thes
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-bindStorage">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">bindStorage</span><span data-ice="signature">(options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/decorators/bindStorage.js.html#lineNumber20">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import bindStorage from &apos;<span><a href="file/src/decorators/bindStorage.js.html#lineNumber20">@xailabs/altx/lib/decorators/bindStorage.js</a></span>&apos;</code></pre></div>
+  
+  
+  <div data-ice="description"><p>Decorator for ImmutableStore to persist values across browser refresh.</p>
+<p>Supports <code>window.localStorage</code> and <code>window.sessionStorage</code> as well as <code>localForage</code> or any other backend that implements the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">Web Storage API</a>.
+The storage backend may return promises for asynchronous usage.</p>
+<p>To store only specific parts of the state, provide a <code>keyPaths</code> array. Omit <code>keyPaths</code> to persist the entire state of the store.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">options</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.keyPaths</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>|<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>&gt;</td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>An array of keyPaths. Each keyPath can be an array of strings as used in Immutable.js, e.g. <code>[&apos;foo&apos;, &apos;bar&apos;]</code> or a string with dot delimiters, e.g. <code>&apos;foo.bar&apos;</code></p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.storage</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: window.localStorage</li></ul></td>
+      <td data-ice="description"><p>An object that supports the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">Web Storage API</a> methods</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.parse</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>A function that receives the persisted value and returns the data object. Defaults to <code>JSON.parse</code> if <code>storage</code> is an instance of <code>window.Storage</code></p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.encode</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>A function that receives the data object and returns the value to be persisted. Defaults to <code>JSON.stringify</code> if <code>storage</code> is an instance of <code>window.Storage</code></p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.logging</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>Whether to log details to the console during operations</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>The decorator function for the target store</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-function-callFactory">
     <span class="access" data-ice="access">public</span>
     
@@ -1106,7 +1247,7 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import callFactory from &apos;<span><a href="file/src/callFactory.js.html#lineNumber5">@xailabs/altx/src/callFactory.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import callFactory from &apos;<span><a href="file/src/callFactory.js.html#lineNumber5">@xailabs/altx/lib/callFactory.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -1184,7 +1325,7 @@ bindings after concatinating them to a flat list, so you can pass either of thes
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import callSeries from &apos;<span><a href="file/src/callSeries.js.html#lineNumber20">@xailabs/altx/src/callSeries.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import callSeries from &apos;<span><a href="file/src/callSeries.js.html#lineNumber20">@xailabs/altx/lib/callSeries.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Returns a promise and executes a series of functions that each return a promise.
@@ -1287,7 +1428,7 @@ callSeries(calls).then(console.log)</code></pre>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import connect from &apos;<span><a href="file/src/decorators/connect.js.html#lineNumber96">@xailabs/altx/src/decorators/connect.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import connect from &apos;<span><a href="file/src/decorators/connect.js.html#lineNumber96">@xailabs/altx/lib/decorators/connect.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>A component decorator for connecting to immutable stores.</p>
@@ -1447,7 +1588,7 @@ represent the actual keyPath in the tree:</code></pre>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {connectAlternative} from &apos;<span><a href="file/src/decorators/connect.js.html#lineNumber175">@xailabs/altx/src/decorators/connect.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {connectAlternative} from &apos;<span><a href="file/src/decorators/connect.js.html#lineNumber175">@xailabs/altx/lib/decorators/connect.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -1530,7 +1671,7 @@ represent the actual keyPath in the tree:</code></pre>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createAction from &apos;<span><a href="file/src/createAction.js.html#lineNumber17">@xailabs/altx/src/createAction.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createAction from &apos;<span><a href="file/src/createAction.js.html#lineNumber17">@xailabs/altx/lib/createAction.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Creates a single action with a namespace.
@@ -1621,7 +1762,7 @@ a function by the name you gave as well as an constant for the action name.</p>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createActions from &apos;<span><a href="file/src/createActions.js.html#lineNumber11">@xailabs/altx/src/createActions.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createActions from &apos;<span><a href="file/src/createActions.js.html#lineNumber11">@xailabs/altx/lib/createActions.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Creates simple (data-pass-through) actions with a namespace.
@@ -1703,7 +1844,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {createLogger} from &apos;<span><a href="file/src/utils/logging.js.html#lineNumber17">@xailabs/altx/src/utils/logging.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {createLogger} from &apos;<span><a href="file/src/utils/logging.js.html#lineNumber17">@xailabs/altx/lib/utils/logging.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -1774,7 +1915,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createStore from &apos;<span><a href="file/src/createStore.js.html#lineNumber12">@xailabs/altx/src/createStore.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import createStore from &apos;<span><a href="file/src/createStore.js.html#lineNumber12">@xailabs/altx/lib/createStore.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -1852,7 +1993,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {creatorConstraints} from &apos;<span><a href="file/src/utils/validate/validateCreator.js.html#lineNumber5">@xailabs/altx/src/utils/validate/validateCreator.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {creatorConstraints} from &apos;<span><a href="file/src/utils/validate/validateCreator.js.html#lineNumber5">@xailabs/altx/lib/utils/validate/validateCreator.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -1895,7 +2036,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {definitionConstraints} from &apos;<span><a href="file/src/utils/validate/validateDefinition.js.html#lineNumber3">@xailabs/altx/src/utils/validate/validateDefinition.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {definitionConstraints} from &apos;<span><a href="file/src/utils/validate/validateDefinition.js.html#lineNumber3">@xailabs/altx/lib/utils/validate/validateDefinition.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -1938,7 +2079,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import flatten from &apos;<span><a href="file/src/utils/flatten.js.html#lineNumber4">@xailabs/altx/src/utils/flatten.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import flatten from &apos;<span><a href="file/src/utils/flatten.js.html#lineNumber4">@xailabs/altx/lib/utils/flatten.js</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Reduces a mixed array to a flat one.</p>
@@ -2010,7 +2151,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getAltInstance} from &apos;<span><a href="file/src/altInstance.js.html#lineNumber16">@xailabs/altx/src/altInstance.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getAltInstance} from &apos;<span><a href="file/src/altInstance.js.html#lineNumber16">@xailabs/altx/lib/altInstance.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2065,7 +2206,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getLevel} from &apos;<span><a href="file/src/utils/logging.js.html#lineNumber13">@xailabs/altx/src/utils/logging.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getLevel} from &apos;<span><a href="file/src/utils/logging.js.html#lineNumber13">@xailabs/altx/lib/utils/logging.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2120,7 +2261,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import getSources from &apos;<span><a href="file/src/getSources.js.html#lineNumber1">@xailabs/altx/src/getSources.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import getSources from &apos;<span><a href="file/src/getSources.js.html#lineNumber1">@xailabs/altx/lib/getSources.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2191,7 +2332,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {handlerConstraints} from &apos;<span><a href="file/src/utils/validate/validateHandler.js.html#lineNumber3">@xailabs/altx/src/utils/validate/validateHandler.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {handlerConstraints} from &apos;<span><a href="file/src/utils/validate/validateHandler.js.html#lineNumber3">@xailabs/altx/lib/utils/validate/validateHandler.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2234,7 +2375,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import handlerFactory from &apos;<span><a href="file/src/handlerFactory.js.html#lineNumber4">@xailabs/altx/src/handlerFactory.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import handlerFactory from &apos;<span><a href="file/src/handlerFactory.js.html#lineNumber4">@xailabs/altx/lib/handlerFactory.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2312,7 +2453,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {resetStores} from &apos;<span><a href="file/src/ImmutableStore.js.html#lineNumber5">@xailabs/altx/src/ImmutableStore.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {resetStores} from &apos;<span><a href="file/src/ImmutableStore.js.html#lineNumber5">@xailabs/altx/lib/ImmutableStore.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2355,7 +2496,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {setAltInstance} from &apos;<span><a href="file/src/altInstance.js.html#lineNumber12">@xailabs/altx/src/altInstance.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {setAltInstance} from &apos;<span><a href="file/src/altInstance.js.html#lineNumber12">@xailabs/altx/lib/altInstance.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2414,7 +2555,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {setLevel} from &apos;<span><a href="file/src/utils/logging.js.html#lineNumber10">@xailabs/altx/src/utils/logging.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {setLevel} from &apos;<span><a href="file/src/utils/logging.js.html#lineNumber10">@xailabs/altx/lib/utils/logging.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2473,7 +2614,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import validateCreator from &apos;<span><a href="file/src/utils/validate/validateCreator.js.html#lineNumber14">@xailabs/altx/src/utils/validate/validateCreator.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import validateCreator from &apos;<span><a href="file/src/utils/validate/validateCreator.js.html#lineNumber14">@xailabs/altx/lib/utils/validate/validateCreator.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2544,7 +2685,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import validateDefinition from &apos;<span><a href="file/src/utils/validate/validateDefinition.js.html#lineNumber14">@xailabs/altx/src/utils/validate/validateDefinition.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import validateDefinition from &apos;<span><a href="file/src/utils/validate/validateDefinition.js.html#lineNumber14">@xailabs/altx/lib/utils/validate/validateDefinition.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -2615,7 +2756,7 @@ Basically just like <code>alt.generateActions</code>, but within a given namespa
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import validateHandler from &apos;<span><a href="file/src/utils/validate/validateHandler.js.html#lineNumber14">@xailabs/altx/src/utils/validate/validateHandler.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import validateHandler from &apos;<span><a href="file/src/utils/validate/validateHandler.js.html#lineNumber14">@xailabs/altx/lib/utils/validate/validateHandler.js</a></span>&apos;</code></pre></div>
   
   
   

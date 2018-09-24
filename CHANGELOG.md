@@ -1,3 +1,9 @@
+### 1.3.0.
+
+-   New store decorator: `decorators/bindStorage`
+-   ImmutableStore: Accept options object in constructor
+-   ImmutableStore: Accept options.env to check for `NODE_ENV==='development'` and refresh alt devtools
+
 ### 1.2.1
 
 -   Add eslint+prettier setup, fix formatting

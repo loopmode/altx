@@ -11,5 +11,15 @@
     "asyncGenerators": true,
     "exportExtensions": true,
     "dynamicImport": true
-  }
+  },
+  "plugins": [
+    {
+      "name": "esdoc-importpath-plugin",
+      "option": {
+        "replaces": [
+          {"from": "^src/", "to": "lib/"}
+        ]
+      }
+    }
+  ]
 }
