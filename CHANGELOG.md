@@ -1,3 +1,7 @@
+### 1.4.2.
+
+-   Do not create store methods for the "name" field
+
 ### 1.4.0.
 
 -   New store decorator: `decorators/bindStorage`
