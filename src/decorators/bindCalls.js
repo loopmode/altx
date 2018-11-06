@@ -5,10 +5,10 @@ import { getLevel as getLogLevel, logLevel } from '../utils/logging';
  * Decorates a store with any number of call definitions.
  */
 export default function bindCalls(...args) {
-    return function decorate(storeClass) {
+    return function decorateStore(Store) {
         const calls = flatten(args);
-        calls.forEach(call => decorateStoreWithCall(storeClass, call));
-        return storeClass;
+        calls.forEach(call => decorateStoreWithCall(Store, call));
+        return Store;
     };
 }
 
@@ -17,8 +17,8 @@ export default function bindCalls(...args) {
  * Attaches the dataSource specified in the call definition using alt's datasource decorator.
  * Creates and binds a handler function for all reducers and actions specified in the call definition.
  */
-function decorateStoreWithCall(storeClass, callDefinition) {
-    const actionNames = Object.keys(callDefinition.actions).reduce((result, key) => {
+function decorateStoreWithCall(Store, call) {
+    const names = Object.keys(call.actions).reduce((result, key) => {
         if (key === 'name') {
             return result;
         }
@@ -28,8 +28,8 @@ function decorateStoreWithCall(storeClass, callDefinition) {
         }
         return result;
     }, []);
-    actionNames.forEach(reducerName => {
-        bindReducerHandler(reducerName, storeClass, callDefinition);
+    names.forEach(reducerName => {
+        createStoreHandler(reducerName, Store, call);
     });
 }
 
@@ -41,16 +41,16 @@ function decorateStoreWithCall(storeClass, callDefinition) {
  * and mutate the store with the new state returned by the reducer.
  * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.
  */
-function bindReducerHandler(reducerName, storeClass, callDefinition) {
-    const handlerName = `_${callDefinition.name}_${reducerName}`;
+function createStoreHandler(reducerName, Store, call) {
+    const handlerName = `_${call.name}_${reducerName}`;
 
-    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler "${handlerName}"`);
+    if (Store.prototype[handlerName]) throw new Error(`Duplicate handler "${handlerName}"`);
 
-    storeClass.prototype[handlerName] = function handleCallAction(payload) {
-        const reducer = callDefinition.hasOwnProperty('reducers') && callDefinition.reducers[reducerName];
-        const sideEffect = callDefinition.hasOwnProperty('sideEffects') && callDefinition.sideEffects[reducerName];
-        const logging = callDefinition.hasOwnProperty('logging') && callDefinition.logging;
-        const logger = callDefinition.hasOwnProperty('logger') && callDefinition.logger;
+    Store.prototype[handlerName] = function handleCallAction(payload) {
+        const reducer = call.hasOwnProperty('reducers') && call.reducers[reducerName];
+        const sideEffect = call.hasOwnProperty('sideEffects') && call.sideEffects[reducerName];
+        const logging = call.hasOwnProperty('logging') && call.logging;
+        const logger = call.hasOwnProperty('logger') && call.logger;
         const isError = payload instanceof Error;
         if (isError) {
             if (payload.response && payload.response.body && payload.response.body.message) {
@@ -65,18 +65,18 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
         let nextState = currentState;
 
         if (reducer) {
-            //console.log(`[${handlerName}]`, payload, callDefinition);
+            //console.log(`[${handlerName}]`, payload, call);
             try {
                 nextState = reducer(currentState, payload);
             } catch (error) {
-                console.error(`Error in reducer (${callDefinition.name}, ${reducerName})`, error);
+                console.error(`Error in reducer (${call.name}, ${reducerName})`, error);
             }
         }
 
         if (reducer && !nextState)
             console.warn(
                 `reducer "${reducerName}" in call "${
-                    callDefinition.name
+                    call.name
                 }" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`
             );
 
@@ -89,14 +89,13 @@ function bindReducerHandler(reducerName, storeClass, callDefinition) {
                 try {
                     sideEffect({ state: nextState, prevState: currentState, payload });
                 } catch (error) {
-                    console.error(`Error in sideEffect (${callDefinition.name}, ${reducerName})`, error);
+                    console.error(`Error in sideEffect (${call.name}, ${reducerName})`, error);
                 }
             });
         }
     };
 
-    const action = callDefinition.actions[reducerName];
-    const bindActionHandler = bind(action);
-
-    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));
+    const bindHandler = bind(call.actions[reducerName]);
+    const descriptor = Object.getOwnPropertyDescriptor(Store.prototype, handlerName);
+    bindHandler(Store, handlerName, descriptor);
 }
