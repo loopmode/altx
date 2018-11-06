@@ -22,3 +22,5 @@ export getSources from './getSources';
 export ActionListeners from 'alt-utils/lib/ActionListeners';
 export { decorate, datasource, bind } from 'alt-utils/lib/decorators';
 export immutable from 'alt-utils/lib/ImmutableUtil';
+
+export withDecorators from './withDecorators';

@@ -1,8 +1,9 @@
-### 1.4.2.
+### 1.4.2
 
 -   Do not create store methods for the "name" field
+-   Add withDecorators for usage without decorator syntax
 
-### 1.4.0.
+### 1.4.0
 
 -   New store decorator: `decorators/bindStorage`
 -   ImmutableStore: Accept options object in constructor
