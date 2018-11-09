@@ -1,3 +1,7 @@
+### 1.4.3
+
+-   Upgrade @loopmode/events 1.0.5 to allow SSR
+
 ### 1.4.2
 
 -   Do not create store methods for the "name" field

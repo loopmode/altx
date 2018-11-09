@@ -1,6 +1,6 @@
 {
   "name": "@xailabs/altx",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Flux flavor based on alt.js",
   "main": "lib/index.js",
   "scripts": {
@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/loopmode/altx#readme",
   "dependencies": {
-    "@loopmode/events": "^1.0.4",
+    "@loopmode/events": "^1.0.5",
     "alt": "^0.18.6",
     "alt-utils": "^2.0.0",
     "immutable": "^3.8.1",
