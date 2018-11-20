@@ -17,11 +17,9 @@ export function getAltInstance() {
     return instance;
 }
 
-const root = global || window;
-
-function setup(alt) {
+export function setup(alt) {
     instance = alt;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
         // Debugging with chrome devtools
         // @see https://github.com/goatslacker/alt-devtool
         require('alt-utils/lib/chromeDebug')(instance);
@@ -34,11 +32,11 @@ function setup(alt) {
                 refreshAction.defer();
             }
         };
-        root && root.addEventListener && root.addEventListener('message', instance.handleMessage);
+        window.addEventListener('message', instance.handleMessage);
     }
 }
 function teardown() {
-    if (process.env.NODE_ENV === 'development') {
-        root && root.removeEventListener && root.removeEventListener('message', instance.handleMessage);
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && instance) {
+        window.removeEventListener('message', instance.handleMessage);
     }
 }

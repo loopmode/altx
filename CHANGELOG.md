@@ -1,6 +1,10 @@
+### 1.4.4
+
+-   Guard against undefined window object (SSR)
+
 ### 1.4.3
 
--   Upgrade @loopmode/events 1.0.5 to allow SSR
+-   Upgrade @loopmode/events 1.0.5 (SSR)
 
 ### 1.4.2
 

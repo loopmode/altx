@@ -17,7 +17,12 @@ import Events from '@loopmode/events';
  * @param {Boolean} [options.logging] - Whether to log details to the console during operations
  * @return {Function} - The decorator function for the target store
  */
-export default function bindStorage({ storage = window.localStorage, keyPaths, parse, encode, logging } = {}) {
+export default function bindStorage({ storage, keyPaths, parse, encode, logging } = {}) {
+    if (typeof window === 'undefined') {
+        return StoreClass => StoreClass;
+    }
+
+    storage = storage || window.localStorage;
     if (storage instanceof window.Storage) {
         parse = parse || JSON.parse;
         encode = encode || JSON.stringify;

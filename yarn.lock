@@ -116,11 +116,13 @@
     eslint-plugin-prettier "^2.3.1"
     eslint-plugin-react "^7.3.0"
 
-"@loopmode/events@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@loopmode/events/-/events-1.0.4.tgz#31c41fdd6f2a33f21fc611de31f29b4509dc36d8"
+"@loopmode/events@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@loopmode/events/-/events-1.0.5.tgz#abfa2c7c4370bed34f8d048834d3c92aac2b2115"
+  integrity sha512-9u4ZjI59H1gUlXR28r5dXli7boH+y/vdExpM3ZcnqmeTzVDXo2tF5JwAnNXOHV/jGlX/NBN7sVMij30cOwHzhA==
   dependencies:
     detect-passive-events "^1.0.4"
+    window-or-global "^1.0.1"
 
 abab@^1.0.0:
   version "1.0.3"
@@ -4583,6 +4585,11 @@ wide-align@^1.1.0:
   resolved "https://registry.yarnpkg.com/wide-align/-/wide-align-1.1.2.tgz#571e0f1b0604636ebc0dfc21b0339bbe31341710"
   dependencies:
     string-width "^1.0.2"
+
+window-or-global@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/window-or-global/-/window-or-global-1.0.1.tgz#dbe45ba2a291aabc56d62cf66c45b7fa322946de"
+  integrity sha1-2+RboqKRqrxW1iz2bEW3+jIpRt4=
 
 wordwrap@~1.0.0:
   version "1.0.0"

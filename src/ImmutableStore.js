@@ -32,7 +32,7 @@ export default class ImmutableStore {
             this.setState(nextState);
         });
 
-        if (env.NODE_ENV === 'development') {
+        if (env.NODE_ENV === 'development' && typeof window !== 'undefined') {
             window.postMessage(
                 {
                     payload: { action: 'REFRESH' },
