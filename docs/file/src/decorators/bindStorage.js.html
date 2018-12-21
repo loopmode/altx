@@ -37,6 +37,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resetStores">resetStores</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getAltInstance">getAltInstance</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setAltInstance">setAltInstance</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setup">setup</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callFactory">callFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-callSeries">callSeries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createAction">createAction</a></span></span></li>
@@ -44,6 +45,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createStore">createStore</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSources">getSources</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-handlerFactory">handlerFactory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withDecorators">withDecorators</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">decorators</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindActions">bindActions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindCalls">bindCalls</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bindHandlers">bindHandlers</a></span></span></li>
@@ -86,7 +88,12 @@ import Events from &apos;@loopmode/events&apos;;
  * @param {Boolean} [options.logging] - Whether to log details to the console during operations
  * @return {Function} - The decorator function for the target store
  */
-export default function bindStorage({ storage = window.localStorage, keyPaths, parse, encode, logging } = {}) {
+export default function bindStorage({ storage, keyPaths, parse, encode, logging } = {}) {
+    if (typeof window === &apos;undefined&apos;) {
+        return StoreClass =&gt; StoreClass;
+    }
+
+    storage = storage || window.localStorage;
     if (storage instanceof window.Storage) {
         parse = parse || JSON.parse;
         encode = encode || JSON.stringify;
@@ -98,7 +105,8 @@ export default function bindStorage({ storage = window.localStorage, keyPaths, p
                 this.persistenceEnable({ storage, keyPaths });
                 this.exportPublicMethods({
                     persistenceEnable: () =&gt; this.persistenceEnable({ storage, keyPaths }),
-                    persistenceDisable: () =&gt; this.persistenceDisable()
+                    persistenceDisable: () =&gt; this.persistenceDisable(),
+                    persistenceClear: () =&gt; this.persistenceClear()
                 });
             }
 
@@ -118,16 +126,26 @@ export default function bindStorage({ storage = window.localStorage, keyPaths, p
                     console.log(&apos;[PersistableStore] persistenceEnable&apos;, { store: this });
                 }
 
-                Events.on(&apos;beforeunload&apos;, this.persistenceSave);
+                Events.on(&apos;beforeunload&apos;, this.persistenceBeforeUnload);
 
                 this.persistenceRestore();
+            };
+            persistenceBeforeUnload = () =&gt; {
+                this.persistenceSave();
             };
             persistenceDisable = () =&gt; {
                 if (logging) {
                     console.log(&apos;[PersistableStore] persistenceDisable&apos;, { store: this });
                 }
 
-                Events.off(&apos;beforeunload&apos;, this.persistenceSave);
+                Events.off(&apos;beforeunload&apos;, this.persistenceBeforeUnload);
+            };
+            persistenceClear = () =&gt; {
+                this.initialData = this._initialDataWithoutPersistence || this.initialData;
+                const { storage, name } = this.persistenceConfig;
+                this.persistenceDisable();
+                storage.removeItem(name);
+                console.log(`[PersistableStore] &quot;${name}&quot; cleared. Please refresh the window`);
             };
             persistenceRestore = async () =&gt; {
                 try {
@@ -181,6 +199,7 @@ export default function bindStorage({ storage = window.localStorage, keyPaths, p
                     return;
                 }
                 const wasImmutable = typeof this.initialData.toJS === &apos;function&apos;;
+                this._initialDataWithoutPersistence = this.initialData;
                 this.initialData = Immutable.fromJS(this.initialData).mergeDeep(persistedData);
                 if (!wasImmutable) {
                     this.initialData = this.initialData.toJS();

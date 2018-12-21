@@ -162,6 +162,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@xailabs/altx/lib/altinstance.js~setup",
+    "function/index.html#static-function-setup",
+    "<span>setup</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/altInstance.js</span>",
+    "function"
+  ],
+  [
     "@xailabs/altx/lib/utils/validate/validatecreator.js~validatecreator",
     "function/index.html#static-function-validateCreator",
     "<span>validateCreator</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateCreator.js</span>",
@@ -177,6 +183,12 @@ window.esdocSearchIndex = [
     "@xailabs/altx/lib/utils/validate/validatehandler.js~validatehandler",
     "function/index.html#static-function-validateHandler",
     "<span>validateHandler</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/utils/validate/validateHandler.js</span>",
+    "function"
+  ],
+  [
+    "@xailabs/altx/lib/withdecorators.js~withdecorators",
+    "function/index.html#static-function-withDecorators",
+    "<span>withDecorators</span> <span class=\"search-result-import-path\">@xailabs/altx/lib/withDecorators.js</span>",
     "function"
   ],
   [
@@ -723,6 +735,12 @@ window.esdocSearchIndex = [
     "src/utils/validate/validatehandler.js",
     "file/src/utils/validate/validateHandler.js.html",
     "src/utils/validate/validateHandler.js",
+    "file"
+  ],
+  [
+    "src/withdecorators.js",
+    "file/src/withDecorators.js.html",
+    "src/withDecorators.js",
     "file"
   ]
 ]

@@ -1,7 +1,7 @@
 {
-  "coverage": "32.55%",
-  "expectCount": 43,
-  "actualCount": 14,
+  "coverage": "33.33%",
+  "expectCount": 45,
+  "actualCount": 15,
   "files": {
     "src/BindHandlers.js": {
       "expectCount": 1,
@@ -113,11 +113,12 @@
       "undocumentLines": []
     },
     "src/altInstance.js": {
-      "expectCount": 2,
+      "expectCount": 3,
       "actualCount": 0,
       "undocumentLines": [
         16,
-        12
+        12,
+        20
       ]
     },
     "src/getSources.js": {
@@ -148,6 +149,11 @@
       "undocumentLines": [
         1
       ]
+    },
+    "src/withDecorators.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
     }
   }
 }

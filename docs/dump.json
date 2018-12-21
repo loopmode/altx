@@ -3,7 +3,7 @@
     "__docId__": 0,
     "kind": "file",
     "name": "src/altInstance.js",
-    "content": "/**\n * This is the alt instance that holds the state of the entire application.\n * All stores and actions are created on this instance.\n */\n\nimport Alt from 'alt';\n\nlet instance;\n\nsetAltInstance(new Alt());\n\nexport function setAltInstance(alt) {\n    if (instance) teardown(instance);\n    setup(alt);\n}\nexport function getAltInstance() {\n    return instance;\n}\n\nconst root = global || window;\n\nfunction setup(alt) {\n    instance = alt;\n    if (process.env.NODE_ENV === 'development') {\n        // Debugging with chrome devtools\n        // @see https://github.com/goatslacker/alt-devtool\n        require('alt-utils/lib/chromeDebug')(instance);\n\n        // sometimes, chromeDebug just doesn't update until an action is dispatched.\n        // we use a dummy action to do just that\n        const refreshAction = instance.generateActions('__refresh__').__refresh__;\n        instance.handleMessage = e => {\n            if (e.data && e.data.type === 'ALT' && e.data.source === 'alt-devtools') {\n                refreshAction.defer();\n            }\n        };\n        root && root.addEventListener && root.addEventListener('message', instance.handleMessage);\n    }\n}\nfunction teardown() {\n    if (process.env.NODE_ENV === 'development') {\n        root && root.removeEventListener && root.removeEventListener('message', instance.handleMessage);\n    }\n}\n",
+    "content": "/**\n * This is the alt instance that holds the state of the entire application.\n * All stores and actions are created on this instance.\n */\n\nimport Alt from 'alt';\n\nlet instance;\n\nsetAltInstance(new Alt());\n\nexport function setAltInstance(alt) {\n    if (instance) teardown(instance);\n    setup(alt);\n}\nexport function getAltInstance() {\n    return instance;\n}\n\nexport function setup(alt) {\n    instance = alt;\n    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {\n        // Debugging with chrome devtools\n        // @see https://github.com/goatslacker/alt-devtool\n        require('alt-utils/lib/chromeDebug')(instance);\n\n        // sometimes, chromeDebug just doesn't update until an action is dispatched.\n        // we use a dummy action to do just that\n        const refreshAction = instance.generateActions('__refresh__').__refresh__;\n        instance.handleMessage = e => {\n            if (e.data && e.data.type === 'ALT' && e.data.source === 'alt-devtools') {\n                refreshAction.defer();\n            }\n        };\n        window.addEventListener('message', instance.handleMessage);\n    }\n}\nfunction teardown() {\n    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && instance) {\n        window.removeEventListener('message', instance.handleMessage);\n    }\n}\n",
     "static": true,
     "longname": "src/altInstance.js",
     "access": null,
@@ -72,32 +72,6 @@
   },
   {
     "__docId__": 3,
-    "kind": "variable",
-    "name": "root",
-    "memberof": "src/altInstance.js",
-    "static": true,
-    "longname": "src/altInstance.js~root",
-    "access": null,
-    "export": false,
-    "importPath": "@xailabs/altx/lib/altInstance.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 20,
-    "undocument": true,
-    "unknown": [
-      {
-        "tagName": "@_undocument",
-        "tagValue": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 4,
     "kind": "function",
     "name": "setup",
     "memberof": "src/altInstance.js",
@@ -106,11 +80,11 @@
     "static": true,
     "longname": "src/altInstance.js~setup",
     "access": null,
-    "export": false,
+    "export": true,
     "importPath": "@xailabs/altx/lib/altInstance.js",
-    "importStyle": null,
+    "importStyle": "{setup}",
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 20,
     "undocument": true,
     "unknown": [
       {
@@ -128,7 +102,7 @@
     ]
   },
   {
-    "__docId__": 5,
+    "__docId__": 4,
     "kind": "function",
     "name": "teardown",
     "memberof": "src/altInstance.js",
@@ -141,7 +115,7 @@
     "importPath": "@xailabs/altx/lib/altInstance.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 38,
     "undocument": true,
     "unknown": [
       {
@@ -152,7 +126,7 @@
     "params": []
   },
   {
-    "__docId__": 6,
+    "__docId__": 5,
     "kind": "file",
     "name": "src/BindHandlers.js",
     "content": "import { bind as bindAlt } from 'alt-utils/lib/decorators';\r\n\r\n// DEPRECATED\r\n// replace with \"calls and viewActions!\"\r\n\r\n/**\r\n * Creates a decorator for binding action handlers to a store.\r\n * A binding is created for each action that has a matching handler method mapping.\r\n *\r\n * The decorator takes any number of action handler definitions as arguments and applies their\r\n * bindings after concatinating them to a flat list, so you can pass either of these:\r\n * - an array of handler definitions\r\n * - any number of array of handler definitions\r\n * - any number of handlerdefinitions without arrays\r\n * - any mixed variation\r\n *\r\n * See manual/usage/action-handlers.md for more on this topic.\r\n */\r\nexport default function BindHandlers(...args) {\r\n    const definitions = args.reduce((result, def) => {\r\n        if (Array.isArray(def)) {\r\n            def.forEach(d => result.push(d));\r\n        } else {\r\n            result.push(def);\r\n        }\r\n        return result;\r\n    }, []);\r\n    return function decorateStore(StoreClass) {\r\n        definitions.forEach(function bindActions({ handler, bindings }, i) {\r\n            if (!handler || !handler.prototype) {\r\n                throw new Error('Invalid action handler');\r\n            }\r\n            // we need unique prefixes for the potentionally same method names\r\n            // using handler.prototype.constructor.name alone is useless after mangling/uglifying!\r\n            const name = `$${i}_${handler.prototype.constructor.name}`;\r\n            // collect the names of the methods defined in the handler decorator\r\n            const methodNames = Object.keys(bindings);\r\n            // now for each decorator method that has an action by the same name...\r\n            methodNames.forEach(function bindAction(methodName) {\r\n                if (typeof bindings[methodName] !== 'function') {\r\n                    throw new Error(`bindings.${methodName} is not a function (handler: ${name})`);\r\n                }\r\n                if (typeof handler.prototype[methodName] !== 'function') {\r\n                    throw new Error(`${name}.${methodName} is not a function`);\r\n                }\r\n                const storeMethodName = `${name}_${methodName}`;\r\n                // ...copy the method from the decorator class to the store class\r\n                StoreClass.prototype[storeMethodName] = handler.prototype[methodName];\r\n                // and bind the action to it, using Alt's 'bind' util\r\n                const applyBinding = bindAlt(bindings[methodName]);\r\n                applyBinding(\r\n                    StoreClass,\r\n                    storeMethodName,\r\n                    Object.getOwnPropertyDescriptor(StoreClass.prototype, storeMethodName)\r\n                );\r\n            });\r\n        });\r\n        return StoreClass;\r\n    };\r\n}\r\n",
@@ -163,7 +137,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 7,
+    "__docId__": 6,
     "kind": "function",
     "name": "BindHandlers",
     "memberof": "src/BindHandlers.js",
@@ -193,7 +167,7 @@
     }
   },
   {
-    "__docId__": 8,
+    "__docId__": 7,
     "kind": "file",
     "name": "src/callFactory.js",
     "content": "import { validateCreator, validateDefinition } from './utils/validate';\r\nimport { createLogger } from './utils/logging';\r\nimport createActions from './createActions';\r\n\r\nexport default function callFactory(\r\n    name,\r\n    {\r\n        namespace = 'global',\r\n        defaultActions = ['loading', 'error', 'success'],\r\n        actions = createActions(`${namespace}:${name}`, defaultActions),\r\n        logger = createLogger(`${namespace}:${name}`)\r\n    } = {}\r\n) {\r\n    const errors = validateCreator({ name, actions, logger }, logger);\r\n    const errorKeys = errors && Object.keys(errors);\r\n    if (errorKeys && errorKeys.length) {\r\n        throw new Error(errors[errorKeys[0]]);\r\n    }\r\n\r\n    return {\r\n        name,\r\n        actions,\r\n\r\n        create: definition => {\r\n            const createDefinition = typeof definition === 'function' ? definition : () => definition;\r\n            const call = Object.assign(createDefinition({ name, actions, logger }), {\r\n                name,\r\n                actions,\r\n                logger\r\n            });\r\n            if (validateDefinition(call, logger)) {\r\n                throw new Error('Invalid call');\r\n            }\r\n            call.dataSource = {\r\n                // set the default actions\r\n                ...(call.actions || {}),\r\n                // set dataSource from the definition passed om - potentially overriding the actions\r\n                ...(call.dataSource || {})\r\n            };\r\n            return call;\r\n        },\r\n        createActions: actionNames => createActions(`${namespace}:${name}`, actionNames)\r\n    };\r\n}\r\n",
@@ -204,7 +178,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 9,
+    "__docId__": 8,
     "kind": "function",
     "name": "callFactory",
     "memberof": "src/callFactory.js",
@@ -249,7 +223,7 @@
     }
   },
   {
-    "__docId__": 10,
+    "__docId__": 9,
     "kind": "file",
     "name": "src/callSeries.js",
     "content": "/**\r\n * Returns a promise and executes a series of functions that each return a promise.\r\n * Uses an initial 0-timeout so that we don't run into \"Cannot dispatch in the middle of a dispatch\" errors in case\r\n * one of the calls triggers a `loading` action\r\n *\r\n * @example\r\n * import {callSeries} from '@xailabs/altx';\r\n * const calls = [\r\n *      () => fetch('foo'),\r\n *      () => fetch('bar'),\r\n *      () => new Promise((resolve) => setTimeout(resolve, 1000)),\r\n * ];\r\n * callSeries(calls).then(console.log)\r\n *\r\n * @param {array} calls - An array of function that each returns a promise\r\n * @param {object} options - An object with additional options\r\n * @param {boolean} options.log - Whether to log each individual call to the console\r\n * @return {promise} - A promise that will be resolved when all calls succeeded or rejected if at least one call failed\r\n */\r\nexport default function callSeries(calls, { log = false } = {}) {\r\n    return new Promise((resolve, reject) => {\r\n        let results = [];\r\n        setTimeout(() => {\r\n            function series(list) {\r\n                log && console.log('[callSeries] list', list);\r\n                var p = Promise.resolve();\r\n                return list.reduce(function(pacc, fn) {\r\n                    return (pacc = pacc.then(res => {\r\n                        log && console.log('[callSeries] res', res);\r\n                        results.push(res);\r\n                        return fn(res);\r\n                    }));\r\n                }, p);\r\n            }\r\n            series(calls)\r\n                .then(() => setTimeout(() => resolve(results)))\r\n                .catch(err => reject(err));\r\n        });\r\n    });\r\n}\r\n",
@@ -260,7 +234,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 11,
+    "__docId__": 10,
     "kind": "function",
     "name": "callSeries",
     "memberof": "src/callSeries.js",
@@ -319,7 +293,7 @@
     }
   },
   {
-    "__docId__": 12,
+    "__docId__": 11,
     "kind": "file",
     "name": "src/createAction.js",
     "content": "import createActions from './createActions';\r\n\r\n/**\r\n * Creates a single action with a namespace.\r\n * Basically just like `altx.generateActions`, but with a signle required argument `name` and an optional second argument `namespace`.\r\n *\r\n * Note: The returned object is very much the same as with the plural version `createActions`: You get back an object that has\r\n * a function by the name you gave as well as an constant for the action name.\r\n *\r\n * @example\r\n * createAction('myAction', 'myNamespace'); // {name: 'myNamespace', myAction: function() {...}, MY_ACTION: 'myNamespace.myAction'}\r\n *\r\n * @param {string} name - The name to use for the action\r\n * @param {string} namespace - The namespace to use for the action\r\n * @return {object} An name object\r\n */\r\nexport default function createAction(name, namespace = 'default') {\r\n    const actions = createActions(namespace, [name]);\r\n    return actions;\r\n}\r\n",
@@ -330,7 +304,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 13,
+    "__docId__": 12,
     "kind": "function",
     "name": "createAction",
     "memberof": "src/createAction.js",
@@ -379,7 +353,7 @@
     }
   },
   {
-    "__docId__": 14,
+    "__docId__": 13,
     "kind": "file",
     "name": "src/createActions.js",
     "content": "import { getAltInstance } from './altInstance';\r\n\r\n/**\r\n * Creates simple (data-pass-through) actions with a namespace.\r\n * Basically just like `alt.generateActions`, but within a given namespace instead of 'global'.\r\n *\r\n * @param {string} namespace - The namespace to use for the actions\r\n * @param {array<string>} actions - An array of action names\r\n * @return {object} An object containing the generated actions and constants\r\n */\r\nexport default function createActions(namespace, actions) {\r\n    return getAltInstance().createActions({\r\n        name: namespace,\r\n        ...[].concat(actions).reduce((result, action) => {\r\n            result[action] = (data = {}) => data;\r\n            return result;\r\n        }, {})\r\n    });\r\n}\r\n",
@@ -390,7 +364,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 15,
+    "__docId__": 14,
     "kind": "function",
     "name": "createActions",
     "memberof": "src/createActions.js",
@@ -436,7 +410,7 @@
     }
   },
   {
-    "__docId__": 16,
+    "__docId__": 15,
     "kind": "file",
     "name": "src/createStore.js",
     "content": "import Immutable from 'immutable';\nimport { decorate, datasource } from 'alt-utils/lib/decorators';\nimport immutable from 'alt-utils/lib/ImmutableUtil';\n\nimport { getAltInstance } from './altInstance';\nimport ImmutableStore from './ImmutableStore';\nimport getSources from './getSources';\n\nimport bindCalls from './decorators/bindCalls';\nimport bindActions from './decorators/bindActions';\n\nexport default function createStore(displayName, { alt, state, calls, sources, viewActions } = {}) {\n    if (!displayName) {\n        throw new Error('displayName is required');\n    }\n\n    alt = alt || getAltInstance();\n    state = state || Immutable.fromJS({});\n\n    calls = calls || [];\n    sources = sources || getSources(calls);\n    viewActions = viewActions || [];\n\n    return alt.createStore(\n        @decorate(alt)\n        @datasource(sources)\n        @bindCalls(calls)\n        @bindActions(viewActions)\n        @immutable\n        class extends ImmutableStore {\n            constructor() {\n                super(state);\n            }\n        },\n        displayName\n    );\n}\n",
@@ -447,7 +421,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 17,
+    "__docId__": 16,
     "kind": "function",
     "name": "createStore",
     "memberof": "src/createStore.js",
@@ -492,7 +466,7 @@
     }
   },
   {
-    "__docId__": 18,
+    "__docId__": 17,
     "kind": "file",
     "name": "src/decorators/bindActions.js",
     "content": "import { bind } from 'alt-utils/lib/decorators';\r\nimport flatten from '../utils/flatten';\r\nimport { getLevel as getLogLevel, logLevel } from '../utils/logging';\r\n\r\n/**\r\n * Decorates a store with any number of viewAction definitions.\r\n */\r\nexport default function bindActions(...args) {\r\n    return function decorate(storeClass) {\r\n        const calls = flatten(args);\r\n        calls.forEach(call => bindViewActionHandler(storeClass, call));\r\n        return storeClass;\r\n    };\r\n}\r\n\r\nfunction bindViewActionHandler(storeClass, definition) {\r\n    const { name, action, reducer, sideEffect, logger, logging } = definition;\r\n\r\n    const handlerName = `${name}`;\r\n\r\n    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\r\n\r\n    storeClass.prototype[handlerName] = function handleViewAction(payload) {\r\n        if (logging || getLogLevel() === logLevel.FORCE) {\r\n            logger[payload instanceof Error ? 'error' : 'log'](payload && payload.toJS ? payload.toJS() : payload);\r\n        }\r\n\r\n        const currentState = this.state;\r\n        let nextState = currentState;\r\n\r\n        try {\r\n            nextState = reducer && reducer(currentState, payload);\r\n        } catch (error) {\r\n            console.error(`${handlerName}: error executing reducer`, error);\r\n        }\r\n\r\n        if (nextState && nextState !== currentState) {\r\n            this.setState(nextState);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            setTimeout(() => {\r\n                try {\r\n                    sideEffect({ state: nextState, prevState: currentState, payload });\r\n                } catch (error) {\r\n                    console.error(`${handlerName}: error executing sideEffect`, error);\r\n                }\r\n            });\r\n        }\r\n    };\r\n\r\n    const bindActionHandler = bind(action);\r\n\r\n    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));\r\n}\r\n",
@@ -503,7 +477,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 19,
+    "__docId__": 18,
     "kind": "function",
     "name": "bindActions",
     "memberof": "src/decorators/bindActions.js",
@@ -533,7 +507,7 @@
     }
   },
   {
-    "__docId__": 20,
+    "__docId__": 19,
     "kind": "function",
     "name": "bindViewActionHandler",
     "memberof": "src/decorators/bindActions.js",
@@ -570,10 +544,10 @@
     ]
   },
   {
-    "__docId__": 21,
+    "__docId__": 20,
     "kind": "file",
     "name": "src/decorators/bindCalls.js",
-    "content": "import { bind } from 'alt-utils/lib/decorators';\r\nimport flatten from '../utils/flatten';\r\nimport { getLevel as getLogLevel, logLevel } from '../utils/logging';\r\n/**\r\n * Decorates a store with any number of call definitions.\r\n */\r\nexport default function bindCalls(...args) {\r\n    return function decorate(storeClass) {\r\n        const calls = flatten(args);\r\n        calls.forEach(call => decorateStoreWithCall(storeClass, call));\r\n        return storeClass;\r\n    };\r\n}\r\n\r\n/**\r\n * Decorates a store with a single call definition.\r\n * Attaches the dataSource specified in the call definition using alt's datasource decorator.\r\n * Creates and binds a handler function for all reducers and actions specified in the call definition.\r\n */\r\nfunction decorateStoreWithCall(storeClass, callDefinition) {\r\n    const actionNames = Object.keys(callDefinition.actions).reduce((result, key) => {\r\n        // remove ACTION_CONSTANT variants generated by alt\r\n        if (result.indexOf(key.toLowerCase()) === -1) {\r\n            result.push(key);\r\n        }\r\n        return result;\r\n    }, []);\r\n    actionNames.forEach(reducerName => {\r\n        bindReducerHandler(reducerName, storeClass, callDefinition);\r\n    });\r\n}\r\n\r\n/**\r\n * Attaches a single reducer handling to the store.\r\n * A new handler method will be created on the store for each action associated\r\n * with a reducer (defaults to the action names: loading, error, success). Each handler will pass\r\n * the current state and the action payload to the reducer with the same name\r\n * and mutate the store with the new state returned by the reducer.\r\n * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.\r\n */\r\nfunction bindReducerHandler(reducerName, storeClass, callDefinition) {\r\n    const handlerName = `_${callDefinition.name}_${reducerName}`;\r\n\r\n    if (storeClass.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\r\n\r\n    storeClass.prototype[handlerName] = function handleCallAction(payload) {\r\n        const reducer = callDefinition.hasOwnProperty('reducers') && callDefinition.reducers[reducerName];\r\n        const sideEffect = callDefinition.hasOwnProperty('sideEffects') && callDefinition.sideEffects[reducerName];\r\n        const logging = callDefinition.hasOwnProperty('logging') && callDefinition.logging;\r\n        const logger = callDefinition.hasOwnProperty('logger') && callDefinition.logger;\r\n        const isError = payload instanceof Error;\r\n        if (isError) {\r\n            if (payload.response && payload.response.body && payload.response.body.message) {\r\n                logger.error(reducerName, payload.response.body.message);\r\n            }\r\n            // logger.debug(payload);\r\n        } else if (logging || getLogLevel() === logLevel.FORCE) {\r\n            logger[isError ? 'error' : 'log'](reducerName, payload && payload.toJS ? payload.toJS() : payload);\r\n        }\r\n\r\n        const currentState = this.state;\r\n        let nextState = currentState;\r\n\r\n        if (reducer) {\r\n            //console.log(`[${handlerName}]`, payload, callDefinition);\r\n            try {\r\n                nextState = reducer(currentState, payload);\r\n            } catch (error) {\r\n                console.error(`Error in reducer (${callDefinition.name}, ${reducerName})`, error);\r\n            }\r\n        }\r\n\r\n        if (reducer && !nextState)\r\n            console.warn(\r\n                `reducer \"${reducerName}\" in call \"${\r\n                    callDefinition.name\r\n                }\" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`\r\n            );\r\n\r\n        if (nextState) {\r\n            this.setState(nextState);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            setTimeout(() => {\r\n                try {\r\n                    sideEffect({ state: nextState, prevState: currentState, payload });\r\n                } catch (error) {\r\n                    console.error(`Error in sideEffect (${callDefinition.name}, ${reducerName})`, error);\r\n                }\r\n            });\r\n        }\r\n    };\r\n\r\n    const action = callDefinition.actions[reducerName];\r\n    const bindActionHandler = bind(action);\r\n\r\n    bindActionHandler(storeClass, handlerName, Object.getOwnPropertyDescriptor(storeClass.prototype, handlerName));\r\n}\r\n",
+    "content": "import { bind } from 'alt-utils/lib/decorators';\nimport flatten from '../utils/flatten';\nimport { getLevel as getLogLevel, logLevel } from '../utils/logging';\n/**\n * Decorates a store with any number of call definitions.\n */\nexport default function bindCalls(...args) {\n    return function decorateStore(Store) {\n        const calls = flatten(args);\n        calls.forEach(call => decorateStoreWithCall(Store, call));\n        return Store;\n    };\n}\n\n/**\n * Decorates a store with a single call definition.\n * Attaches the dataSource specified in the call definition using alt's datasource decorator.\n * Creates and binds a handler function for all reducers and actions specified in the call definition.\n */\nfunction decorateStoreWithCall(Store, call) {\n    const names = Object.keys(call.actions).reduce((result, key) => {\n        if (key === 'name') {\n            return result;\n        }\n        // remove ACTION_CONSTANT variants generated by alt\n        if (result.indexOf(key.toLowerCase()) === -1) {\n            result.push(key);\n        }\n        return result;\n    }, []);\n    names.forEach(reducerName => {\n        createStoreHandler(reducerName, Store, call);\n    });\n}\n\n/**\n * Attaches a single reducer handling to the store.\n * A new handler method will be created on the store for each action associated\n * with a reducer (defaults to the action names: loading, error, success). Each handler will pass\n * the current state and the action payload to the reducer with the same name\n * and mutate the store with the new state returned by the reducer.\n * Any sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.\n */\nfunction createStoreHandler(reducerName, Store, call) {\n    const handlerName = `_${call.name}_${reducerName}`;\n\n    if (Store.prototype[handlerName]) throw new Error(`Duplicate handler \"${handlerName}\"`);\n\n    Store.prototype[handlerName] = function handleCallAction(payload) {\n        const reducer = call.hasOwnProperty('reducers') && call.reducers[reducerName];\n        const sideEffect = call.hasOwnProperty('sideEffects') && call.sideEffects[reducerName];\n        const logging = call.hasOwnProperty('logging') && call.logging;\n        const logger = call.hasOwnProperty('logger') && call.logger;\n        const isError = payload instanceof Error;\n        if (isError) {\n            if (payload.response && payload.response.body && payload.response.body.message) {\n                logger.error(reducerName, payload.response.body.message);\n            }\n            // logger.debug(payload);\n        } else if (logging || getLogLevel() === logLevel.FORCE) {\n            logger[isError ? 'error' : 'log'](reducerName, payload && payload.toJS ? payload.toJS() : payload);\n        }\n\n        const currentState = this.state;\n        let nextState = currentState;\n\n        if (reducer) {\n            //console.log(`[${handlerName}]`, payload, call);\n            try {\n                nextState = reducer(currentState, payload);\n            } catch (error) {\n                console.error(`Error in reducer (${call.name}, ${reducerName})`, error);\n            }\n        }\n\n        if (reducer && !nextState)\n            console.warn(\n                `reducer \"${reducerName}\" in call \"${\n                    call.name\n                }\" did not return a new state. Either you forgot to return it, or you should consider using a sideEffect instead of a reducer if no return value is needed.`\n            );\n\n        if (nextState) {\n            this.setState(nextState);\n        }\n\n        if (sideEffect) {\n            setTimeout(() => {\n                try {\n                    sideEffect({ state: nextState, prevState: currentState, payload });\n                } catch (error) {\n                    console.error(`Error in sideEffect (${call.name}, ${reducerName})`, error);\n                }\n            });\n        }\n    };\n\n    const bindHandler = bind(call.actions[reducerName]);\n    const descriptor = Object.getOwnPropertyDescriptor(Store.prototype, handlerName);\n    bindHandler(Store, handlerName, descriptor);\n}\n",
     "static": true,
     "longname": "src/decorators/bindCalls.js",
     "access": null,
@@ -581,7 +555,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 22,
+    "__docId__": 21,
     "kind": "function",
     "name": "bindCalls",
     "memberof": "src/decorators/bindCalls.js",
@@ -611,7 +585,7 @@
     }
   },
   {
-    "__docId__": 23,
+    "__docId__": 22,
     "kind": "function",
     "name": "decorateStoreWithCall",
     "memberof": "src/decorators/bindCalls.js",
@@ -627,13 +601,13 @@
     "lineNumber": 20,
     "params": [
       {
-        "name": "storeClass",
+        "name": "Store",
         "types": [
           "*"
         ]
       },
       {
-        "name": "callDefinition",
+        "name": "call",
         "types": [
           "*"
         ]
@@ -641,20 +615,20 @@
     ]
   },
   {
-    "__docId__": 24,
+    "__docId__": 23,
     "kind": "function",
-    "name": "bindReducerHandler",
+    "name": "createStoreHandler",
     "memberof": "src/decorators/bindCalls.js",
     "generator": false,
     "async": false,
     "static": true,
-    "longname": "src/decorators/bindCalls.js~bindReducerHandler",
+    "longname": "src/decorators/bindCalls.js~createStoreHandler",
     "access": null,
     "export": false,
     "importPath": "@xailabs/altx/lib/decorators/bindCalls.js",
     "importStyle": null,
     "description": "Attaches a single reducer handling to the store.\nA new handler method will be created on the store for each action associated\nwith a reducer (defaults to the action names: loading, error, success). Each handler will pass\nthe current state and the action payload to the reducer with the same name\nand mutate the store with the new state returned by the reducer.\nAny sideEffects defined in the call will be executed with a ({state, prevState, payload}) signature.",
-    "lineNumber": 41,
+    "lineNumber": 44,
     "params": [
       {
         "name": "reducerName",
@@ -663,13 +637,13 @@
         ]
       },
       {
-        "name": "storeClass",
+        "name": "Store",
         "types": [
           "*"
         ]
       },
       {
-        "name": "callDefinition",
+        "name": "call",
         "types": [
           "*"
         ]
@@ -677,7 +651,7 @@
     ]
   },
   {
-    "__docId__": 25,
+    "__docId__": 24,
     "kind": "file",
     "name": "src/decorators/bindHandlers.js",
     "content": "import { bind } from 'alt-utils/lib/decorators';\r\nimport flattenArrays from '../utils/flatten';\r\n\r\n// TODO clean up and refactor terminoloy, potentially deprecate the old \"handlers\" system\r\n// (viewActions are now called handlers, e.g. handlerFactory)\r\n\r\n/**\r\n * Decorates a store with any number of action handlers.\r\n */\r\nexport default function bindHandlers(actions, ...handlers) {\r\n    return function decorateStore(storeClass) {\r\n        // attach bound handler methods to the store class for each handler definition\r\n        flattenArrays(handlers).forEach(handler => attachBoundHandler(storeClass, actions[handler.name], handler));\r\n        return storeClass;\r\n    };\r\n}\r\n/**\r\n * Attaches a single reducer handling to the store.\r\n *\r\n * A new handler method will be created on the store class.\r\n * The handler method invokes the reducer giving it the current store state.\r\n * It then sets the reducer result as the new store state.\r\n *\r\n * If a sideEffect function is defined, it will be called with the signature `{state, prevState, payload}`\r\n *\r\n * @param {object} storeClass - The class of the store to be decorated\r\n * @param {object} action - An altjs action\r\n * @param {object} handler - An handler object with `{name[, reducer, sideEffect]}`\r\n */\r\nfunction attachBoundHandler(storeClass, action, handler) {\r\n    // name is required\r\n\r\n    const methodName = `__handle_${handler.name}`;\r\n\r\n    if (storeClass.prototype[methodName]) throw new Error(`Duplicate method \"${methodName}\"`);\r\n\r\n    /**\r\n     * Handles an action call and sets the next state of the store.\r\n     *\r\n     * @param {any} payload - the single argument that can be specified when calling an action.\r\n     *                      If you need to use more than one argument, use an object with any properties you need.\r\n     */\r\n    storeClass.prototype[methodName] = function handleAction(payload) {\r\n        const reducer = handler.hasOwnProperty('reducer') && handler.reducer;\r\n        const sideEffect = handler.hasOwnProperty('sideEffect') && handler.sideEffect;\r\n\r\n        const currentState = this.state;\r\n\r\n        // the actual operation: run the reducer and set its result as state\r\n        let nextState = currentState;\r\n        if (reducer) {\r\n            try {\r\n                nextState = reducer(currentState, payload);\r\n            } catch (error) {\r\n                console.error(`Error in reducer (${handler.name}, ${handler.name})`, error);\r\n            }\r\n        }\r\n        if (nextState) {\r\n            this.setState(nextState);\r\n        } else if (reducer) {\r\n            console.warn(`reducer \"${handler.name}\" in call \"${handler.name}\" did not return a new state.\r\n                Either you forgot to return it, or if no state change is required, maybe you should use a sideEffect instead of a reducer.\r\n            `);\r\n        }\r\n\r\n        if (sideEffect) {\r\n            try {\r\n                sideEffect({ state: nextState, prevState: currentState, payload });\r\n            } catch (error) {\r\n                console.error(`Error in sideEffect (${handler.name}, ${handler.name})`, error);\r\n            }\r\n        }\r\n    };\r\n\r\n    const bindhandler = bind(action);\r\n\r\n    bindhandler(storeClass, methodName, Object.getOwnPropertyDescriptor(storeClass.prototype, methodName));\r\n}\r\n",
@@ -688,7 +662,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 26,
+    "__docId__": 25,
     "kind": "function",
     "name": "bindHandlers",
     "memberof": "src/decorators/bindHandlers.js",
@@ -724,7 +698,7 @@
     }
   },
   {
-    "__docId__": 27,
+    "__docId__": 26,
     "kind": "function",
     "name": "attachBoundHandler",
     "memberof": "src/decorators/bindHandlers.js",
@@ -772,10 +746,10 @@
     ]
   },
   {
-    "__docId__": 28,
+    "__docId__": 27,
     "kind": "file",
     "name": "src/decorators/bindStorage.js",
-    "content": "import Immutable from 'immutable';\nimport Events from '@loopmode/events';\n\n/**\n * Decorator for ImmutableStore to persist values across browser refresh.\n *\n * Supports `window.localStorage` and `window.sessionStorage` as well as `localForage` or any other backend that implements the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).\n * The storage backend may return promises for asynchronous usage.\n *\n * To store only specific parts of the state, provide a `keyPaths` array. Omit `keyPaths` to persist the entire state of the store.\n *\n * @param {Object} options\n * @param {Array<Array|String>} [options.keyPaths] - An array of keyPaths. Each keyPath can be an array of strings as used in Immutable.js, e.g. `['foo', 'bar']` or a string with dot delimiters, e.g. `'foo.bar'`\n * @param {Object} [options.storage=window.localStorage] - An object that supports the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) methods\n * @param {Function} [options.parse] - A function that receives the persisted value and returns the data object. Defaults to `JSON.parse` if `storage` is an instance of `window.Storage`\n * @param {Function} [options.encode] - A function that receives the data object and returns the value to be persisted. Defaults to `JSON.stringify` if `storage` is an instance of `window.Storage`\n * @param {Boolean} [options.logging] - Whether to log details to the console during operations\n * @return {Function} - The decorator function for the target store\n */\nexport default function bindStorage({ storage = window.localStorage, keyPaths, parse, encode, logging } = {}) {\n    if (storage instanceof window.Storage) {\n        parse = parse || JSON.parse;\n        encode = encode || JSON.stringify;\n    }\n    return function decorate(StoreClass) {\n        return class PersistableStore extends StoreClass {\n            constructor(model) {\n                super(model);\n                this.persistenceEnable({ storage, keyPaths });\n                this.exportPublicMethods({\n                    persistenceEnable: () => this.persistenceEnable({ storage, keyPaths }),\n                    persistenceDisable: () => this.persistenceDisable()\n                });\n            }\n\n            persistenceEnable = ({ storage, keyPaths }) => {\n                this.persistenceConfig = {\n                    storage,\n                    name: `persisted.${this.displayName}`,\n                    keyPaths:\n                        keyPaths &&\n                        keyPaths.map(keyPath => {\n                            if (typeof keyPath === 'string') return keyPath.split('.');\n                            return keyPath;\n                        })\n                };\n\n                if (logging) {\n                    console.log('[PersistableStore] persistenceEnable', { store: this });\n                }\n\n                Events.on('beforeunload', this.persistenceSave);\n\n                this.persistenceRestore();\n            };\n            persistenceDisable = () => {\n                if (logging) {\n                    console.log('[PersistableStore] persistenceDisable', { store: this });\n                }\n\n                Events.off('beforeunload', this.persistenceSave);\n            };\n            persistenceRestore = async () => {\n                try {\n                    const { storage, name } = this.persistenceConfig;\n                    let data = await storage.getItem(name);\n                    if (data) {\n                        if (parse) data = parse(data);\n\n                        data = Immutable.fromJS(data);\n                        this.persistenceExtendInitialData(data);\n\n                        const nextState = this.state.mergeDeep(data);\n\n                        if (logging) {\n                            console.log('[PersistableStore] persistenceRestore', { store: this, data, nextState });\n                        }\n\n                        this.setState(nextState);\n                    }\n                } catch (error) {\n                    console.warn('[PersistableStore] persistenceRestore failed', { error, store: this });\n                }\n            };\n            persistenceSave = async () => {\n                try {\n                    const { storage, name, keyPaths } = this.persistenceConfig;\n                    let data = this.state;\n\n                    if (keyPaths && keyPaths.length) {\n                        data = keyPaths.reduce(\n                            (result, keyPath) => result.setIn(keyPath, this.state.getIn(keyPath)),\n                            Immutable.fromJS({})\n                        );\n                    }\n\n                    data = data.toJS();\n\n                    if (encode) data = encode(data);\n\n                    if (logging) {\n                        console.log('[PersistableStore] persistenceRestore', { store: this, data });\n                    }\n\n                    await storage.setItem(name, data);\n                } catch (error) {\n                    console.warn('[PersistableStore] persistenceSave failed', { error, store: this });\n                }\n            };\n            persistenceExtendInitialData = persistedData => {\n                if (!this.initialData) {\n                    return;\n                }\n                const wasImmutable = typeof this.initialData.toJS === 'function';\n                this.initialData = Immutable.fromJS(this.initialData).mergeDeep(persistedData);\n                if (!wasImmutable) {\n                    this.initialData = this.initialData.toJS();\n                }\n            };\n        };\n    };\n}\n",
+    "content": "import Immutable from 'immutable';\nimport Events from '@loopmode/events';\n\n/**\n * Decorator for ImmutableStore to persist values across browser refresh.\n *\n * Supports `window.localStorage` and `window.sessionStorage` as well as `localForage` or any other backend that implements the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).\n * The storage backend may return promises for asynchronous usage.\n *\n * To store only specific parts of the state, provide a `keyPaths` array. Omit `keyPaths` to persist the entire state of the store.\n *\n * @param {Object} options\n * @param {Array<Array|String>} [options.keyPaths] - An array of keyPaths. Each keyPath can be an array of strings as used in Immutable.js, e.g. `['foo', 'bar']` or a string with dot delimiters, e.g. `'foo.bar'`\n * @param {Object} [options.storage=window.localStorage] - An object that supports the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) methods\n * @param {Function} [options.parse] - A function that receives the persisted value and returns the data object. Defaults to `JSON.parse` if `storage` is an instance of `window.Storage`\n * @param {Function} [options.encode] - A function that receives the data object and returns the value to be persisted. Defaults to `JSON.stringify` if `storage` is an instance of `window.Storage`\n * @param {Boolean} [options.logging] - Whether to log details to the console during operations\n * @return {Function} - The decorator function for the target store\n */\nexport default function bindStorage({ storage, keyPaths, parse, encode, logging } = {}) {\n    if (typeof window === 'undefined') {\n        return StoreClass => StoreClass;\n    }\n\n    storage = storage || window.localStorage;\n    if (storage instanceof window.Storage) {\n        parse = parse || JSON.parse;\n        encode = encode || JSON.stringify;\n    }\n    return function decorate(StoreClass) {\n        return class PersistableStore extends StoreClass {\n            constructor(model) {\n                super(model);\n                this.persistenceEnable({ storage, keyPaths });\n                this.exportPublicMethods({\n                    persistenceEnable: () => this.persistenceEnable({ storage, keyPaths }),\n                    persistenceDisable: () => this.persistenceDisable(),\n                    persistenceClear: () => this.persistenceClear()\n                });\n            }\n\n            persistenceEnable = ({ storage, keyPaths }) => {\n                this.persistenceConfig = {\n                    storage,\n                    name: `persisted.${this.displayName}`,\n                    keyPaths:\n                        keyPaths &&\n                        keyPaths.map(keyPath => {\n                            if (typeof keyPath === 'string') return keyPath.split('.');\n                            return keyPath;\n                        })\n                };\n\n                if (logging) {\n                    console.log('[PersistableStore] persistenceEnable', { store: this });\n                }\n\n                Events.on('beforeunload', this.persistenceBeforeUnload);\n\n                this.persistenceRestore();\n            };\n            persistenceBeforeUnload = () => {\n                this.persistenceSave();\n            };\n            persistenceDisable = () => {\n                if (logging) {\n                    console.log('[PersistableStore] persistenceDisable', { store: this });\n                }\n\n                Events.off('beforeunload', this.persistenceBeforeUnload);\n            };\n            persistenceClear = () => {\n                this.initialData = this._initialDataWithoutPersistence || this.initialData;\n                const { storage, name } = this.persistenceConfig;\n                this.persistenceDisable();\n                storage.removeItem(name);\n                console.log(`[PersistableStore] \"${name}\" cleared. Please refresh the window`);\n            };\n            persistenceRestore = async () => {\n                try {\n                    const { storage, name } = this.persistenceConfig;\n                    let data = await storage.getItem(name);\n                    if (data) {\n                        if (parse) data = parse(data);\n\n                        data = Immutable.fromJS(data);\n                        this.persistenceExtendInitialData(data);\n\n                        const nextState = this.state.mergeDeep(data);\n\n                        if (logging) {\n                            console.log('[PersistableStore] persistenceRestore', { store: this, data, nextState });\n                        }\n\n                        this.setState(nextState);\n                    }\n                } catch (error) {\n                    console.warn('[PersistableStore] persistenceRestore failed', { error, store: this });\n                }\n            };\n            persistenceSave = async () => {\n                try {\n                    const { storage, name, keyPaths } = this.persistenceConfig;\n                    let data = this.state;\n\n                    if (keyPaths && keyPaths.length) {\n                        data = keyPaths.reduce(\n                            (result, keyPath) => result.setIn(keyPath, this.state.getIn(keyPath)),\n                            Immutable.fromJS({})\n                        );\n                    }\n\n                    data = data.toJS();\n\n                    if (encode) data = encode(data);\n\n                    if (logging) {\n                        console.log('[PersistableStore] persistenceRestore', { store: this, data });\n                    }\n\n                    await storage.setItem(name, data);\n                } catch (error) {\n                    console.warn('[PersistableStore] persistenceSave failed', { error, store: this });\n                }\n            };\n            persistenceExtendInitialData = persistedData => {\n                if (!this.initialData) {\n                    return;\n                }\n                const wasImmutable = typeof this.initialData.toJS === 'function';\n                this._initialDataWithoutPersistence = this.initialData;\n                this.initialData = Immutable.fromJS(this.initialData).mergeDeep(persistedData);\n                if (!wasImmutable) {\n                    this.initialData = this.initialData.toJS();\n                }\n            };\n        };\n    };\n}\n",
     "static": true,
     "longname": "src/decorators/bindStorage.js",
     "access": null,
@@ -783,7 +757,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 29,
+    "__docId__": 28,
     "kind": "function",
     "name": "bindStorage",
     "memberof": "src/decorators/bindStorage.js",
@@ -871,10 +845,10 @@
     }
   },
   {
-    "__docId__": 30,
+    "__docId__": 29,
     "kind": "file",
     "name": "src/decorators/connect.js",
-    "content": "import connectToStores from 'alt-utils/lib/connectToStores';\r\nimport React, { createElement } from 'react';\r\n\r\n// TODO: deprecate connectAlternative asap!\r\n\r\n/* eslint-disable */\r\n/**\r\n * A component decorator for connecting to immutable stores.\r\n *\r\n * Basically a wrapper around `alt/utils/connectToStores`.  \r\n * Adds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.\r\n *\r\n * - Supports multiple stores.\r\n * - Supports a simplified, string-based access to stores, with optional renaming of props.\r\n * - Supports more flexible, redux-like access to stores using mapper functions.\r\n *\r\n * ### String notation\r\n *\r\n * @example\r\n * @connect([{store: MyStore, props: ['myValue', 'anotherValue']}])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          const {myValue, anotherValue} = this.props;\r\n *          ...\r\n *      }\r\n * }\r\n *\r\n * You can rename props using the ` as ` alias syntax\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: PeopleStore,\r\n *      props: ['items as people']\r\n * }, {\r\n *      store: ProductStore,\r\n *      props: ['items as products']\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          // this.props.people, this.props.products, ...\r\n *      }\r\n * }\r\n *\r\n * ### Function notation\r\n *\r\n * Use mapper functions instead of strings in order to manually retrieve store values.\r\n * The function receives the store state and the component props.\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: MyStore,\r\n *      props: (state, props) => {\r\n *          return {\r\n *              item: state.get('items').filter(item => item.get('id') === props.id)\r\n *          }\r\n *      }\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      render() {\r\n *          const item = this.props.item;\r\n *      }\r\n * }\r\n *\r\n * Technically, you could also mix all access methods, but this defeats the purpose of simple access:\r\n *\r\n * @example\r\n * @connect([{\r\n *      store: MyStore,\r\n *      props: ['someProp', 'anotherProp', (state, props) => {\r\n *          return {\r\n *              item: state.get('items').filter(item => item.get('id') === props.id)\r\n *          }\r\n *      }, 'some.nested.value as foo']\r\n * }])\r\n * export default class MyComponent extends React.Component {\r\n *      ...\r\n * }\r\n *\r\n * There are however valid usecase for mixing access methods. For example, you might have keys that themselves contain dots.\r\n * For example, that is the case when using `validate.js` with nested constraints and keeping validation results in the store.\r\n * There might be an `errors` map in your storewith keys like `user.address.street`. In such a case you wouldn't be able to access those values because the dots do not\r\n * represent the actual keyPath in the tree:\r\n *\r\n * @example\r\n * @connect([{\r\n *   store,\r\n *   props: ['user.address.street', (state) => ({errors: state.getIn(['errors', 'user.address.street'])})]\r\n * }])\r\n *\r\n * @see https://github.com/goatslacker/alt/blob/master/docs/utils/immutable.md\r\n * @see https://github.com/goatslacker/alt/blob/master/src/utils/connectToStores.js\r\n *\r\n * @param {Array<{store: AltStore, props: Array<string>}>} definitions - A list of objects that each define a store connection\r\n */\r\n/* eslint-enable */\r\nexport default function connect(definitions) {\r\n    return function(targetClass) {\r\n        targetClass.getStores = function() {\r\n            return definitions.map(def => def.store);\r\n        };\r\n        targetClass.getPropsFromStores = function(componentProps) {\r\n            return definitions.reduce((result, def) => {\r\n                if (typeof def.props === 'function') {\r\n                    // the props definition is itself a function. return with its result.\r\n                    return Object.assign(result, def.props(def.store.state, componentProps));\r\n                }\r\n                // the props definition is an array. evaluate and reduce each of its elements\r\n                return def.props.reduce((result, accessor) => {\r\n                    return Object.assign(result, mapProps(accessor, def.store.state, componentProps));\r\n                }, result);\r\n            }, {});\r\n        };\r\n        return connectToStores(targetClass);\r\n    };\r\n}\r\n\r\nfunction mapProps(accessor, state, props) {\r\n    switch (typeof accessor) {\r\n        case 'function':\r\n            return mapFuncAccessor(accessor, state, props);\r\n        case 'string':\r\n            return mapStringAccessor(accessor, state);\r\n    }\r\n}\r\n\r\nfunction mapFuncAccessor(accessor, state, props) {\r\n    return accessor(state, props);\r\n}\r\n\r\nfunction mapStringAccessor(accessor, state) {\r\n    const { keyPath, propName } = parseAccessor(accessor);\r\n    return {\r\n        [propName]: state.getIn(keyPath)\r\n    };\r\n}\r\n\r\n/**\r\n * Takes the accessor defined by the component and retrieves `keyPath` and `propName`\r\n * The accessor may be the name of a top-level value in the store, or a path to a nested value.\r\n * Nested values can be accessed using a dot-separated syntax (e.g. `some.nested.value`).\r\n *\r\n * The name of the prop received by the component is the last part of the accessor in case of\r\n * a nested syntax, or the accessor itself in case of a simple top-level accessor.\r\n *\r\n * If you need to pass the value using a different prop name, you can use the ` as ` alias syntax,\r\n * e.g. `someProp as myProp` or `some.prop as myProp`.\r\n *\r\n * examples:\r\n *\r\n *      'someValue' // {keyPath: ['someValue'], propName: 'someValue'}\r\n *      'someValue as foo' // {keyPath: ['someValue'], propName: 'foo'}\r\n *      'some.nested.value' // {keyPath: ['some', 'nested', 'value'], propName: 'value'}\r\n *      'some.nested.value as foo' // {keyPath: ['some', 'nested', 'value'], propName: 'foo'}\r\n *\r\n * @param {string} string - The value accessor passed by the component decorator.\r\n * @return {object} result - A `{storeName, propName}` object\r\n * @return {string} result.keyPath - An immutablejs keyPath array to the value in the store\r\n * @return {string} result.propName - name for the prop as expected by the component\r\n */\r\nfunction parseAccessor(accessor) {\r\n    let keyPath, propName;\r\n    if (accessor.indexOf(' as ') > -1) {\r\n        // e.g. 'foo as bar' or 'some.foo as bar'\r\n        const parts = accessor.split(' as ');\r\n        keyPath = parts[0].split('.');\r\n        propName = parts[1];\r\n    } else {\r\n        // e.g. 'foo' or 'some.foo'\r\n        keyPath = accessor.split('.');\r\n        propName = keyPath[keyPath.length - 1];\r\n    }\r\n    return { keyPath, propName };\r\n}\r\n\r\nfunction connectAlternative(store, mapStateToProps, WrappedComponent) {\r\n    return class Connect extends React.Component {\r\n        constructor(props, context) {\r\n            super(props, context);\r\n            const storeState = store.getState();\r\n            this.state = { storeState: mapStateToProps(storeState, props) };\r\n        }\r\n\r\n        componentDidMount() {\r\n            this._isMounted = true;\r\n            this.storeSubscription = store.listen(this.handleStoreUpdate);\r\n        }\r\n\r\n        componentWillUnmount() {\r\n            this._isMounted = false;\r\n            if (this.storeSubscription) {\r\n                store.unlisten(this.storeSubscription);\r\n            }\r\n        }\r\n\r\n        // if we use props in mapStateToProps,\r\n        // we need to run it again when props have changed\r\n        componentWillReceiveProps(nextProps) {\r\n            //untested! should work though\r\n            if (mapStateToProps.length > 1) {\r\n                this.setState({ storeState: mapStateToProps(store.getState(), nextProps) });\r\n            }\r\n        }\r\n\r\n        handleStoreUpdate = state => {\r\n            if (this._isMounted) {\r\n                this.setState({ storeState: mapStateToProps(state, this.props) });\r\n            }\r\n        };\r\n\r\n        render() {\r\n            const mergedProps = { ...this.props, ...this.state.storeState };\r\n            return createElement(WrappedComponent, mergedProps);\r\n        }\r\n    };\r\n}\r\n\r\nexport { connectAlternative };\r\n",
+    "content": "import connectToStores from 'alt-utils/lib/connectToStores';\nimport React, { createElement } from 'react';\n\n// TODO: deprecate connectAlternative asap!\n\n/* eslint-disable */\n/**\n * A component decorator for connecting to immutable stores.\n *\n * Basically a wrapper around `alt/utils/connectToStores`.\n * Adds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.\n *\n * - Supports multiple stores.\n * - Supports a simplified, string-based access to stores, with optional renaming of props.\n * - Supports more flexible, redux-like access to stores using mapper functions.\n *\n * ### String notation\n *\n * @example\n * @connect([{store: MyStore, props: ['myValue', 'anotherValue']}])\n * export default class MyComponent extends React.Component {\n *      render() {\n *          const {myValue, anotherValue} = this.props;\n *          ...\n *      }\n * }\n *\n * You can rename props using the ` as ` alias syntax\n *\n * @example\n * @connect([{\n *      store: PeopleStore,\n *      props: ['items as people']\n * }, {\n *      store: ProductStore,\n *      props: ['items as products']\n * }])\n * export default class MyComponent extends React.Component {\n *      render() {\n *          // this.props.people, this.props.products, ...\n *      }\n * }\n *\n * ### Function notation\n *\n * Use mapper functions instead of strings in order to manually retrieve store values.\n * The function receives the store state and the component props.\n *\n * @example\n * @connect([{\n *      store: MyStore,\n *      props: (state, props) => {\n *          return {\n *              item: state.get('items').filter(item => item.get('id') === props.id)\n *          }\n *      }\n * }])\n * export default class MyComponent extends React.Component {\n *      render() {\n *          const item = this.props.item;\n *      }\n * }\n *\n * Technically, you could also mix all access methods, but this defeats the purpose of simple access:\n *\n * @example\n * @connect([{\n *      store: MyStore,\n *      props: ['someProp', 'anotherProp', (state, props) => {\n *          return {\n *              item: state.get('items').filter(item => item.get('id') === props.id)\n *          }\n *      }, 'some.nested.value as foo']\n * }])\n * export default class MyComponent extends React.Component {\n *      ...\n * }\n *\n * There are however valid usecase for mixing access methods. For example, you might have keys that themselves contain dots.\n * For example, that is the case when using `validate.js` with nested constraints and keeping validation results in the store.\n * There might be an `errors` map in your storewith keys like `user.address.street`. In such a case you wouldn't be able to access those values because the dots do not\n * represent the actual keyPath in the tree:\n *\n * @example\n * @connect([{\n *   store,\n *   props: ['user.address.street', (state) => ({errors: state.getIn(['errors', 'user.address.street'])})]\n * }])\n *\n * @see https://github.com/goatslacker/alt/blob/master/docs/utils/immutable.md\n * @see https://github.com/goatslacker/alt/blob/master/src/utils/connectToStores.js\n *\n * @param {Array<{store: AltStore, props: Array<string>}>} definitions - A list of objects that each define a store connection\n */\n/* eslint-enable */\nexport default function connect(definitions) {\n    return function(targetClass) {\n        targetClass.getStores = function() {\n            return definitions.map(def => def.store);\n        };\n        targetClass.getPropsFromStores = function(componentProps) {\n            return definitions.reduce((result, def) => {\n                if (typeof def.props === 'function') {\n                    // the props definition is itself a function. return with its result.\n                    return Object.assign(result, def.props(def.store.state, componentProps));\n                }\n                // the props definition is an array. evaluate and reduce each of its elements\n                return def.props.reduce((result, accessor) => {\n                    return Object.assign(result, mapProps(accessor, def.store.state, componentProps));\n                }, result);\n            }, {});\n        };\n        return connectToStores(targetClass);\n    };\n}\n\nfunction mapProps(accessor, state, props) {\n    switch (typeof accessor) {\n        case 'function':\n            return mapFuncAccessor(accessor, state, props);\n        case 'string':\n            return mapStringAccessor(accessor, state);\n    }\n}\n\nfunction mapFuncAccessor(accessor, state, props) {\n    return accessor(state, props);\n}\n\nfunction mapStringAccessor(accessor, state) {\n    const { keyPath, propName } = parseAccessor(accessor);\n    return {\n        [propName]: state.getIn(keyPath)\n    };\n}\n\n/**\n * Takes the accessor defined by the component and retrieves `keyPath` and `propName`\n * The accessor may be the name of a top-level value in the store, or a path to a nested value.\n * Nested values can be accessed using a dot-separated syntax (e.g. `some.nested.value`).\n *\n * The name of the prop received by the component is the last part of the accessor in case of\n * a nested syntax, or the accessor itself in case of a simple top-level accessor.\n *\n * If you need to pass the value using a different prop name, you can use the ` as ` alias syntax,\n * e.g. `someProp as myProp` or `some.prop as myProp`.\n *\n * examples:\n *\n *      'someValue' // {keyPath: ['someValue'], propName: 'someValue'}\n *      'someValue as foo' // {keyPath: ['someValue'], propName: 'foo'}\n *      'some.nested.value' // {keyPath: ['some', 'nested', 'value'], propName: 'value'}\n *      'some.nested.value as foo' // {keyPath: ['some', 'nested', 'value'], propName: 'foo'}\n *\n * @param {string} string - The value accessor passed by the component decorator.\n * @return {object} result - A `{storeName, propName}` object\n * @return {string} result.keyPath - An immutablejs keyPath array to the value in the store\n * @return {string} result.propName - name for the prop as expected by the component\n */\nfunction parseAccessor(accessor) {\n    let keyPath, propName;\n    if (accessor.indexOf(' as ') > -1) {\n        // e.g. 'foo as bar' or 'some.foo as bar'\n        const parts = accessor.split(' as ');\n        keyPath = parts[0].split('.');\n        propName = parts[1];\n    } else {\n        // e.g. 'foo' or 'some.foo'\n        keyPath = accessor.split('.');\n        propName = keyPath[keyPath.length - 1];\n    }\n    return { keyPath, propName };\n}\n\nfunction connectAlternative(store, mapStateToProps, WrappedComponent) {\n    return class Connect extends React.Component {\n        constructor(props, context) {\n            super(props, context);\n            const storeState = store.getState();\n            this.state = { storeState: mapStateToProps(storeState, props) };\n        }\n\n        componentDidMount() {\n            this._isMounted = true;\n            this.storeSubscription = store.listen(this.handleStoreUpdate);\n        }\n\n        componentWillUnmount() {\n            this._isMounted = false;\n            if (this.storeSubscription) {\n                store.unlisten(this.storeSubscription);\n            }\n        }\n\n        // if we use props in mapStateToProps,\n        // we need to run it again when props have changed\n        componentWillReceiveProps(nextProps) {\n            //untested! should work though\n            if (mapStateToProps.length > 1) {\n                this.setState({ storeState: mapStateToProps(store.getState(), nextProps) });\n            }\n        }\n\n        handleStoreUpdate = state => {\n            if (this._isMounted) {\n                this.setState({ storeState: mapStateToProps(state, this.props) });\n            }\n        };\n\n        render() {\n            const mergedProps = { ...this.props, ...this.state.storeState };\n            return createElement(WrappedComponent, mergedProps);\n        }\n    };\n}\n\nexport { connectAlternative };\n",
     "static": true,
     "longname": "src/decorators/connect.js",
     "access": null,
@@ -882,7 +856,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 31,
+    "__docId__": 30,
     "kind": "function",
     "name": "connect",
     "memberof": "src/decorators/connect.js",
@@ -894,7 +868,7 @@
     "export": true,
     "importPath": "@xailabs/altx/lib/decorators/connect.js",
     "importStyle": "connect",
-    "description": "A component decorator for connecting to immutable stores.\n\nBasically a wrapper around `alt/utils/connectToStores`.  \nAdds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.\n\n- Supports multiple stores.\n- Supports a simplified, string-based access to stores, with optional renaming of props.\n- Supports more flexible, redux-like access to stores using mapper functions.\n\n### String notation",
+    "description": "A component decorator for connecting to immutable stores.\n\nBasically a wrapper around `alt/utils/connectToStores`.\nAdds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.\n\n- Supports multiple stores.\n- Supports a simplified, string-based access to stores, with optional renaming of props.\n- Supports more flexible, redux-like access to stores using mapper functions.\n\n### String notation",
     "examples": [
       "@connect([{store: MyStore, props: ['myValue', 'anotherValue']}])\nexport default class MyComponent extends React.Component {\n     render() {\n         const {myValue, anotherValue} = this.props;\n         ...\n     }\n}\n\nYou can rename props using the ` as ` alias syntax",
       "@connect([{\n     store: PeopleStore,\n     props: ['items as people']\n}, {\n     store: ProductStore,\n     props: ['items as products']\n}])\nexport default class MyComponent extends React.Component {\n     render() {\n         // this.props.people, this.props.products, ...\n     }\n}\n\n### Function notation\n\nUse mapper functions instead of strings in order to manually retrieve store values.\nThe function receives the store state and the component props.",
@@ -926,7 +900,7 @@
     }
   },
   {
-    "__docId__": 32,
+    "__docId__": 31,
     "kind": "function",
     "name": "mapProps",
     "memberof": "src/decorators/connect.js",
@@ -974,7 +948,7 @@
     }
   },
   {
-    "__docId__": 33,
+    "__docId__": 32,
     "kind": "function",
     "name": "mapFuncAccessor",
     "memberof": "src/decorators/connect.js",
@@ -1022,7 +996,7 @@
     }
   },
   {
-    "__docId__": 34,
+    "__docId__": 33,
     "kind": "function",
     "name": "mapStringAccessor",
     "memberof": "src/decorators/connect.js",
@@ -1064,7 +1038,7 @@
     }
   },
   {
-    "__docId__": 35,
+    "__docId__": 34,
     "kind": "function",
     "name": "parseAccessor",
     "memberof": "src/decorators/connect.js",
@@ -1100,7 +1074,7 @@
     }
   },
   {
-    "__docId__": 36,
+    "__docId__": 35,
     "kind": "function",
     "name": "connectAlternative",
     "memberof": "src/decorators/connect.js",
@@ -1148,7 +1122,7 @@
     }
   },
   {
-    "__docId__": 37,
+    "__docId__": 36,
     "kind": "file",
     "name": "src/getSources.js",
     "content": "export default function getSources(calls) {\r\n    return calls.reduce((dataSource, call) => {\r\n        return Object.assign(dataSource, {\r\n            [call.name]: () => call.dataSource\r\n        });\r\n    }, {});\r\n}\r\n",
@@ -1159,7 +1133,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 38,
+    "__docId__": 37,
     "kind": "function",
     "name": "getSources",
     "memberof": "src/getSources.js",
@@ -1195,7 +1169,7 @@
     }
   },
   {
-    "__docId__": 39,
+    "__docId__": 38,
     "kind": "file",
     "name": "src/handlerFactory.js",
     "content": "import createActions from './createActions';\r\nimport { createLogger } from './utils/logging';\r\n\r\nexport default function handlerFactory(\r\n    action,\r\n    { namespace = 'global', logger = createLogger(action.id || action) } = {}\r\n) {\r\n    const name = action.id || action;\r\n    action = typeof action === 'string' ? createActions(namespace, action)[action] : action;\r\n    return {\r\n        create: createDefinition => {\r\n            const definition = {\r\n                name,\r\n                action,\r\n                namespace,\r\n                logger\r\n            };\r\n            if (typeof createDefinition === 'function') {\r\n                return Object.assign(definition, createDefinition({ namespace, logger }));\r\n            } else {\r\n                return Object.assign(definition, createDefinition);\r\n            }\r\n        }\r\n    };\r\n}\r\n",
@@ -1206,7 +1180,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 40,
+    "__docId__": 39,
     "kind": "function",
     "name": "handlerFactory",
     "memberof": "src/handlerFactory.js",
@@ -1251,10 +1225,10 @@
     }
   },
   {
-    "__docId__": 41,
+    "__docId__": 40,
     "kind": "file",
     "name": "src/ImmutableStore.js",
-    "content": "import Immutable from 'immutable';\nimport transmitter from 'transmitter';\n\nconst reset = transmitter();\nexport function resetStores() {\n    reset.publish();\n}\n\nexport default class ImmutableStore {\n    /**\n     * Creates the instance.\n     * @param {Object} [initialData] - Plain or immutable data object for the initial data of this store. When `reset()` is called, the state is reverted to this data.\n     * @param {Object} [options] - Options object\n     * @param {Object} [options.env] - Pass `process.env` so that the instance can refresh the alt devtool when `NODE_ENV === 'development'` is detected\n     * @param {String} [options.listName='items'] - Name of the list entry to use in the `getItemById`, the `getIndexById` and the `find` methods.\n     */\n    constructor(initialData, { env = process.env, listName = 'items' } = {}) {\n        this.listName = listName;\n        // TODO get rid of getItemById, getIndexById, find\n        this.exportPublicMethods({\n            getItemById: this.getItemById,\n            getIndexById: this.getIndexById,\n            find: this.find,\n            reset: this.reset\n        });\n        if (initialData) {\n            this.init(initialData);\n        }\n        reset.subscribe(() => {\n            const data = this.initialData || {};\n            const nextState = data.toJS ? data : Immutable.fromJS(data);\n            this.setState(nextState);\n        });\n\n        if (env.NODE_ENV === 'development') {\n            window.postMessage(\n                {\n                    payload: { action: 'REFRESH' },\n                    source: 'alt-hook'\n                },\n                '*'\n            );\n        }\n    }\n\n    init(data) {\n        this.initialData = data;\n        this.state = data.toJS ? data : Immutable.fromJS(data);\n        return this.state;\n    }\n\n    reset = () => {\n        this.change(this.initialData);\n    };\n\n    getItemById = (id, listName) => {\n        const list = this.state.get(listName || this.listName);\n        if (list) {\n            return list.find(item => item.get('id') === id);\n        } else {\n            console.warn(this, 'Failed in getItemById(): list not found');\n            //debugger; //eslint-disable-line\n        }\n        return null;\n    };\n\n    getIndexById = (id, listName) => {\n        listName = listName || this.listName;\n        const list = this.state.get(listName);\n        if (list) {\n            return list.indexOf(this.getItemById(id, listName));\n        }\n        console.warn(this, 'Failed in getIndexById(): list not found');\n        return -1;\n    };\n\n    /**\n     * Changes a property to a new value.\n     * There are three modes of calling this function:\n     *\n     * __change('key', value)__\n     * changes one property of the state object.\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/set\n     *\n     * __change({key: value, ...})__\n     * changes any number of state properties at once\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\n     *\n     * __change({id:5}, {key: value})__\n     * changes any number of properties on any matching item within a list\n     * @see {@link #changeItem()}\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\n     */\n    change(prop, value) {\n        if (arguments.length === 2 && typeof prop !== 'string') {\n            this.changeItem(prop, value);\n        } else if (arguments.length === 2) {\n            this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));\n        } else {\n            this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));\n        }\n    }\n\n    setItemProp(id, key, value, listName) {\n        return this.state.merge({\n            [listName || this.listName]: this.state.get(listName || this.listName).map(item => {\n                if (item.get('id') === id) {\n                    return item.set(key, value);\n                }\n                return item;\n            })\n        });\n    }\n\n    /**\n     * Changes a specific item in a list within the state object.\n     * @throws Error if when no item could be found\n     * @param {object} filter\n     * @param {object} filter.item - An object that specifies key/value pairs that must be matched by list items, e.g. {id: 13}\n     * @param {string} [filter.list] - The name of the list to search in. Defaults to 'items'\n     * @param {object} data - An object containing key/value pairs for data to be set at matched items\n     */\n    changeItem(filter, data) {\n        //console.log('changeItem', filter, data);\n        const listName = filter.list || this.listName;\n        const list = this.state.get(listName);\n        //console.log('list found', list.toJS());\n        const matchingItem = this.find(listName, filter.item);\n        if (matchingItem) {\n            //console.log('item found', matchingItem);\n            const matchingIndex = list.indexOf(matchingItem);\n            const newItem = matchingItem.merge(data);\n            const newList = list.set(matchingIndex, newItem);\n            //console.log('new list', newList.toJS());\n            this.change({\n                [listName]: newList\n            });\n        } else {\n            throw new Error(\n                'changeItem: no item found for filter: ' + JSON.stringify(filter) + ', list:',\n                JSON.stringify(list.toJS())\n            );\n        }\n    }\n\n    /**\n     * Returns a list of items that match a filter.\n     *\n     * @param {string} listName - The name of the list within the state object.\n     * @param {object} filter - An object with key/value pairs to test items against\n     * @returns {List} A new immutable list that only contains items that matched all key/value pairs of `filter`\n     */\n    find = (listName, filter) => {\n        const list = this.state.get(listName);\n        const result = list.find(item => {\n            let match = true;\n            Object.keys(filter).map(prop => {\n                const itemValue = item.get(prop);\n                const filterValue = filter[prop];\n                if (itemValue !== filterValue) {\n                    match = false;\n                }\n            });\n            return match;\n        });\n        return result;\n    };\n\n    useApi() {\n        return this.getInstance();\n    }\n}\n",
+    "content": "import Immutable from 'immutable';\nimport transmitter from 'transmitter';\n\nconst reset = transmitter();\nexport function resetStores() {\n    reset.publish();\n}\n\nexport default class ImmutableStore {\n    /**\n     * Creates the instance.\n     * @param {Object} [initialData] - Plain or immutable data object for the initial data of this store. When `reset()` is called, the state is reverted to this data.\n     * @param {Object} [options] - Options object\n     * @param {Object} [options.env] - Pass `process.env` so that the instance can refresh the alt devtool when `NODE_ENV === 'development'` is detected\n     * @param {String} [options.listName='items'] - Name of the list entry to use in the `getItemById`, the `getIndexById` and the `find` methods.\n     */\n    constructor(initialData, { env = process.env, listName = 'items' } = {}) {\n        this.listName = listName;\n        // TODO get rid of getItemById, getIndexById, find\n        this.exportPublicMethods({\n            getItemById: this.getItemById,\n            getIndexById: this.getIndexById,\n            find: this.find,\n            reset: this.reset\n        });\n        if (initialData) {\n            this.init(initialData);\n        }\n        reset.subscribe(() => {\n            const data = this.initialData || {};\n            const nextState = data.toJS ? data : Immutable.fromJS(data);\n            this.setState(nextState);\n        });\n\n        if (env.NODE_ENV === 'development' && typeof window !== 'undefined') {\n            window.postMessage(\n                {\n                    payload: { action: 'REFRESH' },\n                    source: 'alt-hook'\n                },\n                '*'\n            );\n        }\n    }\n\n    init(data) {\n        this.initialData = data;\n        this.state = data.toJS ? data : Immutable.fromJS(data);\n        return this.state;\n    }\n\n    reset = () => {\n        this.change(this.initialData);\n    };\n\n    getItemById = (id, listName) => {\n        const list = this.state.get(listName || this.listName);\n        if (list) {\n            return list.find(item => item.get('id') === id);\n        } else {\n            console.warn(this, 'Failed in getItemById(): list not found');\n            //debugger; //eslint-disable-line\n        }\n        return null;\n    };\n\n    getIndexById = (id, listName) => {\n        listName = listName || this.listName;\n        const list = this.state.get(listName);\n        if (list) {\n            return list.indexOf(this.getItemById(id, listName));\n        }\n        console.warn(this, 'Failed in getIndexById(): list not found');\n        return -1;\n    };\n\n    /**\n     * Changes a property to a new value.\n     * There are three modes of calling this function:\n     *\n     * __change('key', value)__\n     * changes one property of the state object.\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/set\n     *\n     * __change({key: value, ...})__\n     * changes any number of state properties at once\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\n     *\n     * __change({id:5}, {key: value})__\n     * changes any number of properties on any matching item within a list\n     * @see {@link #changeItem()}\n     * @see https://facebook.github.io/immutable-js/docs/#/Map/mergeDeep\n     */\n    change(prop, value) {\n        if (arguments.length === 2 && typeof prop !== 'string') {\n            this.changeItem(prop, value);\n        } else if (arguments.length === 2) {\n            this.setState(this.state.set(prop, value.toJS ? value : Immutable.fromJS(value)));\n        } else {\n            this.setState(this.state.merge(prop.toJS ? prop : Immutable.fromJS(prop)));\n        }\n    }\n\n    setItemProp(id, key, value, listName) {\n        return this.state.merge({\n            [listName || this.listName]: this.state.get(listName || this.listName).map(item => {\n                if (item.get('id') === id) {\n                    return item.set(key, value);\n                }\n                return item;\n            })\n        });\n    }\n\n    /**\n     * Changes a specific item in a list within the state object.\n     * @throws Error if when no item could be found\n     * @param {object} filter\n     * @param {object} filter.item - An object that specifies key/value pairs that must be matched by list items, e.g. {id: 13}\n     * @param {string} [filter.list] - The name of the list to search in. Defaults to 'items'\n     * @param {object} data - An object containing key/value pairs for data to be set at matched items\n     */\n    changeItem(filter, data) {\n        //console.log('changeItem', filter, data);\n        const listName = filter.list || this.listName;\n        const list = this.state.get(listName);\n        //console.log('list found', list.toJS());\n        const matchingItem = this.find(listName, filter.item);\n        if (matchingItem) {\n            //console.log('item found', matchingItem);\n            const matchingIndex = list.indexOf(matchingItem);\n            const newItem = matchingItem.merge(data);\n            const newList = list.set(matchingIndex, newItem);\n            //console.log('new list', newList.toJS());\n            this.change({\n                [listName]: newList\n            });\n        } else {\n            throw new Error(\n                'changeItem: no item found for filter: ' + JSON.stringify(filter) + ', list:',\n                JSON.stringify(list.toJS())\n            );\n        }\n    }\n\n    /**\n     * Returns a list of items that match a filter.\n     *\n     * @param {string} listName - The name of the list within the state object.\n     * @param {object} filter - An object with key/value pairs to test items against\n     * @returns {List} A new immutable list that only contains items that matched all key/value pairs of `filter`\n     */\n    find = (listName, filter) => {\n        const list = this.state.get(listName);\n        const result = list.find(item => {\n            let match = true;\n            Object.keys(filter).map(prop => {\n                const itemValue = item.get(prop);\n                const filterValue = filter[prop];\n                if (itemValue !== filterValue) {\n                    match = false;\n                }\n            });\n            return match;\n        });\n        return result;\n    };\n\n    useApi() {\n        return this.getInstance();\n    }\n}\n",
     "static": true,
     "longname": "src/ImmutableStore.js",
     "access": null,
@@ -1262,7 +1236,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 42,
+    "__docId__": 41,
     "kind": "variable",
     "name": "reset",
     "memberof": "src/ImmutableStore.js",
@@ -1288,7 +1262,7 @@
     }
   },
   {
-    "__docId__": 43,
+    "__docId__": 42,
     "kind": "function",
     "name": "resetStores",
     "memberof": "src/ImmutableStore.js",
@@ -1312,7 +1286,7 @@
     "params": []
   },
   {
-    "__docId__": 44,
+    "__docId__": 43,
     "kind": "class",
     "name": "ImmutableStore",
     "memberof": "src/ImmutableStore.js",
@@ -1334,7 +1308,7 @@
     "interface": false
   },
   {
-    "__docId__": 45,
+    "__docId__": 44,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1391,7 +1365,7 @@
     ]
   },
   {
-    "__docId__": 46,
+    "__docId__": 45,
     "kind": "member",
     "name": "listName",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1414,7 +1388,7 @@
     }
   },
   {
-    "__docId__": 47,
+    "__docId__": 46,
     "kind": "method",
     "name": "init",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1447,7 +1421,7 @@
     }
   },
   {
-    "__docId__": 48,
+    "__docId__": 47,
     "kind": "member",
     "name": "initialData",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1470,7 +1444,7 @@
     }
   },
   {
-    "__docId__": 49,
+    "__docId__": 48,
     "kind": "member",
     "name": "state",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1493,7 +1467,7 @@
     }
   },
   {
-    "__docId__": 50,
+    "__docId__": 49,
     "kind": "member",
     "name": "reset",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1516,7 +1490,7 @@
     }
   },
   {
-    "__docId__": 51,
+    "__docId__": 50,
     "kind": "member",
     "name": "getItemById",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1539,7 +1513,7 @@
     }
   },
   {
-    "__docId__": 52,
+    "__docId__": 51,
     "kind": "member",
     "name": "getIndexById",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1562,7 +1536,7 @@
     }
   },
   {
-    "__docId__": 53,
+    "__docId__": 52,
     "kind": "method",
     "name": "change",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1595,7 +1569,7 @@
     ]
   },
   {
-    "__docId__": 54,
+    "__docId__": 53,
     "kind": "method",
     "name": "setItemProp",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1646,7 +1620,7 @@
     }
   },
   {
-    "__docId__": 55,
+    "__docId__": 54,
     "kind": "method",
     "name": "changeItem",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1709,7 +1683,7 @@
     ]
   },
   {
-    "__docId__": 56,
+    "__docId__": 55,
     "kind": "member",
     "name": "find",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1761,7 +1735,7 @@
     }
   },
   {
-    "__docId__": 57,
+    "__docId__": 56,
     "kind": "method",
     "name": "useApi",
     "memberof": "src/ImmutableStore.js~ImmutableStore",
@@ -1787,10 +1761,10 @@
     }
   },
   {
-    "__docId__": 58,
+    "__docId__": 57,
     "kind": "file",
     "name": "src/index.js",
-    "content": "export { getAltInstance } from './altInstance';\nexport { setAltInstance } from './altInstance';\n\nexport connect from './decorators/connect';\nexport bindCalls from './decorators/bindCalls';\nexport bindHandlers from './decorators/bindHandlers';\nexport bindActions from './decorators/bindActions';\nexport bindStorage from './decorators/bindStorage';\n\nexport ImmutableStore from './ImmutableStore';\nexport { resetStores } from './ImmutableStore';\n\nexport { connectAlternative } from './decorators/connect';\nexport callSeries from './callSeries';\nexport createStore from './createStore';\nexport callFactory from './callFactory';\nexport createAction from './createAction';\nexport createActions from './createActions';\nexport handlerFactory from './handlerFactory';\nexport getSources from './getSources';\n\nexport ActionListeners from 'alt-utils/lib/ActionListeners';\nexport { decorate, datasource, bind } from 'alt-utils/lib/decorators';\nexport immutable from 'alt-utils/lib/ImmutableUtil';\n",
+    "content": "export { getAltInstance } from './altInstance';\nexport { setAltInstance } from './altInstance';\n\nexport connect from './decorators/connect';\nexport bindCalls from './decorators/bindCalls';\nexport bindHandlers from './decorators/bindHandlers';\nexport bindActions from './decorators/bindActions';\nexport bindStorage from './decorators/bindStorage';\n\nexport ImmutableStore from './ImmutableStore';\nexport { resetStores } from './ImmutableStore';\n\nexport { connectAlternative } from './decorators/connect';\nexport callSeries from './callSeries';\nexport createStore from './createStore';\nexport callFactory from './callFactory';\nexport createAction from './createAction';\nexport createActions from './createActions';\nexport handlerFactory from './handlerFactory';\nexport getSources from './getSources';\n\nexport ActionListeners from 'alt-utils/lib/ActionListeners';\nexport { decorate, datasource, bind } from 'alt-utils/lib/decorators';\nexport immutable from 'alt-utils/lib/ImmutableUtil';\n\nexport withDecorators from './withDecorators';\n",
     "static": true,
     "longname": "src/index.js",
     "access": null,
@@ -1798,7 +1772,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 59,
+    "__docId__": 58,
     "kind": "file",
     "name": "src/utils/flatten.js",
     "content": "/**\r\n * Reduces a mixed array to a flat one.\r\n */\r\nexport default function flatten(...args) {\r\n    return args.reduce((result, arg) => {\r\n        if (Array.isArray(arg)) {\r\n            arg.forEach(e => {\r\n                if (Array.isArray(e)) {\r\n                    result = result.concat(flatten(e));\r\n                } else {\r\n                    result.push(e);\r\n                }\r\n            });\r\n        } else {\r\n            result.push(arg);\r\n        }\r\n        return result;\r\n    }, []);\r\n}\r\n",
@@ -1809,7 +1783,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 60,
+    "__docId__": 59,
     "kind": "function",
     "name": "flatten",
     "memberof": "src/utils/flatten.js",
@@ -1839,7 +1813,7 @@
     }
   },
   {
-    "__docId__": 61,
+    "__docId__": 60,
     "kind": "file",
     "name": "src/utils/logging.js",
     "content": "/** Never log */\r\nconst NONE = 0;\r\n/** Log if a definition has `logging: true` */\r\nconst ALLOW = 1;\r\n/** Always log, regardless of `logging` in definition */\r\nconst FORCE = 2;\r\nexport const logLevel = { NONE, ALLOW, FORCE };\r\n\r\nlet level = ALLOW;\r\nexport function setLevel(value) {\r\n    level = value;\r\n}\r\nexport function getLevel() {\r\n    return level;\r\n}\r\n\r\nexport function createLogger(name) {\r\n    return {\r\n        log: (...args) => level > NONE && console.log(`[${name}]`, ...args),\r\n        info: (...args) => level > NONE && console.info(`[${name}]`, ...args),\r\n        warn: (...args) => level > NONE && console.warn(`[${name}]`, ...args),\r\n        error: (...args) => level > NONE && console.error(`[${name}]`, ...args),\r\n        trace: (...args) => level > NONE && console.trace(`[${name}]`, ...args)\r\n    };\r\n}\r\n",
@@ -1850,7 +1824,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 62,
+    "__docId__": 61,
     "kind": "variable",
     "name": "NONE",
     "memberof": "src/utils/logging.js",
@@ -1869,7 +1843,7 @@
     }
   },
   {
-    "__docId__": 63,
+    "__docId__": 62,
     "kind": "variable",
     "name": "ALLOW",
     "memberof": "src/utils/logging.js",
@@ -1888,7 +1862,7 @@
     }
   },
   {
-    "__docId__": 64,
+    "__docId__": 63,
     "kind": "variable",
     "name": "FORCE",
     "memberof": "src/utils/logging.js",
@@ -1907,7 +1881,7 @@
     }
   },
   {
-    "__docId__": 65,
+    "__docId__": 64,
     "kind": "variable",
     "name": "logLevel",
     "memberof": "src/utils/logging.js",
@@ -1933,7 +1907,7 @@
     }
   },
   {
-    "__docId__": 66,
+    "__docId__": 65,
     "kind": "variable",
     "name": "level",
     "memberof": "src/utils/logging.js",
@@ -1959,7 +1933,7 @@
     }
   },
   {
-    "__docId__": 67,
+    "__docId__": 66,
     "kind": "function",
     "name": "setLevel",
     "memberof": "src/utils/logging.js",
@@ -1990,7 +1964,7 @@
     ]
   },
   {
-    "__docId__": 68,
+    "__docId__": 67,
     "kind": "function",
     "name": "getLevel",
     "memberof": "src/utils/logging.js",
@@ -2019,7 +1993,7 @@
     }
   },
   {
-    "__docId__": 69,
+    "__docId__": 68,
     "kind": "function",
     "name": "createLogger",
     "memberof": "src/utils/logging.js",
@@ -2055,7 +2029,7 @@
     }
   },
   {
-    "__docId__": 70,
+    "__docId__": 69,
     "kind": "file",
     "name": "src/utils/validate/loggerConstraints.js",
     "content": "const loggerConstraints = {\r\n    'logger.warn': {\r\n        presence: true\r\n    },\r\n    'logger.error': {\r\n        presence: true\r\n    },\r\n    'logger.log': {\r\n        presence: true\r\n    },\r\n    'logger.info': {\r\n        presence: true\r\n    }\r\n};\r\n\r\nexport default loggerConstraints;\r\n",
@@ -2066,7 +2040,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 71,
+    "__docId__": 70,
     "kind": "variable",
     "name": "loggerConstraints",
     "memberof": "src/utils/validate/loggerConstraints.js",
@@ -2092,7 +2066,7 @@
     }
   },
   {
-    "__docId__": 72,
+    "__docId__": 71,
     "kind": "file",
     "name": "src/utils/validate/validateCreator.js",
     "content": "import validate from 'validate.js';\n\nimport loggerConstraints from './loggerConstraints';\n\nexport const creatorConstraints = (/*call*/) => ({\n    name: {\n        presence: true\n    },\n    actions: {\n        presence: true\n    },\n    ...loggerConstraints\n});\nexport default function validateCreator(call) {\n    return validate(call, creatorConstraints(call));\n}\n",
@@ -2103,7 +2077,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 73,
+    "__docId__": 72,
     "kind": "function",
     "name": "creatorConstraints",
     "memberof": "src/utils/validate/validateCreator.js",
@@ -2127,7 +2101,7 @@
     "params": []
   },
   {
-    "__docId__": 74,
+    "__docId__": 73,
     "kind": "function",
     "name": "validateCreator",
     "memberof": "src/utils/validate/validateCreator.js",
@@ -2163,7 +2137,7 @@
     }
   },
   {
-    "__docId__": 75,
+    "__docId__": 74,
     "kind": "file",
     "name": "src/utils/validate/validateDefinition.js",
     "content": "import validate from 'validate.js';\n\nexport const definitionConstraints = (/*definition}*/) => ({\n    sideEffects: {\n        presence: false\n    },\n    dataSource: {\n        presence: true\n    },\n    reducers: {\n        presence: false\n    }\n});\nexport default function validateDefinition(definition) {\n    return validate(definition, definitionConstraints(definition));\n}\n",
@@ -2174,7 +2148,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 76,
+    "__docId__": 75,
     "kind": "function",
     "name": "definitionConstraints",
     "memberof": "src/utils/validate/validateDefinition.js",
@@ -2198,7 +2172,7 @@
     "params": []
   },
   {
-    "__docId__": 77,
+    "__docId__": 76,
     "kind": "function",
     "name": "validateDefinition",
     "memberof": "src/utils/validate/validateDefinition.js",
@@ -2234,7 +2208,7 @@
     }
   },
   {
-    "__docId__": 78,
+    "__docId__": 77,
     "kind": "file",
     "name": "src/utils/validate/validateHandler.js",
     "content": "import validate from 'validate.js';\n\nexport const handlerConstraints = (/*handler}*/) => ({\n    sideEffect: {\n        presence: false\n    },\n    reducer: {\n        presence: true\n    },\n    name: {\n        presence: true\n    }\n});\nexport default function validateHandler(handler) {\n    return validate(handler, handlerConstraints(handler));\n}\n",
@@ -2245,7 +2219,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 79,
+    "__docId__": 78,
     "kind": "function",
     "name": "handlerConstraints",
     "memberof": "src/utils/validate/validateHandler.js",
@@ -2269,7 +2243,7 @@
     "params": []
   },
   {
-    "__docId__": 80,
+    "__docId__": 79,
     "kind": "function",
     "name": "validateHandler",
     "memberof": "src/utils/validate/validateHandler.js",
@@ -2305,7 +2279,7 @@
     }
   },
   {
-    "__docId__": 81,
+    "__docId__": 80,
     "kind": "file",
     "name": "src/utils/validate.js",
     "content": "// TODO deeper validation logic, e.g. ensure that\r\n// - each key in bindings is also a key in reducers\r\n// - each value of bindings exists in actions etc\r\n\r\nexport { default as validateCreator } from './validate/validateCreator';\r\nexport { default as validateDefinition } from './validate/validateDefinition';\r\nexport { default as validateHandler } from './validate/validateHandler';\r\n",
@@ -2316,7 +2290,53 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 83,
+    "__docId__": 81,
+    "kind": "file",
+    "name": "src/withDecorators.js",
+    "content": "/**\n * use this when decorator syntax is not available\n */\nexport default function withDecorators(decorators, Store) {\n    let i = decorators.length;\n    let decorate;\n    while (i-- > 0) {\n        decorate = decorators[i];\n        Store = decorate(Store);\n    }\n    return Store;\n}\n",
+    "static": true,
+    "longname": "src/withDecorators.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 82,
+    "kind": "function",
+    "name": "withDecorators",
+    "memberof": "src/withDecorators.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/withDecorators.js~withDecorators",
+    "access": null,
+    "export": true,
+    "importPath": "@xailabs/altx/lib/withDecorators.js",
+    "importStyle": "withDecorators",
+    "description": "use this when decorator syntax is not available",
+    "lineNumber": 4,
+    "params": [
+      {
+        "name": "decorators",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "Store",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 84,
     "kind": "external",
     "name": "Infinity",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
@@ -2328,7 +2348,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
+    "__docId__": 85,
     "kind": "external",
     "name": "NaN",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
@@ -2340,7 +2360,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
+    "__docId__": 86,
     "kind": "external",
     "name": "undefined",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
@@ -2352,7 +2372,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
+    "__docId__": 87,
     "kind": "external",
     "name": "null",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
@@ -2364,7 +2384,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
+    "__docId__": 88,
     "kind": "external",
     "name": "Object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -2376,7 +2396,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
+    "__docId__": 89,
     "kind": "external",
     "name": "object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -2388,7 +2408,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
+    "__docId__": 90,
     "kind": "external",
     "name": "Function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -2400,7 +2420,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
+    "__docId__": 91,
     "kind": "external",
     "name": "function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -2412,7 +2432,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
+    "__docId__": 92,
     "kind": "external",
     "name": "Boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -2424,7 +2444,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
+    "__docId__": 93,
     "kind": "external",
     "name": "boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -2436,7 +2456,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
+    "__docId__": 94,
     "kind": "external",
     "name": "Symbol",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
@@ -2448,7 +2468,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
+    "__docId__": 95,
     "kind": "external",
     "name": "Error",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
@@ -2460,7 +2480,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
+    "__docId__": 96,
     "kind": "external",
     "name": "EvalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
@@ -2472,7 +2492,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
+    "__docId__": 97,
     "kind": "external",
     "name": "InternalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
@@ -2484,7 +2504,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
+    "__docId__": 98,
     "kind": "external",
     "name": "RangeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
@@ -2496,7 +2516,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
+    "__docId__": 99,
     "kind": "external",
     "name": "ReferenceError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
@@ -2508,7 +2528,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
+    "__docId__": 100,
     "kind": "external",
     "name": "SyntaxError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
@@ -2520,7 +2540,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
+    "__docId__": 101,
     "kind": "external",
     "name": "TypeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
@@ -2532,7 +2552,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
+    "__docId__": 102,
     "kind": "external",
     "name": "URIError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
@@ -2544,7 +2564,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
+    "__docId__": 103,
     "kind": "external",
     "name": "Number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -2556,7 +2576,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
+    "__docId__": 104,
     "kind": "external",
     "name": "number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -2568,7 +2588,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
+    "__docId__": 105,
     "kind": "external",
     "name": "Date",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
@@ -2580,7 +2600,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
+    "__docId__": 106,
     "kind": "external",
     "name": "String",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -2592,7 +2612,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
+    "__docId__": 107,
     "kind": "external",
     "name": "string",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -2604,7 +2624,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
+    "__docId__": 108,
     "kind": "external",
     "name": "RegExp",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
@@ -2616,7 +2636,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
+    "__docId__": 109,
     "kind": "external",
     "name": "Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
@@ -2628,7 +2648,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
+    "__docId__": 110,
     "kind": "external",
     "name": "Int8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
@@ -2640,7 +2660,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 110,
+    "__docId__": 111,
     "kind": "external",
     "name": "Uint8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
@@ -2652,7 +2672,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
+    "__docId__": 112,
     "kind": "external",
     "name": "Uint8ClampedArray",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
@@ -2664,7 +2684,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
+    "__docId__": 113,
     "kind": "external",
     "name": "Int16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
@@ -2676,7 +2696,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 113,
+    "__docId__": 114,
     "kind": "external",
     "name": "Uint16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
@@ -2688,7 +2708,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
+    "__docId__": 115,
     "kind": "external",
     "name": "Int32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
@@ -2700,7 +2720,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
+    "__docId__": 116,
     "kind": "external",
     "name": "Uint32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
@@ -2712,7 +2732,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
+    "__docId__": 117,
     "kind": "external",
     "name": "Float32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
@@ -2724,7 +2744,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
+    "__docId__": 118,
     "kind": "external",
     "name": "Float64Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
@@ -2736,7 +2756,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
+    "__docId__": 119,
     "kind": "external",
     "name": "Map",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
@@ -2748,7 +2768,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
+    "__docId__": 120,
     "kind": "external",
     "name": "Set",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
@@ -2760,7 +2780,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
+    "__docId__": 121,
     "kind": "external",
     "name": "WeakMap",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
@@ -2772,7 +2792,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 121,
+    "__docId__": 122,
     "kind": "external",
     "name": "WeakSet",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
@@ -2784,7 +2804,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 122,
+    "__docId__": 123,
     "kind": "external",
     "name": "ArrayBuffer",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
@@ -2796,7 +2816,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 123,
+    "__docId__": 124,
     "kind": "external",
     "name": "DataView",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
@@ -2808,7 +2828,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 124,
+    "__docId__": 125,
     "kind": "external",
     "name": "JSON",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
@@ -2820,7 +2840,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 125,
+    "__docId__": 126,
     "kind": "external",
     "name": "Promise",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
@@ -2832,7 +2852,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 126,
+    "__docId__": 127,
     "kind": "external",
     "name": "Generator",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
@@ -2844,7 +2864,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 127,
+    "__docId__": 128,
     "kind": "external",
     "name": "GeneratorFunction",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
@@ -2856,7 +2876,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 128,
+    "__docId__": 129,
     "kind": "external",
     "name": "Reflect",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
@@ -2868,7 +2888,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 129,
+    "__docId__": 130,
     "kind": "external",
     "name": "Proxy",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
@@ -2881,7 +2901,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 132,
     "kind": "external",
     "name": "CanvasRenderingContext2D",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
@@ -2893,7 +2913,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
+    "__docId__": 133,
     "kind": "external",
     "name": "DocumentFragment",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
@@ -2905,7 +2925,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
+    "__docId__": 134,
     "kind": "external",
     "name": "Element",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
@@ -2917,7 +2937,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 134,
+    "__docId__": 135,
     "kind": "external",
     "name": "Event",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
@@ -2929,7 +2949,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
+    "__docId__": 136,
     "kind": "external",
     "name": "Node",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
@@ -2941,7 +2961,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
+    "__docId__": 137,
     "kind": "external",
     "name": "NodeList",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
@@ -2953,7 +2973,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 137,
+    "__docId__": 138,
     "kind": "external",
     "name": "XMLHttpRequest",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
@@ -2965,7 +2985,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 138,
+    "__docId__": 139,
     "kind": "external",
     "name": "AudioContext",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",

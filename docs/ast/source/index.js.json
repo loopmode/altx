@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 984,
+  "end": 1032,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 25,
+      "line": 27,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 984,
+    "end": 1032,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 25,
+        "line": 27,
         "column": 0
       }
     },
@@ -1594,6 +1594,75 @@
             "raw": "'alt-utils/lib/ImmutableUtil'"
           },
           "value": "alt-utils/lib/ImmutableUtil"
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 985,
+        "end": 1031,
+        "loc": {
+          "start": {
+            "line": 26,
+            "column": 0
+          },
+          "end": {
+            "line": 26,
+            "column": 46
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ExportDefaultSpecifier",
+            "start": 992,
+            "end": 1006,
+            "loc": {
+              "start": {
+                "line": 26,
+                "column": 7
+              },
+              "end": {
+                "line": 26,
+                "column": 21
+              }
+            },
+            "exported": {
+              "type": "Identifier",
+              "start": 992,
+              "end": 1006,
+              "loc": {
+                "start": {
+                  "line": 26,
+                  "column": 7
+                },
+                "end": {
+                  "line": 26,
+                  "column": 21
+                },
+                "identifierName": "withDecorators"
+              },
+              "name": "withDecorators"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 1012,
+          "end": 1030,
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 27
+            },
+            "end": {
+              "line": 26,
+              "column": 45
+            }
+          },
+          "extra": {
+            "rawValue": "./withDecorators",
+            "raw": "'./withDecorators'"
+          },
+          "value": "./withDecorators"
         }
       }
     ],
@@ -4617,6 +4686,139 @@
     },
     {
       "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 985,
+      "end": 991,
+      "loc": {
+        "start": {
+          "line": 26,
+          "column": 0
+        },
+        "end": {
+          "line": 26,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "withDecorators",
+      "start": 992,
+      "end": 1006,
+      "loc": {
+        "start": {
+          "line": 26,
+          "column": 7
+        },
+        "end": {
+          "line": 26,
+          "column": 21
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "from",
+      "start": 1007,
+      "end": 1011,
+      "loc": {
+        "start": {
+          "line": 26,
+          "column": 22
+        },
+        "end": {
+          "line": 26,
+          "column": 26
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./withDecorators",
+      "start": 1012,
+      "end": 1030,
+      "loc": {
+        "start": {
+          "line": 26,
+          "column": 27
+        },
+        "end": {
+          "line": 26,
+          "column": 45
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 1030,
+      "end": 1031,
+      "loc": {
+        "start": {
+          "line": 26,
+          "column": 45
+        },
+        "end": {
+          "line": 26,
+          "column": 46
+        }
+      }
+    },
+    {
+      "type": {
         "label": "eof",
         "beforeExpr": false,
         "startsExpr": false,
@@ -4628,15 +4830,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 984,
-      "end": 984,
+      "start": 1032,
+      "end": 1032,
       "loc": {
         "start": {
-          "line": 25,
+          "line": 27,
           "column": 0
         },
         "end": {
-          "line": 25,
+          "line": 27,
           "column": 0
         }
       }
