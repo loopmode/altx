@@ -34,7 +34,8 @@ export default function bindStorage({ storage, keyPaths, parse, encode, logging 
                 this.persistenceEnable({ storage, keyPaths });
                 this.exportPublicMethods({
                     persistenceEnable: () => this.persistenceEnable({ storage, keyPaths }),
-                    persistenceDisable: () => this.persistenceDisable()
+                    persistenceDisable: () => this.persistenceDisable(),
+                    persistenceClear: () => this.persistenceClear()
                 });
             }
 
@@ -54,16 +55,26 @@ export default function bindStorage({ storage, keyPaths, parse, encode, logging 
                     console.log('[PersistableStore] persistenceEnable', { store: this });
                 }
 
-                Events.on('beforeunload', this.persistenceSave);
+                Events.on('beforeunload', this.persistenceBeforeUnload);
 
                 this.persistenceRestore();
+            };
+            persistenceBeforeUnload = () => {
+                this.persistenceSave();
             };
             persistenceDisable = () => {
                 if (logging) {
                     console.log('[PersistableStore] persistenceDisable', { store: this });
                 }
 
-                Events.off('beforeunload', this.persistenceSave);
+                Events.off('beforeunload', this.persistenceBeforeUnload);
+            };
+            persistenceClear = () => {
+                this.initialData = this._initialDataWithoutPersistence || this.initialData;
+                const { storage, name } = this.persistenceConfig;
+                this.persistenceDisable();
+                storage.removeItem(name);
+                console.log(`[PersistableStore] "${name}" cleared. Please refresh the window`);
             };
             persistenceRestore = async () => {
                 try {
@@ -117,6 +128,7 @@ export default function bindStorage({ storage, keyPaths, parse, encode, logging 
                     return;
                 }
                 const wasImmutable = typeof this.initialData.toJS === 'function';
+                this._initialDataWithoutPersistence = this.initialData;
                 this.initialData = Immutable.fromJS(this.initialData).mergeDeep(persistedData);
                 if (!wasImmutable) {
                     this.initialData = this.initialData.toJS();

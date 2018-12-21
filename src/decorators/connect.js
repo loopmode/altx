@@ -7,7 +7,7 @@ import React, { createElement } from 'react';
 /**
  * A component decorator for connecting to immutable stores.
  *
- * Basically a wrapper around `alt/utils/connectToStores`.  
+ * Basically a wrapper around `alt/utils/connectToStores`.
  * Adds the necessary static methods `getStores()` and `getPropsFromStores()` to the decorated component.
  *
  * - Supports multiple stores.

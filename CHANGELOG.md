@@ -1,5 +1,9 @@
 ### 1.4.4
 
+-   Add `persistenceClear` method to `PersistableStore` (via `bindStorage`)
+
+### 1.4.4
+
 -   Guard against undefined window object (SSR)
 
 ### 1.4.3
